@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { audio } from '../audio'
+import NormEmblem from './NormEmblem'
 
 const AUTH_STEPS = [
   ['uplink', 'ПЕРЕДАЧА УЧЁТНЫХ ДАННЫХ…'],
@@ -41,9 +42,6 @@ export default function AccessGate({ onEnter }) {
     setPhase('auth')
     setAuthStep(0)
     setMessage(AUTH_STEPS[0][1])
-
-    // The submit gesture gives the browser everything it needs to start the
-    // cinematic audio engine without ever breaking the fiction of the login.
     audio.enable()
 
     AUTH_STEPS.slice(1).forEach(([nextPhase, text], index) => {
@@ -63,6 +61,7 @@ export default function AccessGate({ onEnter }) {
 
   const onFieldKeyDown = (event) => {
     if (event.key === 'Escape') event.currentTarget.blur()
+    else if (event.key.length === 1) audio.key()
   }
 
   return (
@@ -70,8 +69,13 @@ export default function AccessGate({ onEnter }) {
       <div className="access-gate__noise" aria-hidden="true" />
       <div className="access-gate__scan" aria-hidden="true" />
       <div className="access-gate__box access-login">
-        <div className="norm-mark">Н.О.Р.М.</div>
-        <div className="access-gate__sub">ВНУТРЕННЯЯ СЕТЬ // NORM-OS 2.4.1</div>
+        <div className="access-login__identity-mark">
+          <NormEmblem />
+          <div>
+            <div className="norm-mark">Н.О.Р.М.</div>
+            <div className="access-gate__sub">ВНУТРЕННЯЯ СЕТЬ // NORM-OS 2.4.1</div>
+          </div>
+        </div>
 
         {phase === 'idle' ? (
           <form className="access-login__form" onSubmit={authenticate} autoComplete="off">
