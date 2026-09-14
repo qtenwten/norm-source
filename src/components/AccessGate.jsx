@@ -38,6 +38,7 @@ export default function AccessGate({ onEnter }) {
     if (phase !== 'idle') return
 
     const identity = operator.trim().toUpperCase() || 'GUEST-27491'
+    sessionStorage.setItem('norm-operator', identity)
     setResolvedIdentity(identity)
     setPhase('auth')
     setAuthStep(0)
@@ -78,7 +79,7 @@ export default function AccessGate({ onEnter }) {
         </div>
 
         {phase === 'idle' ? (
-          <form className="access-login__form" onSubmit={authenticate} autoComplete="off">
+          <form className="access-login__form" onSubmit={authenticate} onPointerDown={() => audio.arm()} autoComplete="off">
             <div className="access-login__caption">
               <span>УЗЕЛ ДОПУСКА // 04</span>
               <b>ИДЕНТИФИКАЦИЯ ОПЕРАТОРА</b>
