@@ -31,11 +31,19 @@ function getRouteTone(pathname) {
   return 'dashboard'
 }
 
+function getTransitionDuration(kind) {
+  if (kind === 'grimoire') return { navigateAt: 330, endAt: 760 }
+  if (kind === 'terminal') return { navigateAt: 260, endAt: 650 }
+  if (kind === 'dashboard') return { navigateAt: 245, endAt: 610 }
+  return { navigateAt: 245, endAt: 610 }
+}
+
 export default function Shell({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [transition, setTransition] = useState(false)
   const [transitionText, setTransitionText] = useState('СИНХРОНИЗАЦИЯ АРХИВА')
+  const [transitionKind, setTransitionKind] = useState('dashboard')
   const [muted, setMuted] = useState(!audio.enabled)
   const timersRef = useRef([])
   const stamp = useMemo(
@@ -44,6 +52,10 @@ export default function Shell({ children }) {
   )
   const routeTone = getRouteTone(location.pathname)
 
+  useEffect(() => {
+    audio.scene(routeTone)
+  }, [routeTone])
+
   useEffect(() => () => {
     timersRef.current.forEach(window.clearTimeout)
   }, [])
@@ -51,37 +63,47 @@ export default function Shell({ children }) {
   const go = (to) => {
     if (location.pathname === to || transition) return
 
-    audio.nav()
+    const nextTone = getRouteTone(to)
+    const timing = getTransitionDuration(nextTone)
+    audio.transition(nextTone)
+    setTransitionKind(nextTone)
     setTransitionText(transitionCopy[to] || 'СИНХРОНИЗАЦИЯ АРХИВА')
     setTransition(true)
 
-    timersRef.current.push(window.setTimeout(() => navigate(to), 245))
-    timersRef.current.push(window.setTimeout(() => setTransition(false), 610))
+    timersRef.current.push(window.setTimeout(() => navigate(to), timing.navigateAt))
+    timersRef.current.push(window.setTimeout(() => setTransition(false), timing.endAt))
   }
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      if (Math.random() < 0.07) {
+      if (Math.random() < 0.055) {
         document.documentElement.classList.add('micro-glitch')
         audio.glitch()
         window.setTimeout(() => document.documentElement.classList.remove('micro-glitch'), 95)
       }
-    }, 6200)
+    }, 7200)
     return () => window.clearInterval(timer)
   }, [])
 
   const toggleSound = () => {
     const on = audio.toggle()
     setMuted(!on)
-    if (on) audio.click()
+    if (on) {
+      audio.scene(routeTone)
+      audio.click()
+    }
   }
 
   return (
     <div className={`norm-shell norm-shell--${routeTone}`} data-route={routeTone}>
       <div className="grain" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
-      <div className={`route-transition ${transition ? 'is-active' : ''}`} aria-hidden="true">
+      <div
+        className={`route-transition route-transition--${transitionKind} ${transition ? 'is-active' : ''}`}
+        aria-hidden="true"
+      >
         <div className="route-transition__beam" />
+        <div className="route-transition__glyphs">NORM // 17 // LM // 03 // ACCESS // INTERNAL</div>
         <div className="route-transition__label">
           <small>NORM-OS // ROUTE HANDOFF</small>
           <strong>{transitionText}</strong>
