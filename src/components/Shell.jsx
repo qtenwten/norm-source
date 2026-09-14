@@ -58,6 +58,26 @@ export default function Shell({ children }) {
     audio.scene(routeTone)
   }, [routeTone])
 
+  useEffect(() => {
+    audio.setVolume(0.94)
+
+    const onPointerDown = (event) => {
+      if (!(event.target instanceof Element)) return
+      const control = event.target.closest('button, a, [role="button"], input[type="checkbox"], input[type="radio"]')
+      if (!control || control.hasAttribute('disabled') || control.getAttribute('aria-disabled') === 'true') return
+      if (control.classList.contains('sound-toggle')) return
+
+      audio.click()
+      control.classList.remove('norm-pressed')
+      void control.getBoundingClientRect()
+      control.classList.add('norm-pressed')
+      timersRef.current.push(window.setTimeout(() => control.classList.remove('norm-pressed'), 180))
+    }
+
+    document.addEventListener('pointerdown', onPointerDown, true)
+    return () => document.removeEventListener('pointerdown', onPointerDown, true)
+  }, [])
+
   useEffect(() => () => {
     timersRef.current.forEach(window.clearTimeout)
   }, [])
@@ -91,6 +111,7 @@ export default function Shell({ children }) {
     const on = audio.toggle()
     setMuted(!on)
     if (on) {
+      audio.setVolume(0.94)
       audio.scene(routeTone)
       audio.click()
     }

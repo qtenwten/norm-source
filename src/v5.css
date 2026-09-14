@@ -1,0 +1,144 @@
+/* N.O.R.M. v5 — readability, layout repair and tactile interaction pass */
+
+:root{
+  --bg:#080c0a;
+  --panel:#101714;
+  --line:#45564e;
+  --green:#a2b9ad;
+  --muted:#a5afa9;
+}
+
+html,body,#root{background:#080c0a}
+body{color:#e4e9e5;text-rendering:optimizeLegibility}
+.norm-shell{
+  color:#e4e9e5;
+  font-size:15px;
+  background:
+    radial-gradient(circle at 52% -10%,rgba(126,142,133,.16),transparent 34%),
+    linear-gradient(135deg,#0a0e0c 0%,#060807 54%,#0b0f0d 100%);
+}
+.topbar{background:rgba(10,13,11,.97)}
+.sidebar{background:#090d0b}
+.panel{border-color:#43544c;background:linear-gradient(rgba(18,24,21,.98),rgba(11,16,14,.98));box-shadow:0 14px 30px #0005}
+.panel__title{background:#0e1411;color:#e1e7e3;font-size:13px;line-height:1.35;padding:10px 12px}
+.panel__body{font-size:13px;line-height:1.55}
+.page-lead{color:#adb7b1;font-size:14px;line-height:1.55}
+.main-area__meta{font-size:11px;color:#839087}
+.sidebar a{font-size:14px;color:#e0e6e2;padding:14px 12px}
+.sidebar__tagline{font-size:12px;color:#b2bbb5}
+.sound-toggle{font-size:12px;color:#aebbb4;border-color:#46574f;background:#0d1511}
+.topbar__motto{font-size:13px;color:#c1cac4}
+.session{font-size:12px;color:#c0c9c3}
+.brand__sub{color:#c5ccc8}
+.footerline{font-size:11px;color:#8e9a93}
+
+/* Lift photography without losing the monochrome archive treatment. */
+.norm-photo img{filter:grayscale(1) contrast(1.12) brightness(.96)!important}
+.norm-photo:hover img{filter:grayscale(1) contrast(1.16) brightness(1.02)!important}
+.city-banner{filter:grayscale(1) contrast(1.1) brightness(.9)!important}
+
+/* Readability pass for the smallest interface copy. */
+.system-log ul,.timeline{font-size:12.5px;line-height:1.75}
+.case-row span{font-size:12.5px;color:#b9c3bd}
+.case-row__id{color:#a9bbb1}
+.case-tabs-v3 button{font-size:11px;padding:12px}
+.case-section-head small,.case-section-head>span{font-size:10.5px;color:#8e9b94}
+.evidence-card-v3 h2{font-size:14px}
+.evidence-card-v3 p{font-size:11px;line-height:1.45;color:#9eaaa3}
+.evidence-card-v3 button,.case-inline-action{font-size:10.5px}
+.entity-file-v3__paper>small{font-size:10.5px}
+.entity-file-v3__paper dt,.entity-file-v3__paper dd{font-size:12px;line-height:1.45}
+.entity-file-v3__warning{font-size:12px;line-height:1.5}
+.registry-head small,.registry-head__count,.registry-card__copy small,.registry-card__copy span,.registry-card__copy i,.registry-card>em{font-size:10px}
+.agent-expanded__body dt,.agent-expanded__body dd,.agent-expanded__body ul,.agent-expanded__note p{font-size:11.5px;line-height:1.65}
+.agent-expanded__body h3,.agent-expanded__note small{font-size:10px}
+.terminal-line,.terminal-command-log{font-size:12.5px;line-height:1.7}
+.terminal-result-link,.terminal-prompt span,.terminal-quickbar button{font-size:10.5px}
+.archive-head-v4 small,.archive-head-v4>span,.archive-card-button em{font-size:10.5px}
+.grimoire-materials button span,.grimoire-materials button b{font-size:11px}
+.grimoire-materials button small{font-size:10.5px;color:#94a098}
+.observation--button b{font-size:13px}
+.observation--button p{font-size:12px;line-height:1.5;color:#b9c2bd}
+
+/* Book copy should feel printed, not microscopic. */
+.book-page dl{font-size:13px;line-height:1.45}
+.book-page ul{font-size:13px;line-height:1.75}
+.book-page h2{font-size:22px}
+.book-page h3{font-size:15px;margin-top:18px}
+.grimoire-page-number{font-size:10px}
+.grimoire-case-link{font-size:12px}
+.grimoire-case-link span{font-size:9.5px}
+.red-pencil{font-size:12px;line-height:1.45}
+.warning-paper{font-size:12px;line-height:1.45}
+.grimoire-reveal{font-size:10.5px}
+
+/* Desktop grimoire repair: the observation rail gets its own column instead of overlapping the book. */
+.grimoire-page{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(320px,350px);
+  grid-template-areas:
+    "crumb crumb"
+    "stage side";
+  column-gap:14px;
+  row-gap:8px;
+  align-items:start;
+}
+.grimoire-breadcrumb{grid-area:crumb;min-width:0}
+.grimoire-stage{grid-area:stage;min-width:0}
+.grimoire-side,.grimoire-side--v4{
+  grid-area:side;
+  position:sticky!important;
+  left:auto!important;
+  right:auto!important;
+  top:14px!important;
+  width:auto!important;
+  min-width:0;
+  align-self:start;
+}
+.grimoire-stage--illustrated .book-wrap{width:100%;max-width:none}
+.grimoire-side .panel+.panel{margin-top:12px}
+.grimoire-side .observation .norm-photo{height:118px}
+
+/* Stronger affordances and feedback without changing the visual language. */
+button,a,[role="button"]{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,[role="button"]:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:1px solid #91aa9d;
+  outline-offset:2px;
+}
+button:not(:disabled),a,[role="button"]{transition-property:transform,border-color,background-color,color,filter,box-shadow;transition-duration:.16s;transition-timing-function:ease}
+button:not(:disabled):active,a:active,[role="button"]:active{transform:translateY(1px) scale(.995)}
+.norm-pressed{animation:norm-press-feedback .18s ease both!important}
+@keyframes norm-press-feedback{
+  0%{filter:brightness(1)}
+  45%{filter:brightness(1.2);box-shadow:inset 0 0 0 1px rgba(179,204,191,.16)}
+  100%{filter:brightness(1)}
+}
+
+/* Interactive areas are slightly easier to discover. */
+.system-log li>button:hover,.grimoire-materials button:hover,.terminal-quickbar button:hover,.registry-card:hover,.case-row:hover{
+  background-color:rgba(255,255,255,.045)
+}
+.observation--button:hover{background:rgba(255,255,255,.045)!important}
+.panel-link-fill:hover .map-faux,.dashboard-photo-link:hover .norm-photo,.case-photo-button:hover .norm-photo{box-shadow:0 0 0 1px rgba(151,177,163,.24)}
+
+@media(max-width:1260px){
+  .grimoire-page{
+    grid-template-columns:1fr;
+    grid-template-areas:"crumb" "stage" "side";
+  }
+  .grimoire-side,.grimoire-side--v4{position:static!important}
+  .grimoire-side{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grimoire-side .panel+.panel{margin-top:0}
+}
+
+@media(max-width:760px){
+  .norm-shell{font-size:14px}
+  .panel__body{font-size:12.5px}
+  .grimoire-side{display:block}
+  .grimoire-side .panel+.panel{margin-top:12px}
+  .book-page dl,.book-page ul{font-size:12px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .norm-pressed{animation:none!important}
+}
