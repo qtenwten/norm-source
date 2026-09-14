@@ -15,6 +15,12 @@ import Report from './pages/Report'
 export default function App(){
  const [entered,setEntered]=useState(()=>sessionStorage.getItem('norm-entered')==='1')
  useEffect(()=>{if(entered)sessionStorage.setItem('norm-entered','1')},[entered])
+ const logout=()=>{
+  sessionStorage.removeItem('norm-entered')
+  sessionStorage.removeItem('norm-operator')
+  window.history.replaceState(null,'','/')
+  setEntered(false)
+ }
  if(!entered)return <AccessGate onEnter={()=>setEntered(true)}/>
- return <Shell><Routes><Route path="/" element={<Dashboard/>}/><Route path="/cases" element={<Cases/>}/><Route path="/cases/lm-005" element={<NightCaseDetail/>}/><Route path="/cases/lm-006" element={<CaseDetail/>}/><Route path="/grimoire" element={<Grimoire/>}/><Route path="/agents" element={<Agents/>}/><Route path="/archive" element={<Archive/>}/><Route path="/terminal" element={<Terminal/>}/><Route path="/report" element={<Report/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Routes></Shell>
+ return <Shell onLogout={logout}><Routes><Route path="/" element={<Dashboard/>}/><Route path="/cases" element={<Cases/>}/><Route path="/cases/lm-005" element={<NightCaseDetail/>}/><Route path="/cases/lm-006" element={<CaseDetail/>}/><Route path="/grimoire" element={<Grimoire/>}/><Route path="/agents" element={<Agents/>}/><Route path="/archive" element={<Archive/>}/><Route path="/terminal" element={<Terminal/>}/><Route path="/report" element={<Report/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Routes></Shell>
 }
