@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Panel from '../components/Panel'
 import Photo from '../components/Photo'
 import { audio } from '../audio'
@@ -13,7 +14,7 @@ const tabs = [
 
 const validTabs = new Set(tabs.map(([id]) => id))
 
-function ReportTab() {
+function ReportTab({ jump }) {
   return (
     <div className="dossier-grid case-tab-panel">
       <section className="paper dossier-main">
@@ -24,10 +25,10 @@ function ReportTab() {
           <dt>ЛОКАЦИЯ</dt><dd>Солнечногорск, МО</dd>
           <dt>ДАТЫ</dt><dd>11.10.2023 — 28.11.2023</dd>
           <dt>КЛАСС УГРОЗЫ</dt><dd>II</dd>
-          <dt>ГРУППА</dt><dd>AG-SEN, AG-GRIG</dd>
+          <dt>ГРУППА</dt><dd><button className="inline-record-link" type="button" onClick={() => jump('/agents#sen')}>AG-SEN</button>, <button className="inline-record-link" type="button" onClick={() => jump('/agents#grig')}>AG-GRIG</button></dd>
         </dl>
         <p>Зафиксировано повторяющееся информационное воздействие. Источник проявлений не подтверждён. Объект переведён в наблюдение.</p>
-        <Photo src="/assets/host_duo_outdoor.png" alt="Полевой осмотр" label="Полевой осмотр / кадр 03" />
+        <button className="case-photo-button" type="button" onClick={() => jump('/archive')}><Photo src="/assets/host_duo_outdoor.png" alt="Полевой осмотр" label="Полевой осмотр / кадр 03 — открыть архив" /></button>
       </section>
       <aside className="dossier-side">
         <Panel title="КЛАССИФИКАЦИЯ" danger><b>УРОВЕНЬ II</b><p>Рабочая классификация. Риск повторной активации.</p></Panel>
@@ -38,7 +39,7 @@ function ReportTab() {
   )
 }
 
-function TimelineTab() {
+function TimelineTab({ selectTab }) {
   const events = [
     ['11.10.2023 / 20:14', 'Получено первичное обращение. Создан временный инцидент CIV-006.'],
     ['14.10.2023 / 18:42', 'Первичный выезд группы LM. Зафиксированы свидетельские показания.'],
@@ -54,9 +55,9 @@ function TimelineTab() {
         <h1>ЖУРНАЛ СОБЫТИЙ</h1>
         <div className="case-timeline">
           {events.map(([time, text], index) => (
-            <article className={index === events.length - 1 ? 'is-anomalous' : ''} key={time}>
-              <time>{time}</time><span>{String(index + 1).padStart(2, '0')}</span><p>{text}</p>
-            </article>
+            <button className={index === events.length - 1 ? 'is-anomalous' : ''} type="button" onClick={() => { audio.click(); if(index===2||index===4) selectTab('evidence') }} key={time}>
+              <time>{time}</time><span>{String(index + 1).padStart(2, '0')}</span><p>{text}</p><em>{index===2||index===4?'СВЯЗАННАЯ УЛИКА →':'ЖУРНАЛ'}</em>
+            </button>
           ))}
         </div>
       </section>
@@ -68,27 +69,27 @@ function TimelineTab() {
   )
 }
 
-function EvidenceTab() {
+function EvidenceTab({ openMaterial }) {
   const evidence = [
-    ['EV-006-01', 'ПОЛЕВОЙ КАДР', '/assets/host_duo_outdoor.png', 'ВЕРИФИЦИРОВАНО'],
-    ['EV-006-02', 'КАМЕРА ГРУППЫ LM', '/assets/host_duo_indoor_camera.png', 'ВЕРИФИЦИРОВАНО'],
-    ['EV-006-03', 'ФРАГМЕНТ СИГНАЛА', null, 'ИСТОЧНИК НЕИЗВЕСТЕН'],
-    ['EV-006-04', 'АУДИО / 00:17', null, 'ПОВРЕЖДЕНО'],
+    {id:'EV-006-01', title:'ПОЛЕВОЙ КАДР', image:'/assets/host_duo_outdoor.png', status:'ВЕРИФИЦИРОВАНО', detail:'Полевой кадр группы LM. Файл прошёл первичную проверку.'},
+    {id:'EV-006-02', title:'КАМЕРА ГРУППЫ LM', image:'/assets/host_duo_indoor_camera.png', status:'ВЕРИФИЦИРОВАНО', detail:'Кадр с основной камеры группы. Время синхронизировано с журналом.'},
+    {id:'EV-006-03', title:'ФРАГМЕНТ СИГНАЛА', image:null, status:'ИСТОЧНИК НЕИЗВЕСТЕН', detail:'Сигнал восстановлен из локального буфера. Источник не идентифицирован.'},
+    {id:'EV-006-04', title:'АУДИО / 00:17', image:null, status:'ПОВРЕЖДЕНО', detail:'Часть спектра отсутствует. Система предлагает повторную обработку в Field Terminal.'},
   ]
 
   return (
     <section className="case-tab-panel evidence-section">
       <div className="case-section-head"><div><small>LM-006</small><h1>РЕЕСТР УЛИК</h1></div><span>4 ОБЪЕКТА // 2 ОГРАНИЧЕНЫ</span></div>
       <div className="evidence-grid-v3">
-        {evidence.map(([id, title, image, status]) => (
-          <article className={`evidence-card-v3 ${!image ? 'is-redacted' : ''}`} key={id}>
+        {evidence.map((item) => (
+          <article className={`evidence-card-v3 ${!item.image ? 'is-redacted' : ''}`} key={item.id}>
             <div className="evidence-card-v3__image">
-              {image ? <Photo src={image} alt={title} /> : <div className="evidence-redacted"><span>NO PREVIEW</span></div>}
-              <b>{id}</b>
+              {item.image ? <Photo src={item.image} alt={item.title} /> : <div className="evidence-redacted"><span>NO PREVIEW</span></div>}
+              <b>{item.id}</b>
             </div>
-            <h2>{title}</h2>
-            <p>{status}</p>
-            <button type="button" onClick={() => audio.click()}>ОТКРЫТЬ МАТЕРИАЛ</button>
+            <h2>{item.title}</h2>
+            <p>{item.status}</p>
+            <button type="button" onClick={() => openMaterial(item)}>ОТКРЫТЬ МАТЕРИАЛ</button>
           </article>
         ))}
       </div>
@@ -96,7 +97,7 @@ function EvidenceTab() {
   )
 }
 
-function EntityTab() {
+function EntityTab({ jump }) {
   return (
     <div className="case-tab-panel entity-file-v3">
       <section className="paper entity-file-v3__paper">
@@ -113,41 +114,38 @@ function EntityTab() {
       </section>
       <Panel title="СВЯЗЬ С ГРИМУАРОМ">
         <p>Автоматическая корреляция обнаружена, но достоверность связи не подтверждена.</p>
-        <button className="case-inline-action" type="button" onClick={() => { window.location.hash = 'entity'; audio.glitch() }}>ПОВТОРИТЬ КОРРЕЛЯЦИЮ</button>
+        <button className="case-inline-action" type="button" onClick={() => { audio.glitch(); jump('/grimoire') }}>ОТКРЫТЬ ЗАПИСЬ P-017 →</button>
       </Panel>
     </div>
   )
 }
 
-function MediaTab() {
+function MediaTab({ openMaterial }) {
+  const media=[
+    {id:'FRAME-03',title:'FIELD',image:'/assets/host_duo_outdoor.png',detail:'Полевой кадр 03.'},
+    {id:'FRAME-11',title:'CAMERA',image:'/assets/host_duo_indoor_camera.png',detail:'Основная камера группы LM.'},
+    {id:'FRAME-17',title:'CLOSE',image:'/assets/host_duo_closeup.png',detail:'Крупный полевой кадр.'},
+  ]
   return (
     <section className="case-tab-panel media-v3">
       <div className="case-section-head"><div><small>LM-006</small><h1>МЕДИА-АРХИВ</h1></div><span>FIELD / PHOTO / VIDEO / AUDIO</span></div>
       <div className="media-contact-sheet">
-        <Photo src="/assets/host_duo_outdoor.png" alt="Полевой кадр 01" label="FRAME 03 // FIELD" />
-        <Photo src="/assets/host_duo_indoor_camera.png" alt="Полевой кадр 02" label="FRAME 11 // CAMERA" />
-        <Photo src="/assets/host_duo_closeup.png" alt="Полевой кадр 03" label="FRAME 17 // CLOSE" />
-        <div className="media-corrupt"><span>RECOVERING</span><b>FILE_006_██.AVI</b></div>
+        {media.map(item=><button type="button" onClick={()=>openMaterial(item)} key={item.id}><Photo src={item.image} alt={item.title} label={`${item.id} // ${item.title}`} /></button>)}
+        <button type="button" className="media-corrupt" onClick={()=>openMaterial({id:'FILE_006_██.AVI',title:'RECOVERING',detail:'Файл восстановлен частично. Последние кадры отсутствуют.'})}><span>RECOVERING</span><b>FILE_006_██.AVI</b></button>
       </div>
     </section>
   )
 }
 
-const renderers = {
-  report: ReportTab,
-  timeline: TimelineTab,
-  evidence: EvidenceTab,
-  entity: EntityTab,
-  media: MediaTab,
-}
-
 export default function CaseDetail() {
+  const navigate=useNavigate()
   const getInitialTab = () => {
     const fromHash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : ''
     return validTabs.has(fromHash) ? fromHash : 'report'
   }
 
   const [activeTab, setActiveTab] = useState(getInitialTab)
+  const [material,setMaterial]=useState(null)
 
   useEffect(() => {
     const onHashChange = () => {
@@ -160,32 +158,32 @@ export default function CaseDetail() {
 
   const selectTab = (id) => {
     if (id === activeTab) return
-    audio.click()
+    id==='evidence'||id==='media'?audio.archive():id==='entity'?audio.glitch():audio.click()
     setActiveTab(id)
     window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${id}`)
   }
-
-  const ActivePanel = renderers[activeTab]
+  const jump=(path)=>{audio.nav();window.setTimeout(()=>navigate(path),140)}
+  const openMaterial=(item)=>{audio.archive();setMaterial(item)}
+  const ActivePanel = {report:ReportTab,timeline:TimelineTab,evidence:EvidenceTab,entity:EntityTab,media:MediaTab}[activeTab]
 
   return (
     <div className="page case-detail-page">
       <div className="tabs case-tabs-v3" role="tablist" aria-label="Разделы дела LM-006">
         {tabs.map(([id, label]) => (
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === id}
-            className={activeTab === id ? 'active' : ''}
-            onClick={() => selectTab(id)}
-            key={id}
-          >
-            {label}
-          </button>
+          <button type="button" role="tab" aria-selected={activeTab === id} className={activeTab === id ? 'active' : ''} onClick={() => selectTab(id)} key={id}>{label}</button>
         ))}
       </div>
-      <div className="case-tab-stage" key={activeTab}>
-        <ActivePanel />
+      <div className={`case-tab-stage case-tab-stage--${activeTab}`} key={activeTab}>
+        <ActivePanel jump={jump} selectTab={selectTab} openMaterial={openMaterial}/>
       </div>
+
+      {material&&<div className="case-material-viewer" role="dialog" aria-modal="true" onClick={()=>setMaterial(null)}>
+        <section onClick={e=>e.stopPropagation()}>
+          <header><small>LM-006 // MATERIAL VIEWER</small><button type="button" onClick={()=>{audio.click();setMaterial(null)}}>×</button></header>
+          <div className="case-material-viewer__preview">{material.image?<Photo src={material.image} alt={material.title}/>:<div className="archive-signal-visual"><i/><i/><i/><span>{material.title||material.id}</span></div>}</div>
+          <div className="case-material-viewer__copy"><b>{material.id}</b><h2>{material.title}</h2><p>{material.detail}</p><button type="button" onClick={()=>jump('/archive')}>ОТКРЫТЬ В ОБЩЕМ АРХИВЕ →</button></div>
+        </section>
+      </div>}
     </div>
   )
 }
