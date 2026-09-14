@@ -1,6 +1,7 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { audio } from '../audio'
+import NormEmblem from './NormEmblem'
 
 const links = [
   ['/', 'СВОДКА'],
@@ -110,9 +111,12 @@ export default function Shell({ children }) {
         </div>
       </div>
       <header className="topbar">
-        <button type="button" className="brand" onClick={() => go('/')} aria-label="Н.О.Р.М. — на сводку">
-          <span className="brand__logo">Н.О.Р.М.</span>
-          <span className="brand__sub">Независимый Отдел Расследований Мистики</span>
+        <button type="button" className="brand brand--emblem" onClick={() => go('/')} aria-label="Н.О.Р.М. — на сводку">
+          <NormEmblem compact />
+          <span className="brand__copy">
+            <span className="brand__logo">Н.О.Р.М.</span>
+            <span className="brand__sub">Независимый Отдел Расследований Мистики</span>
+          </span>
         </button>
         <div className="topbar__motto">ТАМ, ГДЕ ЗАКАНЧИВАЮТСЯ ОБЪЯСНЕНИЯ — НАЧИНАЕМ МЫ.</div>
         <div className="session">
@@ -122,6 +126,7 @@ export default function Shell({ children }) {
         </div>
       </header>
       <aside className="sidebar">
+        <div className="sidebar-emblem" aria-hidden="true"><NormEmblem compact /></div>
         <nav>
           {links.map(([to, label]) => (
             <NavLink
