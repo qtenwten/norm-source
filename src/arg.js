@@ -8,15 +8,19 @@ const initialState = {
   calcExpected: null,
   n005Armed: false,
   lastFile: null,
+  mountedGhost: false,
+  terminalFailures: 0,
 }
 
 function sanitize(raw = {}) {
   return {
     ...initialState,
     ...raw,
-    clearance: Math.max(0, Math.min(3, Number(raw.clearance) || 0)),
+    clearance: Math.max(0, Math.min(5, Number(raw.clearance) || 0)),
     discoveries: Array.isArray(raw.discoveries) ? [...new Set(raw.discoveries)] : [],
     calcStep: Math.max(0, Number(raw.calcStep) || 0),
+    terminalFailures: Math.max(0, Number(raw.terminalFailures) || 0),
+    mountedGhost: Boolean(raw.mountedGhost),
   }
 }
 
