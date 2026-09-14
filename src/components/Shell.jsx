@@ -39,6 +39,42 @@ function getTransitionDuration(kind) {
   return { navigateAt: 245, endAt: 610 }
 }
 
+function playControlSound(control) {
+  if (control.matches('.report-button, .danger, .dashboard-alert-button, [data-sound="warning"]')) {
+    audio.warning()
+    return
+  }
+  if (control.matches('.case-tabs-v3 button, [role="tab"], [data-sound="tab"]')) {
+    audio.tab()
+    return
+  }
+  if (control.matches('.archive-card-button, .grimoire-materials button, [data-sound="drawer"]')) {
+    audio.drawer()
+    return
+  }
+  if (control.matches('.case-photo-button, .media-contact-sheet > button, .dashboard-photo-link, [data-sound="photo"]')) {
+    audio.photo()
+    return
+  }
+  if (control.matches('.grimoire-plate-button, .grimoire-reveal, .grimoire-case-link, [data-sound="paper"]')) {
+    audio.paper()
+    return
+  }
+  if (control.matches('.terminal-quickbar button, .terminal-result-link, .terminal-map-button, [data-sound="terminal"]')) {
+    audio.terminal()
+    return
+  }
+  if (control.matches('input[type="checkbox"], input[type="radio"], [role="switch"], [data-sound="toggle"]')) {
+    audio.toggleSwitch()
+    return
+  }
+  if (control.matches('a, .brand, .sidebar a, [data-sound="nav"]')) {
+    audio.nav()
+    return
+  }
+  audio.click()
+}
+
 export default function Shell({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -47,6 +83,7 @@ export default function Shell({ children }) {
   const [transitionKind, setTransitionKind] = useState('dashboard')
   const [muted, setMuted] = useState(!audio.enabled)
   const timersRef = useRef([])
+  const lastHoverRef = useRef({ control: null, at: 0 })
   const operator = useMemo(() => sessionStorage.getItem('norm-operator') || 'GUEST-27491', [])
   const stamp = useMemo(
     () => new Date().toLocaleTimeString('ru-RU', { hour12: false }),
@@ -59,23 +96,41 @@ export default function Shell({ children }) {
   }, [routeTone])
 
   useEffect(() => {
-    audio.setVolume(0.94)
+    audio.setVolume(1)
+    const selector = 'button, a, [role="button"], [role="tab"], [role="switch"], input[type="checkbox"], input[type="radio"]'
 
     const onPointerDown = (event) => {
       if (!(event.target instanceof Element)) return
-      const control = event.target.closest('button, a, [role="button"], input[type="checkbox"], input[type="radio"]')
+      const control = event.target.closest(selector)
       if (!control || control.hasAttribute('disabled') || control.getAttribute('aria-disabled') === 'true') return
       if (control.classList.contains('sound-toggle')) return
 
-      audio.click()
+      playControlSound(control)
       control.classList.remove('norm-pressed')
       void control.getBoundingClientRect()
       control.classList.add('norm-pressed')
       timersRef.current.push(window.setTimeout(() => control.classList.remove('norm-pressed'), 180))
     }
 
+    const onPointerOver = (event) => {
+      if (!(event.target instanceof Element)) return
+      const control = event.target.closest(selector)
+      if (!control || control.hasAttribute('disabled') || control.getAttribute('aria-disabled') === 'true') return
+      if (event.relatedTarget instanceof Node && control.contains(event.relatedTarget)) return
+
+      const now = performance.now()
+      if (lastHoverRef.current.control === control && now - lastHoverRef.current.at < 240) return
+      if (now - lastHoverRef.current.at < 85) return
+      lastHoverRef.current = { control, at: now }
+      audio.hover()
+    }
+
     document.addEventListener('pointerdown', onPointerDown, true)
-    return () => document.removeEventListener('pointerdown', onPointerDown, true)
+    document.addEventListener('pointerover', onPointerOver, true)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown, true)
+      document.removeEventListener('pointerover', onPointerOver, true)
+    }
   }, [])
 
   useEffect(() => () => {
@@ -111,9 +166,9 @@ export default function Shell({ children }) {
     const on = audio.toggle()
     setMuted(!on)
     if (on) {
-      audio.setVolume(0.94)
+      audio.setVolume(1)
       audio.scene(routeTone)
-      audio.click()
+      audio.confirm()
     }
   }
 
