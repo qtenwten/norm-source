@@ -22,6 +22,21 @@ const transitionCopy = {
   '/report': 'ОТКРЫТИЕ КАНАЛА ПРИЁМА',
 }
 
+const DEFAULT_VOLUME_PERCENT = 20
+const VOLUME_STORAGE_KEY = 'norm-volume-test-percent'
+
+function volumeGain(percent) {
+  const value = Math.min(100, Math.max(0, Number(percent) || 0))
+  if (value === 0) return 0.0001
+  return value / DEFAULT_VOLUME_PERCENT
+}
+
+function getStoredVolumePercent() {
+  if (typeof window === 'undefined') return DEFAULT_VOLUME_PERCENT
+  const stored = Number(window.localStorage.getItem(VOLUME_STORAGE_KEY))
+  return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : DEFAULT_VOLUME_PERCENT
+}
+
 function getRouteTone(pathname) {
   if (pathname.startsWith('/grimoire')) return 'grimoire'
   if (pathname.startsWith('/terminal')) return 'terminal'
@@ -82,6 +97,7 @@ export default function Shell({ children }) {
   const [transitionText, setTransitionText] = useState('СИНХРОНИЗАЦИЯ АРХИВА')
   const [transitionKind, setTransitionKind] = useState('dashboard')
   const [muted, setMuted] = useState(!audio.enabled)
+  const [volumePercent, setVolumePercent] = useState(getStoredVolumePercent)
   const timersRef = useRef([])
   const lastHoverRef = useRef({ control: null, at: 0 })
   const operator = useMemo(() => sessionStorage.getItem('norm-operator') || 'GUEST-27491', [])
@@ -96,7 +112,11 @@ export default function Shell({ children }) {
   }, [routeTone])
 
   useEffect(() => {
-    audio.setVolume(1)
+    audio.setVolume(volumeGain(volumePercent))
+    window.localStorage.setItem(VOLUME_STORAGE_KEY, String(volumePercent))
+  }, [volumePercent])
+
+  useEffect(() => {
     const selector = 'button, a, [role="button"], [role="tab"], [role="switch"], input[type="checkbox"], input[type="radio"]'
 
     const onPointerDown = (event) => {
@@ -166,10 +186,25 @@ export default function Shell({ children }) {
     const on = audio.toggle()
     setMuted(!on)
     if (on) {
-      audio.setVolume(1)
+      audio.setVolume(volumeGain(volumePercent))
       audio.scene(routeTone)
       audio.confirm()
     }
+  }
+
+  const changeVolume = (event) => {
+    const next = Math.min(100, Math.max(0, Number(event.target.value)))
+    setVolumePercent(next)
+    if (muted && next > 0) {
+      audio.enable()
+      audio.setVolume(volumeGain(next))
+      audio.scene(routeTone)
+      setMuted(false)
+    }
+  }
+
+  const previewVolume = () => {
+    if (!muted && volumePercent > 0) audio.confirm()
   }
 
   return (
@@ -221,6 +256,25 @@ export default function Shell({ children }) {
         </nav>
         <button className="report-button" type="button" onClick={() => go('/report')}>⚠ СООБЩИТЬ<br />ОБ АНОМАЛИИ</button>
         <div className="sidebar__tagline">НАБЛЮДАЕМ.<br />ФИКСИРУЕМ.<br />РАЗБИРАЕМСЯ.</div>
+        <div className="volume-console">
+          <div className="volume-console__head"><span>ГРОМКОСТЬ</span><output htmlFor="norm-volume">{volumePercent}%</output></div>
+          <input
+            id="norm-volume"
+            className="volume-slider"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={volumePercent}
+            onChange={changeVolume}
+            onPointerUp={previewVolume}
+            onKeyUp={previewVolume}
+            aria-label={`Громкость интерфейса: ${volumePercent}%`}
+            style={{ '--volume': `${volumePercent}%` }}
+          />
+          <div className="volume-console__scale"><span>0</span><span className="volume-reference">20 // ТЕКУЩАЯ</span><span>100</span></div>
+          <small>ТЕСТОВАЯ ШКАЛА // 20% = ПРЕЖНЯЯ ГРОМКОСТЬ</small>
+        </div>
         <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>
           {muted ? 'ЗВУК: ВЫКЛ' : 'ЗВУК: ВКЛ'}
         </button>
