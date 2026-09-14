@@ -9,7 +9,7 @@ let initialized = false
 let currentScene = 'dashboard'
 
 const state = {
-  // Gain 1.0 is the current/reference loudness. The UI maps it to 20%.
+  // Slider gain remains 0–5; the buses below carry the final +20% loudness profile.
   volume: 1,
 }
 
@@ -41,10 +41,9 @@ function ensure() {
     compressor.attack.value = 0.003
     compressor.release.value = 0.16
 
-    // Previous pass: ambience .20 / FX .86 / master .94.
-    // This pass deliberately makes interactions substantially more present.
-    ambienceBus.gain.value = 0.32
-    fxBus.gain.value = 1.62
+    // User-approved final calibration: 20% louder than the previous 100% test position.
+    ambienceBus.gain.value = 0.384
+    fxBus.gain.value = 1.944
     master.gain.value = enabled ? state.volume : 0
 
     ambienceBus.connect(master)
