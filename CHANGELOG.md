@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Cinematic v4 pass
+
+- Added the N.O.R.M. tower/radio emblem and applied it to the shell and immersive login.
+- Added a fully illustrated grimoire SVG plate with a room scene, apparition, floating objects, field glyphs and subtle motion.
+- Expanded the Grimoire with clickable linked cases, agents, materials and an attachment viewer.
+- Rebuilt Field Terminal as an interactive command console with command history, quick commands, navigation results and hidden responses.
+- Added commands including `HELP`, `STATUS`, `WHOAMI`, `SCAN`, `CASE LM-006`, `AGENT ...`, `GRIMOIRE`, `ARCHIVE`, `SOUND ON/OFF` and hidden `WHO ARE YOU` behavior.
+- Made archive materials open in a cinematic viewer and cross-linked them to cases, terminal and grimoire.
+- Added deep links for personnel dossiers through URL hashes and actions from individual dossiers.
+- Made dashboard statistics, logs, team panels, agent cards and media elements navigable.
+- Added distinct animations for report, timeline, evidence, entity and media case tabs.
+- Added sound events for typing, commands, scans, archive drawers, errors and material opening.
+- Operator identity from the login screen is persisted for the current session and shown in the system header.
+
+### Cinematic v3 pass
+
+- Added theatrical operator authorization with ID and access-key fields.
+- Added interactive LM-006 tabs and personnel registry.
+- Removed the continuous white-noise bed in favor of low electrical ambience and rare network events.
+- Added route-specific cinematic transitions and audio profiles.
+
 ### Cinematic v2 pass
 
 - Rebuilt Web Audio sound design around filtered noise, relay transients, low-frequency impacts and subtle stereo data ticks.
