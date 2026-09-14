@@ -18,13 +18,18 @@ const materials = [
   { id:'██████', type:'ИЗЪЯТО', level:3, status:'ДОКУМЕНТ ИЗЪЯТ', description:'Материал физически присутствует в индексе, но содержимое заменено служебной заглушкой.', black:true },
 ]
 
+const portals = [
+  { level:1, code:'17-B', label:'ЗАКРЫТЫЙ СЕКТОР', path:'/restricted', detail:'Внутренние отчёты, восстановленные карточки, экспортируемые файлы' },
+  { level:2, code:'BLACK', label:'ЧЁРНЫЙ АРХИВ', path:'/black', detail:'Неиндексируемые файлы, NORM-0, повреждённые записи персонала' },
+  { level:3, code:'ROOT', label:'КОРНЕВОЕ ХРАНИЛИЩЕ', path:'/vault', detail:'Локальный слой без штатной группы доступа' },
+]
+
 export default function Archive(){
   const [selected,setSelected]=useState(null)
   const [progress,setProgress]=useState(getArgState)
   const navigate=useNavigate()
 
   useEffect(()=>subscribeArg(setProgress),[])
-
   const unlockedCount=useMemo(()=>materials.filter(item=>item.level<=progress.clearance).length,[progress.clearance])
 
   const open=(item)=>{
@@ -54,16 +59,23 @@ export default function Archive(){
       <div><small>ПОЛИТИКА ДОСТУПА 17-B</small><b>{progress.clearance===0?'ОТКРЫТ ТОЛЬКО ПУБЛИЧНЫЙ СЛОЙ':progress.clearance===1?'RESTRICTED NODE РАЗБЛОКИРОВАН':progress.clearance===2?'BLACK NODE ОБНАРУЖЕН':'ПОЛНЫЙ ЛОКАЛЬНЫЙ ДОПУСК'}</b></div>
       <button type="button" onClick={()=>navigate('/terminal')}>ОТКРЫТЬ FIELD TERMINAL →</button>
     </div>
+
+    <section className="archive-portals" aria-label="Секторы по уровню допуска">
+      {portals.map((portal)=>{
+        const unlocked=progress.clearance>=portal.level
+        return <button type="button" key={portal.code} className={unlocked?'is-unlocked':'is-locked'} onClick={()=>{if(unlocked){audio.archive();navigate(portal.path)}else{audio.glitch();navigate('/terminal')}}}>
+          <span>A-{portal.level}</span><b>{portal.code}</b><strong>{portal.label}</strong><small>{unlocked?portal.detail:`ТРЕБУЕТСЯ ДОПУСК A-${portal.level}`}</small><em>{unlocked?'ВОЙТИ В СЕКТОР →':'НЕДОСТУПНО'}</em>
+        </button>
+      })}
+    </section>
+
     <div className="archive-grid archive-grid--interactive">
       {materials.map((item,i)=>{
         const locked=progress.clearance<item.level
         return <button type="button" className={`archive-card-button ${locked?'is-restricted is-locked':''} ${item.black?'is-black':''}`} onClick={()=>open(item)} key={`${item.id}-${i}`}>
           <Panel title={`${locked?'██████':item.id} / ${item.type}`}>
-            <div className={`evidence-placeholder e${i} ${item.plate?'evidence-placeholder--plate':''}`}>
-              {item.plate&&!locked ? <GrimoirePlate/> : <span>{locked?`ACCESS A-${item.level} REQUIRED`:item.status}</span>}
-            </div>
-            <small>УРОВЕНЬ ДОСТУПА: A-{item.level}</small>
-            <em>{locked?'ЗАПРОСИТЬ ДОСТУП →':'ОТКРЫТЬ МАТЕРИАЛ →'}</em>
+            <div className={`evidence-placeholder e${i} ${item.plate?'evidence-placeholder--plate':''}`}>{item.plate&&!locked ? <GrimoirePlate/> : <span>{locked?`ACCESS A-${item.level} REQUIRED`:item.status}</span>}</div>
+            <small>УРОВЕНЬ ДОСТУПА: A-{item.level}</small><em>{locked?'ЗАПРОСИТЬ ДОСТУП →':'ОТКРЫТЬ МАТЕРИАЛ →'}</em>
           </Panel>
         </button>
       })}
@@ -73,9 +85,7 @@ export default function Archive(){
       <section className={`archive-viewer__panel ${selected.locked?'is-restricted':''} ${selected.black?'is-black':''}`} onClick={e=>e.stopPropagation()}>
         <header><div><small>N.O.R.M. // ARCHIVE OBJECT</small><strong>{selected.locked?'██████':selected.id}</strong></div><button type="button" onClick={close}>×</button></header>
         <div className="archive-viewer__body">
-          <div className="archive-viewer__preview">
-            {selected.plate&&!selected.locked?<GrimoirePlate/>:<div className="archive-signal-visual"><i/><i/><i/><span>{selected.locked?'ACCESS DENIED':selected.type}</span></div>}
-          </div>
+          <div className="archive-viewer__preview">{selected.plate&&!selected.locked?<GrimoirePlate/>:<div className="archive-signal-visual"><i/><i/><i/><span>{selected.locked?'ACCESS DENIED':selected.type}</span></div>}</div>
           <div className="archive-viewer__meta">
             <span>{selected.type}</span><h2>{selected.locked?'ДОСТУП ОГРАНИЧЕН':selected.status}</h2>
             <p>{selected.locked?`Материал существует, но текущая сессия имеет уровень A-${progress.clearance}. Требуется A-${selected.level}. Повышение допуска выполняется только через служебные механизмы NORM-OS.`:selected.description}</p>
