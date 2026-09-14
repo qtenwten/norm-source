@@ -22,5 +22,20 @@ export default function App(){
   setEntered(false)
  }
  if(!entered)return <AccessGate onEnter={()=>setEntered(true)}/>
- return <Shell onLogout={logout}><Routes><Route path="/" element={<Dashboard/>}/><Route path="/cases" element={<Cases/>}/><Route path="/cases/lm-005" element={<NightCaseDetail/>}/><Route path="/cases/lm-006" element={<CaseDetail/>}/><Route path="/grimoire" element={<Grimoire/>}/><Route path="/agents" element={<Agents/>}/><Route path="/archive" element={<Archive/>}/><Route path="/terminal" element={<Terminal/>}/><Route path="/report" element={<Report/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Routes></Shell>
+ return <Shell onLogout={logout}><Routes>
+  <Route path="/" element={<Dashboard/>}/>
+  <Route path="/cases" element={<Cases/>}/>
+  <Route path="/cases/lm-005" element={<NightCaseDetail/>}/>
+  <Route path="/cases/lm-006" element={<CaseDetail/>}/>
+  <Route path="/grimoire" element={<Grimoire/>}/>
+  <Route path="/agents" element={<Agents/>}/>
+  <Route path="/agents/00" element={<Navigate to="/agents#00" replace/>}/>
+  <Route path="/archive" element={<Archive/>}/>
+  <Route path="/archive/restricted" element={<Archive/>}/>
+  <Route path="/archive/black" element={<Archive/>}/>
+  <Route path="/terminal" element={<Terminal/>}/>
+  <Route path="/terminal/root" element={<Terminal/>}/>
+  <Route path="/report" element={<Report/>}/>
+  <Route path="*" element={<Navigate to="/" replace/>}/>
+ </Routes></Shell>
 }
