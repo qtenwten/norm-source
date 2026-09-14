@@ -23,6 +23,8 @@ const transitionCopy = {
   '/restricted': 'ОТКРЫТИЕ ЗАКРЫТОГО СЕКТОРА 17-B',
   '/black': 'ПОДКЛЮЧЕНИЕ К BLACK NODE',
   '/vault': 'ROOT HANDSHAKE // ЛОКАЛЬНОЕ ХРАНИЛИЩЕ',
+  '/ghost-registry': 'МОНТИРОВАНИЕ GHOSTFS // PERSONNEL RECOVERY',
+  '/mirror-node': 'PRIVILEGED HANDSHAKE // MIRROR NODE',
   '/report': 'ОТКРЫТИЕ КАНАЛА ПРИЁМА',
 }
 
@@ -45,8 +47,8 @@ function getRouteTone(pathname) {
   if (pathname.startsWith('/grimoire')) return 'grimoire'
   if (pathname.startsWith('/terminal')) return 'terminal'
   if (pathname.startsWith('/cases')) return 'case'
-  if (pathname.startsWith('/agents')) return 'agents'
-  if (pathname.startsWith('/archive') || pathname.startsWith('/restricted') || pathname.startsWith('/black') || pathname.startsWith('/vault')) return 'archive'
+  if (pathname.startsWith('/agents') || pathname.startsWith('/ghost-registry')) return 'agents'
+  if (pathname.startsWith('/archive') || pathname.startsWith('/restricted') || pathname.startsWith('/black') || pathname.startsWith('/vault') || pathname.startsWith('/mirror-node')) return 'archive'
   if (pathname.startsWith('/report')) return 'report'
   return 'dashboard'
 }
@@ -174,7 +176,11 @@ export default function Shell({ children, onLogout }) {
     argProgress.clearance >= 1 && ['/restricted','RESTRICTED 17-B','A-1'],
     argProgress.clearance >= 2 && ['/black','BLACK ARCHIVE','A-2'],
     argProgress.clearance >= 3 && ['/vault','ROOT VAULT','A-3'],
+    argProgress.clearance >= 4 && ['/ghost-registry','GHOST REGISTRY','A-4'],
+    argProgress.clearance >= 5 && ['/mirror-node','MIRROR NODE','A-5'],
   ].filter(Boolean)
+
+  const highestRoute = argProgress.clearance >= 5 ? '/mirror-node' : argProgress.clearance >= 4 ? '/ghost-registry' : argProgress.clearance >= 3 ? '/vault' : argProgress.clearance >= 2 ? '/black' : argProgress.clearance >= 1 ? '/restricted' : '/terminal'
 
   return (
     <div className={`norm-shell norm-shell--${routeTone}`} data-route={routeTone} data-clearance={argProgress.clearance}>
@@ -190,15 +196,13 @@ export default function Shell({ children, onLogout }) {
       </header>
       <aside className="sidebar">
         <div className="sidebar-emblem" aria-hidden="true"><NormEmblem compact /></div>
-        <nav>
-          {links.map(([to,label]) => <NavLink key={to} to={to} end={to==='/' } onClick={(event)=>{event.preventDefault();go(to)}}><span className="nav-glyph">⌁</span>{label}</NavLink>)}
-        </nav>
-        {secretLinks.length>0 && <div className="secret-nav"><small>РАЗБЛОКИРОВАННЫЕ СЕКТОРЫ</small>{secretLinks.map(([to,label,level])=><NavLink key={to} to={to} onClick={(event)=>{event.preventDefault();go(to)}}><span>{level}</span>{label}<b>↗</b></NavLink>)}</div>}
+        <nav>{links.map(([to,label]) => <NavLink key={to} to={to} end={to==='/' } onClick={(event)=>{event.preventDefault();go(to)}}><span className="nav-glyph">⌁</span>{label}</NavLink>)}</nav>
+        {secretLinks.length>0 && <div className="secret-nav"><small>РАЗБЛОКИРОВАННЫЕ СЕКТОРЫ</small>{secretLinks.map(([to,label,level])=><NavLink key={to} to={to} onClick={(event)=>{event.preventDefault();go(to)}}><span>{level}</span><strong>{label}</strong><b>↗</b></NavLink>)}</div>}
         <button className="report-button" type="button" onClick={() => go('/report')}>⚠ СООБЩИТЬ<br />ОБ АНОМАЛИИ</button>
         <div className="sidebar__tagline">НАБЛЮДАЕМ.<br />ФИКСИРУЕМ.<br />РАЗБИРАЕМСЯ.</div>
-        <button type="button" className={`arg-clearance-card ${argProgress.clearance >= 2 ? 'is-anomalous' : ''}`} onClick={() => go(argProgress.clearance>=3?'/vault':argProgress.clearance>=2?'/black':argProgress.clearance>=1?'/restricted':'/terminal')}>
+        <button type="button" className={`arg-clearance-card ${argProgress.clearance >= 2 ? 'is-anomalous' : ''}`} onClick={() => go(highestRoute)}>
           <small>ДОПУСК СЕССИИ</small><strong>A-{argProgress.clearance}</strong><span>ОБНАРУЖЕНО: {argProgress.discoveries.length} / ??</span>
-          {argProgress.clearance >= 1 && <em>RESTRICTED NODE VISIBLE</em>}{argProgress.clearance >= 2 && <em>BLACK NODE VISIBLE</em>}{argProgress.clearance >= 3 && <em>ROOT VAULT VISIBLE</em>}
+          {argProgress.clearance >= 1 && <em>RESTRICTED NODE VISIBLE</em>}{argProgress.clearance >= 2 && <em>BLACK NODE VISIBLE</em>}{argProgress.clearance >= 3 && <em>ROOT VAULT VISIBLE</em>}{argProgress.clearance >= 4 && <em>GHOSTFS MOUNTED</em>}{argProgress.clearance >= 5 && <em>MIRROR NODE VISIBLE</em>}
         </button>
         <div className="volume-console"><div className="volume-console__head"><span>ГРОМКОСТЬ</span><output htmlFor="norm-volume">{volumePercent}%</output></div><input id="norm-volume" className="volume-slider" type="range" min="0" max="100" step="1" value={volumePercent} onChange={changeVolume} onPointerUp={previewVolume} onKeyUp={previewVolume} aria-label={`Громкость интерфейса: ${volumePercent}%`} style={{'--volume':`${volumePercent}%`}}/><div className="volume-console__scale"><span>0</span><span className="volume-reference">20 // ТЕКУЩАЯ</span><span>100</span></div><small>ТЕСТОВАЯ ШКАЛА // 20% = ПРЕЖНЯЯ ГРОМКОСТЬ</small></div>
         <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>{muted?'ЗВУК: ВЫКЛ':'ЗВУК: ВКЛ'}</button>
