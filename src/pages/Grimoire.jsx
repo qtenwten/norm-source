@@ -6,24 +6,6 @@ import { audio } from '../audio'
 
 const monsters = [
   {
-    key:'poltergeist', code:'P-017', caseCode:'LM-001', name:'ПОЛТЕРГЕЙСТ', alias:'ШУМЯЩИЙ БЕЗ ЛИКА',
-    subtitle:'движет то, что забыло быть на своём месте', type:'Полтергейст', category:'Бытовая / привязанная', danger:'III', origin:'Не установлено',
-    image:'/assets/grimoire-poltergeist.webp', warning:'НЕ ВСТУПАТЬ В КОНТАКТ. ФИКСИРОВАТЬ ВСЕ ИЗМЕНЕНИЯ.',
-    source:'ПЕРВЫЙ ВЫПУСК / ЛОКАЛЬНЫЙ РЕЕСТР Н.О.Р.М.', videoId:null,
-    facts:['самопроизвольное перемещение предметов','аномальные шумы и удары','повторяемость проявлений в одной локации','следы активности остаются на аудио и видео'],
-    hotspots:[
-      {n:'01',x:30,y:27,title:'ЦЕНТР ПРОЯВЛЕНИЯ',body:'Наиболее выраженная активность сосредоточена вокруг перемещаемых предметов.'},
-      {n:'02',x:72,y:40,title:'СМЕЩЕНИЕ',body:'Положение объектов меняется без видимого физического воздействия.'},
-      {n:'03',x:25,y:67,title:'ШУМОВОЙ СЛЕД',body:'Удары и скрежет часто появляются раньше визуального проявления.'},
-      {n:'04',x:71,y:78,title:'ОСТАТОЧНЫЙ СЛЕД',body:'После эпизода часть предметов остаётся в несвойственном положении.'},
-    ],
-    materials:[
-      {id:'P-017_A1',type:'АУДИОЗАПИСЬ',meta:'00:17 / RESTORED',body:'Низкочастотный импульс и серия ударов из зоны проявления.'},
-      {id:'P-017_V2',type:'ВИДЕОФРАГМЕНТ',meta:'FIELD / OBJECT SHIFT',body:'Перемещение объекта без человека в кадре.'},
-      {id:'P-017_DOC',type:'СЛУЖЕБНАЯ ЗАМЕТКА',meta:'LM-001 / ARCHIVE',body:'Рабочая классификация из локального реестра Н.О.Р.М.'},
-    ],
-  },
-  {
     key:'river', code:'R-002', caseCode:'LM-002', name:'РЕЧНАЯ ГАДИНА', alias:'ПРИБРЕЖНАЯ СУЩНОСТЬ',
     subtitle:'появляется у воды и связана с исчезновениями людей', type:'Водная сущность', category:'Криптид / прибрежная', danger:'III', origin:'Не установлено',
     image:'/assets/grimoire-river-gadina.webp', warning:'НЕ ПРИБЛИЖАТЬСЯ К ВОДЕ В ОДИНОЧКУ В ЗОНЕ ПРОЯВЛЕНИЯ.',
@@ -214,7 +196,7 @@ export default function Grimoire() {
             <h3>ИСТОЧНИК / ДЕЛО</h3>
             <div className="grimoire-source-block">
               <b>{monster.source}</b>
-              <span>{monster.videoId ? `YOUTUBE ID: ${monster.videoId}` : 'ЛОКАЛЬНАЯ ЗАПИСЬ Н.О.Р.М.'}</span>
+              <span>YOUTUBE ID: {monster.videoId}</span>
               <div>
                 {sourceUrl && <button type="button" onClick={openSource}>ОТКРЫТЬ ВЫПУСК ↗</button>}
                 {monster.casePath && <button type="button" onClick={() => jump(monster.casePath, 'stamp')}>ОТКРЫТЬ ДЕЛО →</button>}
@@ -224,7 +206,7 @@ export default function Grimoire() {
             <button type="button" className="grimoire-reveal" onClick={reveal} aria-pressed={revealed}>{revealed ? 'СКРЫТЬ СЛУЖЕБНЫЙ СЛОЙ' : 'ПРОЯВИТЬ СЛУЖЕБНЫЙ СЛОЙ'}</button>
             <div className="grimoire-hidden-layer" aria-hidden={!revealed}>
               <small>СЛОЙ РАСПОЗНАВАНИЯ // NORM-LINGUA</small><strong>{monster.caseCode}</strong>
-              <span>СОВПАДЕНИЕ С РЕЕСТРОМ: {monster.name}</span><code>MEDIA LINK: {monster.videoId || 'LOCAL-ARCHIVE'} // VERIFIED</code>
+              <span>СОВПАДЕНИЕ С РЕЕСТРОМ: {monster.name}</span><code>MEDIA LINK: {monster.videoId} // VERIFIED</code>
             </div>
           </section>
         </div>
