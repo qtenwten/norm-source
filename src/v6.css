@@ -1,0 +1,45 @@
+/* N.O.R.M. v6 — portrait separation and brighter monochrome photography */
+
+/* Keep the archive monochrome look, but stop crushing faces and detail into black. */
+.norm-photo img{
+  filter:grayscale(1) contrast(1.01) brightness(1.42)!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+}
+.norm-photo:hover img{
+  filter:grayscale(1) contrast(1.03) brightness(1.5)!important;
+}
+
+/* Agent dossiers need especially readable faces. */
+.registry-portrait img{
+  filter:grayscale(1) contrast(1) brightness(1.5)!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+}
+.registry-card:hover .registry-portrait img,
+.agent-expanded:hover .registry-portrait img{
+  filter:grayscale(1) contrast(1.02) brightness(1.58)!important;
+}
+
+/* Reduce darkening on large monochrome photographic headers as well. */
+.city-banner{
+  filter:grayscale(1) contrast(1.02) brightness(1.12)!important;
+}
+.city-banner--button:hover{
+  filter:grayscale(1) contrast(1.04) brightness(1.18)!important;
+}
+
+/* Separate portrait crops: Sen on the left, Grig on the right. */
+.registry-card[data-agent="sen"] .registry-portrait img,
+.agent-expanded[data-agent="sen"] .registry-portrait img{
+  object-position:28% center!important;
+}
+.registry-card[data-agent="grig"] .registry-portrait img,
+.agent-expanded[data-agent="grig"] .registry-portrait img{
+  object-position:72% center!important;
+}
+
+/* Preserve detail in the tiny dashboard portraits. */
+.agent-mini-grid .norm-photo img{
+  filter:grayscale(1) contrast(1) brightness(1.5)!important;
+}
