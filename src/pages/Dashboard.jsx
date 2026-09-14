@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Panel from '../components/Panel'
 import Photo from '../components/Photo'
@@ -5,16 +6,37 @@ import { audio } from '../audio'
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const open = () => { audio.stamp(); navigate('/cases/lm-006') }
+  const [phantomSync, setPhantomSync] = useState(false)
+
+  useEffect(() => {
+    audio.dashboardOpen()
+    const show = window.setTimeout(() => {
+      setPhantomSync(true)
+      audio.terminal()
+    }, 9200)
+    const hide = window.setTimeout(() => setPhantomSync(false), 10800)
+    return () => {
+      window.clearTimeout(show)
+      window.clearTimeout(hide)
+    }
+  }, [])
+
+  const open = () => {
+    audio.stamp()
+    navigate('/cases/lm-006')
+  }
+
   return (
     <div className="page dashboard-page">
       <section className="city-banner">
-        <div><strong>МИР ПРЕЖНИЙ.<br/>НО УЖЕ НЕ ТОЛЬКО ОН.</strong><span>ДЕЛА ПРОДОЛЖАЮТСЯ.</span></div>
+        <div><strong>МИР ПРЕЖНИЙ.<br />НО УЖЕ НЕ ТОЛЬКО ОН.</strong><span>ДЕЛА ПРОДОЛЖАЮТСЯ.</span></div>
         <blockquote>«РЕАЛЬНОСТЬ ШИРЕ, ЧЕМ НАМ РАЗРЕШЕНО ПОМНИТЬ»</blockquote>
       </section>
       <Panel title="ОПЕРАТИВНАЯ СВОДКА" className="summary">
         <div className="stat-grid">
-          <div><b>142</b><span>ОТКРЫТЫХ ДЕЛ</span><em>+7</em></div>
+          <div className={phantomSync ? 'stat-anomaly' : ''}>
+            <b>{phantomSync ? '143' : '142'}</b><span>ОТКРЫТЫХ ДЕЛ</span><em>{phantomSync ? '+8' : '+7'}</em>
+          </div>
           <div><b>317</b><span>ЗАКРЫТЫХ ДЕЛ</span><em>+2</em></div>
           <div><b>89</b><span>АНОМАЛИЙ</span><em>+3</em></div>
           <div><b>12</b><span>АКТИВНЫХ АГЕНТОВ</span><em>+1</em></div>
@@ -43,6 +65,7 @@ export default function Dashboard() {
             <li><time>14:03</time> Запрос к архиву: Гримуар</li>
             <li><time>02:56</time> <span className="red">Попытка доступа к удалённым данным</span></li>
             <li className="ghost-log"><time>--:--</time> ВХОДЯЩИЙ ЗАПРОС ОТ AG-SEN. АГЕНТ ОФЛАЙН.</li>
+            {phantomSync && <li className="phantom-log"><time>--:--</time> РЕЕСТР САМОСТОЯТЕЛЬНО ДОБАВИЛ ЗАПИСЬ LM-███</li>}
           </ul>
         </Panel>
       </div>
