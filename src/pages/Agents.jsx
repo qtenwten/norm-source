@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { audio } from '../audio'
 
 const agents = [
-  { id:'sen', code:'AG-SEN', name:'СЕН', status:'АКТИВЕН', category:'active', clearance:'A-3', group:'LM', image:'/assets/host_duo_outdoor.png', position:'30%', records:['LM-001 — LM-006','FIELD MEDIA: ДОСТУПНО','ПОЛЕВАЯ ГРУППА: LM'], note:'Часть полей не синхронизирована с бумажным архивом.', actions:[['/cases/lm-006','ПОСЛЕДНЕЕ ДЕЛО'],['/archive','ПОЛЕВЫЕ МАТЕРИАЛЫ']] },
-  { id:'grig', code:'AG-GRIG', name:'ГРИГ', status:'АКТИВЕН', category:'active', clearance:'A-3', group:'LM', image:'/assets/host_duo_outdoor.png', position:'74%', records:['LM-001 — LM-006','FIELD MEDIA: ДОСТУПНО','ПОЛЕВАЯ ГРУППА: LM'], note:'Часть полей не синхронизирована с бумажным архивом.', actions:[['/cases/lm-006','ПОСЛЕДНЕЕ ДЕЛО'],['/terminal','FIELD TERMINAL']] },
+  { id:'sen', code:'AG-SEN', name:'СЕН', status:'АКТИВЕН', category:'active', clearance:'A-3', group:'LM', image:'/assets/agent-sen.webp', position:'50%', records:['LM-001 — LM-006','FIELD MEDIA: ДОСТУПНО','ПОЛЕВАЯ ГРУППА: LM'], note:'Часть полей не синхронизирована с бумажным архивом.', actions:[['/cases/lm-006','ПОСЛЕДНЕЕ ДЕЛО'],['/archive','ПОЛЕВЫЕ МАТЕРИАЛЫ']] },
+  { id:'grig', code:'AG-GRIG', name:'ГРИГ', status:'АКТИВЕН', category:'active', clearance:'A-3', group:'LM', image:'/assets/agent-grig.webp', position:'50%', records:['LM-001 — LM-006','FIELD MEDIA: ДОСТУПНО','ПОЛЕВАЯ ГРУППА: LM'], note:'Часть полей не синхронизирована с бумажным архивом.', actions:[['/cases/lm-006','ПОСЛЕДНЕЕ ДЕЛО'],['/terminal','FIELD TERMINAL']] },
   { id:'04', code:'AG-04', name:'████████', status:'ДЕАКТИВИРОВАН', category:'archive', clearance:'B-2', group:'██', records:['ПОСЛЕДНЕЕ ДЕЛО: LM-0██','ПРОТОКОЛ 17-Б','ПОЛЕВЫЕ МАТЕРИАЛЫ: ИЗЪЯТЫ'], note:'Доступ прекращён административным решением. Причина скрыта уровнем допуска.', actions:[['/archive','ЗАПРОСИТЬ АРХИВ']] },
   { id:'09', code:'AG-09', name:'██████ █.', status:'УТРАЧЕН', category:'lost', clearance:'B-4', group:'██', records:['ПОСЛЕДНИЙ СИГНАЛ: --:--:--','ПОСЛЕДНЕЕ ДЕЛО: LM-0██','СТАТУС ПОИСКА: ЗАКРЫТ'], note:'В реестре отсутствует запись о завершении службы. Файл восстановлен частично.', actions:[['/terminal','ПОИСК ПО СИГНАЛУ']] },
   { id:'13', code:'AG-13', name:'НЕТ ДАННЫХ', status:'ФАЙЛ УДАЛЁН', category:'deleted', clearance:'████', group:'██', records:['КАРТОЧКА СОТРУДНИКА: НЕДОСТУПНА','БИОМЕТРИЯ: НЕТ ДАННЫХ','СВЯЗАННЫЕ ДЕЛА: ███████'], note:'Цифровая копия была удалена до создания текущей версии NORM-OS.', actions:[['/archive','ВОССТАНОВЛЕННЫЕ ФРАГМЕНТЫ']] },
@@ -46,7 +46,7 @@ export default function Agents() {
     window.history.replaceState(null,'',`${window.location.pathname}#${agent.id}`)
     ['deleted','anomaly','lost'].includes(agent.category)?audio.glitch():audio.stamp()
   }
-  const changeFilter=(next)=>{setFilter(next);audio.click()}
+  const changeFilter=(next)=>{setFilter(next);audio.tab()}
   const follow=(path)=>{audio.transition(path.startsWith('/terminal')?'terminal':path.startsWith('/archive')?'archive':'case');window.setTimeout(()=>navigate(path),160)}
 
   return <div className="page agents-registry-page">
