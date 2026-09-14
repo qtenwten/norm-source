@@ -2,9 +2,10 @@ let ctx
 let master
 let ambienceBus
 let fxBus
-let ambienceSource
+let ambienceOscillators = []
 let ambienceLfo
 let ambienceLfoGain
+let ambienceTimer
 let enabled = false
 let initialized = false
 
@@ -30,7 +31,7 @@ function ensure() {
     compressor.attack.value = 0.004
     compressor.release.value = 0.18
 
-    ambienceBus.gain.value = 0.38
+    ambienceBus.gain.value = 0.22
     fxBus.gain.value = 0.88
     master.gain.value = enabled ? state.volume : 0
 
@@ -152,37 +153,54 @@ function oscHit({
   osc.stop(now + duration + 0.02)
 }
 
+function scheduleAmbientEvent() {
+  if (ambienceTimer) window.clearTimeout(ambienceTimer)
+  const delay = 12000 + Math.random() * 18000
+  ambienceTimer = window.setTimeout(() => {
+    if (enabled) {
+      const pan = (Math.random() - 0.5) * 0.7
+      if (Math.random() < 0.55) dataTick(pan, 0.18)
+      else relayClick(0.12)
+    }
+    scheduleAmbientEvent()
+  }, delay)
+}
+
 function startAmbience() {
   const c = ensure()
-  if (!c || ambienceSource) return
+  if (!c || ambienceOscillators.length) return
 
-  const src = c.createBufferSource()
-  const lowpass = c.createBiquadFilter()
-  const highpass = c.createBiquadFilter()
-  const gain = c.createGain()
+  // Long-session ambience intentionally avoids a continuous noise bed.
+  // Instead we keep an almost subliminal electrical transformer tone and
+  // let rare relay/data events sell the feeling of a living internal network.
+  const low = c.createOscillator()
+  const lowGain = c.createGain()
+  low.type = 'sine'
+  low.frequency.value = 31
+  lowGain.gain.value = 0.018
+  low.connect(lowGain).connect(ambienceBus)
+
+  const harmonic = c.createOscillator()
+  const harmonicGain = c.createGain()
   const lfo = c.createOscillator()
   const lfoGain = c.createGain()
-
-  src.buffer = createNoiseBuffer(4.5, true)
-  src.loop = true
-  lowpass.type = 'lowpass'
-  lowpass.frequency.value = 430
-  highpass.type = 'highpass'
-  highpass.frequency.value = 35
-  gain.gain.value = 0.055
-
+  harmonic.type = 'triangle'
+  harmonic.frequency.value = 62
+  harmonicGain.gain.value = 0.0045
   lfo.type = 'sine'
-  lfo.frequency.value = 0.075
-  lfoGain.gain.value = 0.012
-  lfo.connect(lfoGain).connect(gain.gain)
+  lfo.frequency.value = 0.045
+  lfoGain.gain.value = 0.0015
+  lfo.connect(lfoGain).connect(harmonicGain.gain)
+  harmonic.connect(harmonicGain).connect(ambienceBus)
 
-  src.connect(highpass).connect(lowpass).connect(gain).connect(ambienceBus)
-  src.start()
+  low.start()
+  harmonic.start()
   lfo.start()
 
-  ambienceSource = src
+  ambienceOscillators = [low, harmonic]
   ambienceLfo = lfo
   ambienceLfoGain = lfoGain
+  scheduleAmbientEvent()
 }
 
 function relayClick(strength = 1) {
@@ -191,9 +209,9 @@ function relayClick(strength = 1) {
   oscHit({ frequency: 96, endFrequency: 64, duration: 0.07, gain: 0.025 * strength, type: 'sine' })
 }
 
-function dataTick(pan = 0) {
-  filteredNoise({ duration: 0.025, gain: 0.023, frequency: 3800 + Math.random() * 1500, type: 'bandpass', q: 5, pan })
-  oscHit({ frequency: 920 + Math.random() * 180, endFrequency: 680, duration: 0.032, gain: 0.0075, type: 'sine', pan })
+function dataTick(pan = 0, strength = 1) {
+  filteredNoise({ duration: 0.025, gain: 0.023 * strength, frequency: 3800 + Math.random() * 1500, type: 'bandpass', q: 5, pan })
+  oscHit({ frequency: 920 + Math.random() * 180, endFrequency: 680, duration: 0.032, gain: 0.0075 * strength, type: 'sine', pan })
 }
 
 function bootSequence() {
