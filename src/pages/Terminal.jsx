@@ -29,6 +29,11 @@ export default function Terminal() {
     let index = 0
     const timers = []
 
+    const schedule = (fn, delay) => {
+      const timer = window.setTimeout(fn, delay)
+      timers.push(timer)
+    }
+
     const pushNext = () => {
       if (index >= sequence.length) {
         setScanState('complete')
@@ -43,11 +48,11 @@ export default function Terminal() {
       else audio.terminal()
 
       index += 1
-      const timer = window.setTimeout(pushNext, index >= 8 ? 560 : 390)
-      timers.push(timer)
+      schedule(pushNext, index >= 8 ? 560 : 390)
     }
 
-    pushNext()
+    // Deferring the first line also keeps React StrictMode from duplicating it in dev.
+    schedule(pushNext, 80)
     return () => timers.forEach(window.clearTimeout)
   }, [startedAt])
 
