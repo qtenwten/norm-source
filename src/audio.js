@@ -9,17 +9,19 @@ let initialized = false
 let currentScene = 'dashboard'
 
 const state = {
-  volume: 0.72,
+  // UI requested to feel roughly twice as loud as the previous pass.
+  // Most of the lift lives on the FX bus so ambience does not become fatiguing.
+  volume: 1,
 }
 
 const sceneProfiles = {
-  dashboard: { low: 31, harmonic: 62, lowGain: 0.012, harmonicGain: 0.0032, eventMin: 18000, eventSpread: 18000 },
-  case: { low: 29, harmonic: 58, lowGain: 0.011, harmonicGain: 0.0028, eventMin: 21000, eventSpread: 19000 },
-  agents: { low: 32, harmonic: 64, lowGain: 0.01, harmonicGain: 0.0026, eventMin: 22000, eventSpread: 19000 },
-  archive: { low: 28, harmonic: 56, lowGain: 0.0105, harmonicGain: 0.0026, eventMin: 24000, eventSpread: 21000 },
-  report: { low: 34, harmonic: 68, lowGain: 0.0105, harmonicGain: 0.0028, eventMin: 19000, eventSpread: 17000 },
-  grimoire: { low: 24, harmonic: 48, lowGain: 0.008, harmonicGain: 0.0018, eventMin: 30000, eventSpread: 26000 },
-  terminal: { low: 38, harmonic: 76, lowGain: 0.014, harmonicGain: 0.0042, eventMin: 9000, eventSpread: 9000 },
+  dashboard: { low: 31, harmonic: 62, lowGain: 0.016, harmonicGain: 0.0044, eventMin: 15000, eventSpread: 16000 },
+  case: { low: 29, harmonic: 58, lowGain: 0.015, harmonicGain: 0.004, eventMin: 17000, eventSpread: 17000 },
+  agents: { low: 32, harmonic: 64, lowGain: 0.014, harmonicGain: 0.0038, eventMin: 18000, eventSpread: 17000 },
+  archive: { low: 28, harmonic: 56, lowGain: 0.015, harmonicGain: 0.0038, eventMin: 19000, eventSpread: 18000 },
+  report: { low: 34, harmonic: 68, lowGain: 0.015, harmonicGain: 0.004, eventMin: 16000, eventSpread: 15000 },
+  grimoire: { low: 24, harmonic: 48, lowGain: 0.012, harmonicGain: 0.0028, eventMin: 22000, eventSpread: 21000 },
+  terminal: { low: 38, harmonic: 76, lowGain: 0.019, harmonicGain: 0.0058, eventMin: 7000, eventSpread: 8000 },
 }
 
 function ensure() {
@@ -34,14 +36,16 @@ function ensure() {
     fxBus = ctx.createGain()
 
     const compressor = ctx.createDynamicsCompressor()
-    compressor.threshold.value = -20
-    compressor.knee.value = 18
-    compressor.ratio.value = 4
-    compressor.attack.value = 0.004
-    compressor.release.value = 0.18
+    compressor.threshold.value = -10
+    compressor.knee.value = 14
+    compressor.ratio.value = 2.6
+    compressor.attack.value = 0.003
+    compressor.release.value = 0.16
 
-    ambienceBus.gain.value = 0.2
-    fxBus.gain.value = 0.86
+    // Previous pass: ambience .20 / FX .86 / master .94.
+    // This pass deliberately makes interactions substantially more present.
+    ambienceBus.gain.value = 0.32
+    fxBus.gain.value = 1.62
     master.gain.value = enabled ? state.volume : 0
 
     ambienceBus.connect(master)
@@ -188,6 +192,70 @@ function archiveClack(strength = 1) {
   oscHit({ frequency: 84, endFrequency: 52, duration: 0.17, gain: 0.022 * strength, type: 'triangle', delay: 0.025 })
 }
 
+function mechanicalToggle(strength = 1) {
+  filteredNoise({ duration: 0.018, gain: 0.07 * strength, frequency: 2700, type: 'highpass', q: 1.2, pan: -0.08 })
+  oscHit({ frequency: 148, endFrequency: 104, duration: 0.07, gain: 0.028 * strength, type: 'triangle' })
+  window.setTimeout(() => relayClick(0.24 * strength), 62)
+}
+
+function tabSnap(strength = 1) {
+  dataTick(-0.12, 0.42 * strength)
+  oscHit({ frequency: 330, endFrequency: 248, duration: 0.065, gain: 0.018 * strength, type: 'triangle', delay: 0.012 })
+  filteredNoise({ duration: 0.035, gain: 0.022 * strength, frequency: 1800, type: 'bandpass', q: 3, delay: 0.02 })
+}
+
+function cameraShutter(strength = 1) {
+  filteredNoise({ duration: 0.022, gain: 0.095 * strength, frequency: 3600, type: 'highpass', q: 0.7, pan: -0.12 })
+  relayClick(0.42 * strength)
+  window.setTimeout(() => filteredNoise({ duration: 0.032, gain: 0.055 * strength, frequency: 2500, type: 'highpass', q: 1.1, pan: 0.14 }), 78)
+}
+
+function drawerSlide(strength = 1) {
+  filteredNoise({ duration: 0.18, gain: 0.038 * strength, frequency: 650, type: 'bandpass', q: 0.6, brown: true, pan: -0.18 })
+  oscHit({ frequency: 62, endFrequency: 45, duration: 0.2, gain: 0.028 * strength, type: 'triangle' })
+  window.setTimeout(() => relayClick(0.46 * strength), 145)
+}
+
+function radioBurst(strength = 1) {
+  filteredNoise({ duration: 0.13, gain: 0.05 * strength, frequency: 2400, type: 'bandpass', q: 1.8, pan: -0.35 })
+  dataTick(0.2, 0.55 * strength)
+  window.setTimeout(() => dataTick(-0.18, 0.42 * strength), 70)
+  window.setTimeout(() => filteredNoise({ duration: 0.08, gain: 0.035 * strength, frequency: 1200, type: 'bandpass', q: 2.4, pan: 0.28 }), 120)
+}
+
+function confirmPulse(strength = 1) {
+  relayClick(0.42 * strength)
+  oscHit({ frequency: 196, endFrequency: 247, duration: 0.15, gain: 0.026 * strength, type: 'sine', delay: 0.025 })
+  oscHit({ frequency: 294, endFrequency: 370, duration: 0.18, gain: 0.018 * strength, type: 'sine', delay: 0.08 })
+}
+
+function denyPulse(strength = 1) {
+  oscHit({ frequency: 128, endFrequency: 70, duration: 0.2, gain: 0.038 * strength, type: 'triangle' })
+  filteredNoise({ duration: 0.08, gain: 0.04 * strength, frequency: 820, type: 'bandpass', q: 2.8, delay: 0.025 })
+  window.setTimeout(() => relayClick(0.32 * strength), 90)
+}
+
+function warningPulse(strength = 1) {
+  oscHit({ frequency: 112, endFrequency: 88, duration: 0.16, gain: 0.035 * strength, type: 'triangle' })
+  window.setTimeout(() => oscHit({ frequency: 112, endFrequency: 82, duration: 0.18, gain: 0.032 * strength, type: 'triangle' }), 150)
+  filteredNoise({ duration: 0.05, gain: 0.03 * strength, frequency: 1400, type: 'bandpass', q: 2 })
+}
+
+function modalThump(strength = 1) {
+  oscHit({ frequency: 72, endFrequency: 42, duration: 0.28, gain: 0.044 * strength, type: 'sine' })
+  filteredNoise({ duration: 0.07, gain: 0.035 * strength, frequency: 420, type: 'bandpass', q: 1.1, delay: 0.018, brown: true })
+}
+
+function entityPulse(strength = 1) {
+  oscHit({ frequency: 54, endFrequency: 29, duration: 0.46, gain: 0.052 * strength, type: 'sine' })
+  filteredNoise({ duration: 0.14, gain: 0.034 * strength, frequency: 980, type: 'bandpass', q: 3.6, delay: 0.06, pan: -0.25 })
+  filteredNoise({ duration: 0.1, gain: 0.026 * strength, frequency: 2100, type: 'bandpass', q: 5, delay: 0.13, pan: 0.32 })
+}
+
+function hoverTick(strength = 1) {
+  dataTick((Math.random() - 0.5) * 0.18, 0.16 * strength)
+}
+
 function scheduleAmbientEvent() {
   if (ambienceTimer) window.clearTimeout(ambienceTimer)
   const profile = sceneProfiles[currentScene] || sceneProfiles.dashboard
@@ -197,17 +265,19 @@ function scheduleAmbientEvent() {
     if (enabled) {
       const pan = (Math.random() - 0.5) * 0.7
       if (currentScene === 'terminal') {
-        dataTick(pan, 0.16)
-        if (Math.random() < 0.3) window.setTimeout(() => dataTick(-pan, 0.11), 120)
+        radioBurst(0.12)
+        if (Math.random() < 0.36) window.setTimeout(() => dataTick(-pan, 0.14), 150)
       } else if (currentScene === 'grimoire') {
-        paperFlick(0.16)
-        oscHit({ frequency: 43, endFrequency: 36, duration: 0.42, gain: 0.006, type: 'sine' })
+        paperFlick(0.2)
+        oscHit({ frequency: 43, endFrequency: 36, duration: 0.42, gain: 0.008, type: 'sine' })
       } else if (currentScene === 'archive') {
-        archiveClack(0.18)
+        drawerSlide(0.12)
+      } else if (currentScene === 'case' && Math.random() < 0.36) {
+        cameraShutter(0.08)
       } else if (Math.random() < 0.55) {
-        dataTick(pan, 0.12)
+        dataTick(pan, 0.15)
       } else {
-        relayClick(0.09)
+        relayClick(0.12)
       }
     }
     scheduleAmbientEvent()
@@ -229,7 +299,7 @@ function startAmbience() {
   harmonic.type = 'triangle'
   lfo.type = 'sine'
   lfo.frequency.value = 0.04
-  lfoGain.gain.value = 0.0011
+  lfoGain.gain.value = 0.0013
   lfo.connect(lfoGain).connect(harmonicGain.gain)
   low.connect(lowGain).connect(ambienceBus)
   harmonic.connect(harmonicGain).connect(ambienceBus)
@@ -256,37 +326,40 @@ function applyScene(name, immediate = false) {
 }
 
 function bootSequence() {
-  relayClick(0.95)
-  oscHit({ frequency: 52, endFrequency: 38, duration: 0.62, gain: 0.075, type: 'sine' })
-  window.setTimeout(() => relayClick(0.55), 175)
-  window.setTimeout(() => dataTick(-0.18, 0.7), 315)
-  window.setTimeout(() => dataTick(0.22, 0.65), 390)
+  relayClick(1.15)
+  oscHit({ frequency: 52, endFrequency: 38, duration: 0.62, gain: 0.09, type: 'sine' })
+  window.setTimeout(() => relayClick(0.72), 175)
+  window.setTimeout(() => dataTick(-0.18, 0.9), 315)
+  window.setTimeout(() => dataTick(0.22, 0.84), 390)
+  window.setTimeout(() => confirmPulse(0.55), 520)
 }
 
 function grantSequence() {
-  relayClick(0.6)
-  oscHit({ frequency: 182, endFrequency: 230, duration: 0.22, gain: 0.018, type: 'sine' })
-  oscHit({ frequency: 274, endFrequency: 344, duration: 0.28, gain: 0.011, type: 'sine', delay: 0.055 })
+  relayClick(0.82)
+  oscHit({ frequency: 182, endFrequency: 230, duration: 0.22, gain: 0.026, type: 'sine' })
+  oscHit({ frequency: 274, endFrequency: 344, duration: 0.28, gain: 0.018, type: 'sine', delay: 0.055 })
+  window.setTimeout(() => confirmPulse(0.62), 170)
 }
 
 function dashboardTransition() {
-  archiveClack(0.7)
-  oscHit({ frequency: 78, endFrequency: 51, duration: 0.26, gain: 0.033, type: 'sine' })
-  window.setTimeout(() => dataTick(0.15, 0.45), 140)
+  archiveClack(0.95)
+  oscHit({ frequency: 78, endFrequency: 51, duration: 0.26, gain: 0.045, type: 'sine' })
+  window.setTimeout(() => dataTick(0.15, 0.62), 140)
 }
 
 function grimoireTransition() {
-  paperFlick(0.95)
-  oscHit({ frequency: 49, endFrequency: 34, duration: 0.52, gain: 0.026, type: 'sine' })
-  window.setTimeout(() => paperFlick(0.48), 170)
+  paperFlick(1.2)
+  oscHit({ frequency: 49, endFrequency: 34, duration: 0.52, gain: 0.036, type: 'sine' })
+  window.setTimeout(() => paperFlick(0.62), 170)
 }
 
 function terminalTransition() {
-  relayClick(0.85)
-  oscHit({ frequency: 92, endFrequency: 46, duration: 0.34, gain: 0.042, type: 'sine' })
-  window.setTimeout(() => dataTick(-0.35, 0.8), 85)
-  window.setTimeout(() => dataTick(0.25, 0.72), 150)
-  window.setTimeout(() => dataTick(-0.05, 0.6), 205)
+  radioBurst(0.92)
+  relayClick(1.02)
+  oscHit({ frequency: 92, endFrequency: 46, duration: 0.34, gain: 0.055, type: 'sine' })
+  window.setTimeout(() => dataTick(-0.35, 1), 85)
+  window.setTimeout(() => dataTick(0.25, 0.9), 150)
+  window.setTimeout(() => dataTick(-0.05, 0.74), 205)
 }
 
 export const audio = {
@@ -310,7 +383,7 @@ export const audio = {
   },
 
   setVolume(value) {
-    state.volume = Math.min(1, Math.max(0.05, Number(value) || 0.72))
+    state.volume = Math.min(1.25, Math.max(0.05, Number(value) || 1))
     if (enabled) rampMaster(state.volume, 0.06)
   },
 
@@ -322,9 +395,11 @@ export const audio = {
     if (name === 'grimoire') grimoireTransition()
     else if (name === 'terminal') terminalTransition()
     else if (name === 'dashboard') dashboardTransition()
+    else if (name === 'archive') drawerSlide(0.9)
+    else if (name === 'case') cameraShutter(0.6)
     else {
-      archiveClack(0.55)
-      dataTick((Math.random() - 0.5) * 0.3, 0.38)
+      archiveClack(0.8)
+      dataTick((Math.random() - 0.5) * 0.3, 0.55)
     }
   },
 
@@ -337,61 +412,105 @@ export const audio = {
   },
 
   click() {
-    relayClick(0.28)
+    relayClick(0.48)
+  },
+
+  hover() {
+    hoverTick(1)
   },
 
   key() {
-    dataTick((Math.random() - 0.5) * 0.22, 0.16)
+    dataTick((Math.random() - 0.5) * 0.22, 0.3)
+  },
+
+  tab() {
+    tabSnap(1)
+  },
+
+  toggleSwitch() {
+    mechanicalToggle(1)
+  },
+
+  photo() {
+    cameraShutter(0.85)
+  },
+
+  drawer() {
+    drawerSlide(0.9)
+  },
+
+  radio() {
+    radioBurst(0.85)
+  },
+
+  confirm() {
+    confirmPulse(1)
+  },
+
+  deny() {
+    denyPulse(1)
+  },
+
+  warning() {
+    warningPulse(1)
+  },
+
+  modal() {
+    modalThump(1)
+  },
+
+  entity() {
+    entityPulse(1)
   },
 
   command() {
-    relayClick(0.44)
-    window.setTimeout(() => dataTick(0.12, 0.5), 55)
+    relayClick(0.7)
+    window.setTimeout(() => dataTick(0.12, 0.75), 55)
   },
 
   error() {
-    oscHit({ frequency: 118, endFrequency: 74, duration: 0.18, gain: 0.025, type: 'triangle' })
-    window.setTimeout(() => relayClick(0.18), 50)
+    denyPulse(1.05)
   },
 
   scan() {
-    dataTick(-0.45, 0.6)
-    window.setTimeout(() => dataTick(-0.1, 0.5), 90)
-    window.setTimeout(() => dataTick(0.26, 0.55), 180)
-    window.setTimeout(() => oscHit({ frequency: 68, endFrequency: 48, duration: 0.38, gain: 0.021, type: 'sine' }), 120)
+    radioBurst(0.72)
+    dataTick(-0.45, 0.9)
+    window.setTimeout(() => dataTick(-0.1, 0.78), 90)
+    window.setTimeout(() => dataTick(0.26, 0.84), 180)
+    window.setTimeout(() => oscHit({ frequency: 68, endFrequency: 48, duration: 0.38, gain: 0.032, type: 'sine' }), 120)
   },
 
   archive() {
-    archiveClack(0.82)
-    window.setTimeout(() => paperFlick(0.3), 60)
+    drawerSlide(0.82)
+    window.setTimeout(() => paperFlick(0.46), 80)
   },
 
   nav() {
-    archiveClack(0.5)
+    archiveClack(0.78)
   },
 
   stamp() {
-    filteredNoise({ duration: 0.055, gain: 0.078, frequency: 1050, type: 'bandpass', q: 0.55 })
-    oscHit({ frequency: 70, endFrequency: 38, duration: 0.22, gain: 0.07, type: 'sine' })
+    filteredNoise({ duration: 0.055, gain: 0.105, frequency: 1050, type: 'bandpass', q: 0.55 })
+    oscHit({ frequency: 70, endFrequency: 38, duration: 0.22, gain: 0.09, type: 'sine' })
   },
 
   paper() {
-    paperFlick(0.7)
+    paperFlick(1.05)
   },
 
   glitch() {
-    filteredNoise({ duration: 0.038, gain: 0.058, frequency: 3900, type: 'highpass', pan: -0.55 })
-    filteredNoise({ duration: 0.028, gain: 0.048, frequency: 1450, type: 'bandpass', q: 4.5, delay: 0.041, pan: 0.5 })
-    oscHit({ frequency: 138, endFrequency: 54, duration: 0.15, gain: 0.028, type: 'sine' })
+    filteredNoise({ duration: 0.038, gain: 0.082, frequency: 3900, type: 'highpass', pan: -0.55 })
+    filteredNoise({ duration: 0.028, gain: 0.068, frequency: 1450, type: 'bandpass', q: 4.5, delay: 0.041, pan: 0.5 })
+    oscHit({ frequency: 138, endFrequency: 54, duration: 0.15, gain: 0.04, type: 'sine' })
   },
 
   terminal() {
-    dataTick((Math.random() - 0.5) * 0.45, 0.72)
+    dataTick((Math.random() - 0.5) * 0.45, 1)
   },
 
   terminalOpen() {
     terminalTransition()
-    window.setTimeout(() => oscHit({ frequency: 116, endFrequency: 82, duration: 0.48, gain: 0.018, type: 'sine' }), 210)
+    window.setTimeout(() => oscHit({ frequency: 116, endFrequency: 82, duration: 0.48, gain: 0.028, type: 'sine' }), 210)
   },
 
   grimoireOpen() {
@@ -403,9 +522,10 @@ export const audio = {
   },
 
   systemReply() {
-    oscHit({ frequency: 44, endFrequency: 27, duration: 0.72, gain: 0.055, type: 'sine' })
-    window.setTimeout(() => relayClick(0.26), 90)
-    window.setTimeout(() => dataTick(-0.25, 0.45), 240)
+    entityPulse(0.82)
+    oscHit({ frequency: 44, endFrequency: 27, duration: 0.72, gain: 0.074, type: 'sine' })
+    window.setTimeout(() => relayClick(0.42), 90)
+    window.setTimeout(() => dataTick(-0.25, 0.66), 240)
   },
 
   boot() {
