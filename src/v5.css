@@ -33,9 +33,24 @@ body{color:#e4e9e5;text-rendering:optimizeLegibility}
 .footerline{font-size:11px;color:#8e9a93}
 
 /* Lift photography without losing the monochrome archive treatment. */
-.norm-photo img{filter:grayscale(1) contrast(1.12) brightness(.96)!important}
-.norm-photo:hover img{filter:grayscale(1) contrast(1.16) brightness(1.02)!important}
-.city-banner{filter:grayscale(1) contrast(1.1) brightness(.9)!important}
+.norm-photo{overflow:hidden}
+.norm-photo img{
+  filter:grayscale(1) contrast(1.06) brightness(1.2)!important;
+  mix-blend-mode:normal!important;
+  opacity:.98;
+}
+.norm-photo:hover img{filter:grayscale(1) contrast(1.08) brightness(1.27)!important}
+.registry-portrait{overflow:hidden}
+.registry-portrait img{
+  filter:grayscale(1) contrast(1.06) brightness(1.2)!important;
+  mix-blend-mode:normal!important;
+  opacity:.98;
+}
+.registry-card:hover .registry-portrait img,.agent-expanded:hover .registry-portrait img{
+  filter:grayscale(1) contrast(1.08) brightness(1.25)!important;
+}
+.city-banner{filter:grayscale(1) contrast(1.06) brightness(.98)!important}
+.city-banner--button:hover{filter:grayscale(1) contrast(1.08) brightness(1.04)!important}
 
 /* Readability pass for the smallest interface copy. */
 .system-log ul,.timeline{font-size:12.5px;line-height:1.75}
