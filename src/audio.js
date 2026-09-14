@@ -9,8 +9,7 @@ let initialized = false
 let currentScene = 'dashboard'
 
 const state = {
-  // UI requested to feel roughly twice as loud as the previous pass.
-  // Most of the lift lives on the FX bus so ambience does not become fatiguing.
+  // Gain 1.0 is the current/reference loudness. The UI maps it to 20%.
   volume: 1,
 }
 
@@ -383,8 +382,12 @@ export const audio = {
   },
 
   setVolume(value) {
-    state.volume = Math.min(1.25, Math.max(0.05, Number(value) || 1))
+    state.volume = Math.min(5, Math.max(0.0001, Number(value) || 1))
     if (enabled) rampMaster(state.volume, 0.06)
+  },
+
+  get volume() {
+    return state.volume
   },
 
   scene(name) {
