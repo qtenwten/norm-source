@@ -85,10 +85,10 @@ export default function Grimoire() {
       <aside className="grimoire-side grimoire-side--v4">
         <Panel title="ПОЛЕВЫЕ НАБЛЮДЕНИЯ">
           <button className="observation observation--button" type="button" onClick={() => jump('/agents#sen', 'click')}>
-            <Photo src="/assets/host_duo_closeup.png" alt="Сен" /><b>AG-SEN</b><p>Открыть служебную карточку агента.</p>
+            <Photo src="/assets/agent-sen.webp" alt="Сен" /><b>AG-SEN</b><p>Открыть служебную карточку агента.</p>
           </button>
           <button className="observation observation--button" type="button" onClick={() => jump('/agents#grig', 'click')}>
-            <Photo src="/assets/host_duo_closeup.png" alt="Григ" /><b>AG-GRIG</b><p>Открыть служебную карточку агента.</p>
+            <Photo src="/assets/agent-grig.webp" alt="Григ" /><b>AG-GRIG</b><p>Открыть служебную карточку агента.</p>
           </button>
         </Panel>
 
