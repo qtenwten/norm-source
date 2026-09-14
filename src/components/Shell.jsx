@@ -1,6 +1,7 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { audio } from '../audio'
+import { getArgState, subscribeArg } from '../arg'
 import NormEmblem from './NormEmblem'
 
 const links = [
@@ -99,6 +100,7 @@ export default function Shell({ children, onLogout }) {
   const [muted, setMuted] = useState(!audio.enabled)
   const [volumePercent, setVolumePercent] = useState(getStoredVolumePercent)
   const [loggingOut, setLoggingOut] = useState(false)
+  const [argProgress, setArgProgress] = useState(getArgState)
   const timersRef = useRef([])
   const lastHoverRef = useRef({ control: null, at: 0 })
   const operator = useMemo(() => sessionStorage.getItem('norm-operator') || 'GUEST-27491', [])
@@ -107,6 +109,8 @@ export default function Shell({ children, onLogout }) {
     [location.pathname],
   )
   const routeTone = getRouteTone(location.pathname)
+
+  useEffect(() => subscribeArg(setArgProgress), [])
 
   useEffect(() => {
     audio.scene(routeTone)
@@ -218,32 +222,23 @@ export default function Shell({ children, onLogout }) {
   }
 
   return (
-    <div className={`norm-shell norm-shell--${routeTone}`} data-route={routeTone}>
+    <div className={`norm-shell norm-shell--${routeTone}`} data-route={routeTone} data-clearance={argProgress.clearance}>
       <div className="grain" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
-      <div
-        className={`route-transition route-transition--${transitionKind} ${transition ? 'is-active' : ''}`}
-        aria-hidden="true"
-      >
+      <div className={`route-transition route-transition--${transitionKind} ${transition ? 'is-active' : ''}`} aria-hidden="true">
         <div className="route-transition__beam" />
         <div className="route-transition__glyphs">NORM // 17 // LM // 03 // ACCESS // INTERNAL</div>
-        <div className="route-transition__label">
-          <small>NORM-OS // ROUTE HANDOFF</small>
-          <strong>{transitionText}</strong>
-        </div>
+        <div className="route-transition__label"><small>NORM-OS // ROUTE HANDOFF</small><strong>{transitionText}</strong></div>
       </div>
       <header className="topbar">
         <button type="button" className="brand brand--emblem" onClick={() => go('/')} aria-label="Н.О.Р.М. — на сводку">
           <NormEmblem compact />
-          <span className="brand__copy">
-            <span className="brand__logo">Н.О.Р.М.</span>
-            <span className="brand__sub">Независимый Отдел Расследований Мистики</span>
-          </span>
+          <span className="brand__copy"><span className="brand__logo">Н.О.Р.М.</span><span className="brand__sub">Независимый Отдел Расследований Мистики</span></span>
         </button>
         <div className="topbar__motto">ТАМ, ГДЕ ЗАКАНЧИВАЮТСЯ ОБЪЯСНЕНИЯ — НАЧИНАЕМ МЫ.</div>
         <div className="session">
           <span>SESSION: {operator}</span>
-          <span>ACCESS LEVEL: 0</span>
+          <span className={argProgress.clearance >= 2 ? 'access-elevated' : ''}>ACCESS LEVEL: A-{argProgress.clearance}</span>
           <span>СЕТЬ: ВНУТРЕННЯЯ <i className="status-dot" /></span>
         </div>
       </header>
@@ -251,46 +246,27 @@ export default function Shell({ children, onLogout }) {
         <div className="sidebar-emblem" aria-hidden="true"><NormEmblem compact /></div>
         <nav>
           {links.map(([to, label]) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === '/'}
-              onClick={(event) => {
-                event.preventDefault()
-                go(to)
-              }}
-            >
+            <NavLink key={to} to={to} end={to === '/'} onClick={(event) => { event.preventDefault(); go(to) }}>
               <span className="nav-glyph">⌁</span>{label}
             </NavLink>
           ))}
         </nav>
         <button className="report-button" type="button" onClick={() => go('/report')}>⚠ СООБЩИТЬ<br />ОБ АНОМАЛИИ</button>
         <div className="sidebar__tagline">НАБЛЮДАЕМ.<br />ФИКСИРУЕМ.<br />РАЗБИРАЕМСЯ.</div>
+        <button type="button" className={`arg-clearance-card ${argProgress.clearance >= 2 ? 'is-anomalous' : ''}`} onClick={() => go('/terminal')}>
+          <small>ДОПУСК СЕССИИ</small><strong>A-{argProgress.clearance}</strong><span>ОБНАРУЖЕНО: {argProgress.discoveries.length} / ??</span>
+          {argProgress.clearance >= 1 && <em>RESTRICTED NODE VISIBLE</em>}
+          {argProgress.clearance >= 2 && <em>BLACK NODE VISIBLE</em>}
+        </button>
         <div className="volume-console">
           <div className="volume-console__head"><span>ГРОМКОСТЬ</span><output htmlFor="norm-volume">{volumePercent}%</output></div>
-          <input
-            id="norm-volume"
-            className="volume-slider"
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={volumePercent}
-            onChange={changeVolume}
-            onPointerUp={previewVolume}
-            onKeyUp={previewVolume}
-            aria-label={`Громкость интерфейса: ${volumePercent}%`}
-            style={{ '--volume': `${volumePercent}%` }}
-          />
+          <input id="norm-volume" className="volume-slider" type="range" min="0" max="100" step="1" value={volumePercent} onChange={changeVolume} onPointerUp={previewVolume} onKeyUp={previewVolume} aria-label={`Громкость интерфейса: ${volumePercent}%`} style={{ '--volume': `${volumePercent}%` }} />
           <div className="volume-console__scale"><span>0</span><span className="volume-reference">20 // ТЕКУЩАЯ</span><span>100</span></div>
           <small>ТЕСТОВАЯ ШКАЛА // 20% = ПРЕЖНЯЯ ГРОМКОСТЬ</small>
         </div>
-        <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>
-          {muted ? 'ЗВУК: ВЫКЛ' : 'ЗВУК: ВКЛ'}
-        </button>
+        <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>{muted ? 'ЗВУК: ВЫКЛ' : 'ЗВУК: ВКЛ'}</button>
         <button className="logout-button" type="button" data-sound="warning" onClick={logout} disabled={loggingOut}>
-          <span>{loggingOut ? 'ЗАВЕРШЕНИЕ СЕССИИ…' : 'ВЫЙТИ ИЗ СИСТЕМЫ'}</span>
-          <small>СБРОСИТЬ ДОПУСК И ВЕРНУТЬСЯ К ВХОДУ</small>
+          <span>{loggingOut ? 'ЗАВЕРШЕНИЕ СЕССИИ…' : 'ВЫЙТИ ИЗ СИСТЕМЫ'}</span><small>СБРОСИТЬ ДОПУСК И ВЕРНУТЬСЯ К ВХОДУ</small>
         </button>
       </aside>
       <main className="main-area" key={location.pathname}>
