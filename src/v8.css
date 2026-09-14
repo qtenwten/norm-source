@@ -18,7 +18,7 @@ img{
   pointer-events:none;
 }
 
-/* Six verified/current N.O.R.M. records live in one grimoire instead of one static page. */
+/* Five currently verified YouTube entities live in one grimoire instead of one static page. */
 .grimoire-page--registry{
   display:grid;
   grid-template-columns:minmax(0,1fr) minmax(320px,350px);
@@ -37,7 +37,7 @@ img{
 
 .grimoire-record-strip{
   display:grid;
-  grid-template-columns:repeat(6,minmax(128px,1fr));
+  grid-template-columns:repeat(5,minmax(128px,1fr));
   gap:6px;
   padding:7px;
   border:1px solid #3e5048;
@@ -309,7 +309,7 @@ img{
     grid-template-areas:"crumb" "records" "stage" "side";
   }
   .grimoire-page--registry .grimoire-side--v4{position:static!important}
-  .grimoire-record-strip{grid-template-columns:repeat(6,minmax(150px,1fr))}
+  .grimoire-record-strip{grid-template-columns:repeat(5,minmax(150px,1fr))}
 }
 
 @media(max-width:900px){
@@ -320,7 +320,7 @@ img{
 }
 
 @media(max-width:620px){
-  .grimoire-record-strip{grid-template-columns:repeat(6,138px)}
+  .grimoire-record-strip{grid-template-columns:repeat(5,138px)}
   .grimoire-record-strip button{min-height:54px}
   .grimoire-monster-page h1{font-size:30px}
   .monster-plate{height:410px}
