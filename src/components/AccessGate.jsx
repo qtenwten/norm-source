@@ -33,6 +33,10 @@ export default function AccessGate({ onEnter }) {
     timersRef.current.push(timer)
   }
 
+  const primeAudio = () => {
+    if (!audio.enabled) audio.enable()
+  }
+
   const authenticate = (event) => {
     event.preventDefault()
     if (phase !== 'idle') return
@@ -43,7 +47,8 @@ export default function AccessGate({ onEnter }) {
     setPhase('auth')
     setAuthStep(0)
     setMessage(AUTH_STEPS[0][1])
-    audio.enable()
+    if (!audio.enabled) audio.enable()
+    else audio.command()
 
     AUTH_STEPS.slice(1).forEach(([nextPhase, text], index) => {
       schedule(() => {
@@ -79,7 +84,7 @@ export default function AccessGate({ onEnter }) {
         </div>
 
         {phase === 'idle' ? (
-          <form className="access-login__form" onSubmit={authenticate} onPointerDown={() => audio.arm()} autoComplete="off">
+          <form className="access-login__form" onSubmit={authenticate} onPointerDown={primeAudio} autoComplete="off">
             <div className="access-login__caption">
               <span>УЗЕЛ ДОПУСКА // 04</span>
               <b>ИДЕНТИФИКАЦИЯ ОПЕРАТОРА</b>
