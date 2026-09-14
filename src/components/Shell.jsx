@@ -90,7 +90,7 @@ function playControlSound(control) {
   audio.click()
 }
 
-export default function Shell({ children }) {
+export default function Shell({ children, onLogout }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [transition, setTransition] = useState(false)
@@ -98,6 +98,7 @@ export default function Shell({ children }) {
   const [transitionKind, setTransitionKind] = useState('dashboard')
   const [muted, setMuted] = useState(!audio.enabled)
   const [volumePercent, setVolumePercent] = useState(getStoredVolumePercent)
+  const [loggingOut, setLoggingOut] = useState(false)
   const timersRef = useRef([])
   const lastHoverRef = useRef({ control: null, at: 0 })
   const operator = useMemo(() => sessionStorage.getItem('norm-operator') || 'GUEST-27491', [])
@@ -158,7 +159,7 @@ export default function Shell({ children }) {
   }, [])
 
   const go = (to) => {
-    if (location.pathname === to || transition) return
+    if (location.pathname === to || transition || loggingOut) return
 
     const nextTone = getRouteTone(to)
     const timing = getTransitionDuration(nextTone)
@@ -205,6 +206,15 @@ export default function Shell({ children }) {
 
   const previewVolume = () => {
     if (!muted && volumePercent > 0) audio.confirm()
+  }
+
+  const logout = () => {
+    if (loggingOut) return
+    setLoggingOut(true)
+    setTransitionKind('terminal')
+    setTransitionText('ЗАВЕРШЕНИЕ СЕССИИ // ОЧИСТКА ДОПУСКА')
+    setTransition(true)
+    timersRef.current.push(window.setTimeout(() => onLogout?.(), 520))
   }
 
   return (
@@ -277,6 +287,10 @@ export default function Shell({ children }) {
         </div>
         <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>
           {muted ? 'ЗВУК: ВЫКЛ' : 'ЗВУК: ВКЛ'}
+        </button>
+        <button className="logout-button" type="button" data-sound="warning" onClick={logout} disabled={loggingOut}>
+          <span>{loggingOut ? 'ЗАВЕРШЕНИЕ СЕССИИ…' : 'ВЫЙТИ ИЗ СИСТЕМЫ'}</span>
+          <small>СБРОСИТЬ ДОПУСК И ВЕРНУТЬСЯ К ВХОДУ</small>
         </button>
       </aside>
       <main className="main-area" key={location.pathname}>
