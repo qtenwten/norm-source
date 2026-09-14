@@ -24,6 +24,7 @@
 /* Reduce darkening on large monochrome photographic headers as well. */
 .city-banner{
   filter:grayscale(1) contrast(1.02) brightness(1.12)!important;
+  padding:26px 42px!important;
 }
 .city-banner--button:hover{
   filter:grayscale(1) contrast(1.04) brightness(1.18)!important;
@@ -44,7 +45,7 @@
   filter:grayscale(1) contrast(1) brightness(1.5)!important;
 }
 
-/* Temporary calibration control: 20% exactly matches the previous master gain. */
+/* Permanent volume control. The final loudness profile is calibrated in audio.js. */
 .volume-console{
   border:1px solid #3d4c45;
   background:linear-gradient(180deg,#0c1310,#080d0b);
@@ -116,27 +117,16 @@
 }
 .volume-console__scale{
   display:grid;
-  grid-template-columns:1fr auto 1fr;
+  grid-template-columns:1fr 1fr;
   gap:4px;
   margin-top:3px;
   color:#6f7f76;
   font-size:8px;
   line-height:1.2;
 }
+.volume-console__scale .volume-reference{display:none}
 .volume-console__scale span:last-child{text-align:right}
-.volume-console__scale .volume-reference{
-  color:#b7a36f;
-  text-align:center;
-  white-space:nowrap;
-}
-.volume-console>small{
-  display:block;
-  margin-top:7px;
-  color:#75847c;
-  font-size:8px;
-  line-height:1.35;
-  letter-spacing:.05em;
-}
+.volume-console>small{display:none}
 .sound-toggle{margin-top:7px;width:100%}
 
 /* Session termination is deliberately visible but less prominent than the anomaly report action. */
@@ -176,6 +166,7 @@
 .logout-button:disabled{opacity:.58;cursor:wait}
 
 @media(max-width:760px){
+  .city-banner{padding:20px 22px!important}
   .volume-console{padding:9px 8px}
   .volume-console__head{font-size:9px}
   .logout-button span{font-size:9px}
