@@ -44,36 +44,36 @@ export default function Dashboard() {
         </div>
       </Panel>
       <div className="dashboard-grid">
-        <Panel title="ПОСЛЕДНЕЕ ДЕЛО" className="latest-case">
+        <Panel title="ПОСЛЕДНЕЕ ДОБАВЛЕННОЕ ДЕЛО" className="latest-case">
           <div className="case-paper">
-            <button className="dashboard-photo-link" type="button" onClick={() => go('/cases/lm-006#media','archive')}><Photo src="/assets/host_duo_outdoor.png" alt="Полевой снимок Сена и Грига" label="ПОЛЕВАЯ ГРУППА LM // КАДР 03" /></button>
+            <button className="dashboard-photo-link" type="button" onClick={() => go('/cases/lm-005#media','archive')}><Photo src="/assets/night-dusnila-cover.webp" alt="Сен и Григ во время расследования дела Ночной Душнила" label="LM-005 // ПОЛЕВАЯ ГРУППА // КАДР ИЗ ДЕЛА" /></button>
             <div className="case-paper__copy">
-              <div className="case-id">LM-006</div>
-              <h1>ЗУМЕРСКИЙ ДЕМОН</h1>
+              <div className="case-id">LM-005</div>
+              <h1>НОЧНОЙ ДУШНИЛА</h1>
               <div className="stamp">ДЕЛО ЗАКРЫТО</div>
-              <dl><dt>ЛОКАЦИЯ</dt><dd>Солнечногорск, МО</dd><dt>КАТЕГОРИЯ</dt><dd>Информационная аномалия</dd><dt>СТАТУС</dt><dd>Закрыто</dd></dl>
-              <p>Серия навязчивых проявлений с цифровым источником. Часть данных не прошла техническую верификацию.</p>
-              <div className="dashboard-case-actions"><button type="button" onClick={() => go('/cases/lm-006')}>ОТКРЫТЬ ДОСЬЕ →</button><button type="button" onClick={() => go('/grimoire','grimoire')}>СВЕРИТЬ С ГРИМУАРОМ</button></div>
+              <dl><dt>ЛОКАЦИЯ</dt><dd>Жилой дом / спальня клиента</dd><dt>КАТЕГОРИЯ</dt><dd>Ночная сущность</dd><dt>СТАТУС</dt><dd>Нейтрализована</dd></dl>
+              <p>Клиент не спал более 57 часов из-за повторяющихся приступов удушья. В 02:59 сущность попала в поле камеры наблюдения.</p>
+              <div className="dashboard-case-actions"><button type="button" onClick={() => go('/cases/lm-005')}>ОТКРЫТЬ ДОСЬЕ →</button><button type="button" onClick={() => go('/cases/lm-005#entity','grimoire')}>СВЕРИТЬ СУЩНОСТЬ</button></div>
             </div>
           </div>
         </Panel>
         <Panel title="АКТИВНОСТЬ СИСТЕМЫ" className="system-log">
-          <button className="alert dashboard-alert-button" type="button" onClick={() => go('/terminal','terminal')}>⚠ РОСТ АКТИВНОСТИ В СЕВЕРО-ЗАПАДНОМ СЕКТОРЕ</button>
+          <button className="alert dashboard-alert-button" type="button" onClick={() => go('/cases/lm-005#timeline','terminal')}>⚠ LM-005 // АНОМАЛЬНАЯ АКТИВНОСТЬ ЗАФИКСИРОВАНА В 02:59</button>
           <ul>
-            <li><button type="button" onClick={() => go('/archive','archive')}><time>17:24</time> Восстановлена запись <code>2003_11/f0-17.avi</code></button></li>
-            <li><button type="button" onClick={() => go('/archive','archive')}><time>16:53</time> <span className="red">Удалена запись tmp_4487.log</span></button></li>
-            <li><button type="button" onClick={() => go('/terminal','terminal')}><time>15:12</time> Неизвестное подключение: 3 сек.</button></li>
-            <li><button type="button" onClick={() => go('/grimoire','grimoire')}><time>14:03</time> Запрос к архиву: Гримуар</button></li>
-            <li><button type="button" onClick={() => go('/agents#02')}><time>02:56</time> <span className="red">Попытка доступа к удалённым данным</span></button></li>
-            <li className="ghost-log"><button type="button" onClick={() => go('/agents#sen')}><time>--:--</time> ВХОДЯЩИЙ ЗАПРОС ОТ AG-SEN. АГЕНТ ОФЛАЙН.</button></li>
+            <li><button type="button" onClick={() => go('/cases/lm-005#evidence','archive')}><time>03:20</time> LM-005: активность прекращена после нейтрализации</button></li>
+            <li><button type="button" onClick={() => go('/cases/lm-005#media','archive')}><time>02:59</time> В архив добавлена запись камеры <code>LM005_CAM_025951</code></button></li>
+            <li><button type="button" onClick={() => go('/cases/lm-005#entity','terminal')}><time>02:59</time> Анализатор: подтверждён аномальный сигнал</button></li>
+            <li><button type="button" onClick={() => go('/grimoire','grimoire')}><time>23:10</time> Запрос к архиву: ловцы снов / ночные сущности</button></li>
+            <li><button type="button" onClick={() => go('/agents#sen')}><time>22:30</time> <span className="red">Рабочая версия «сонный паралич» помечена как неполная</span></button></li>
+            <li className="ghost-log"><button type="button" onClick={() => go('/cases/lm-006')}><time>--:--</time> LM-006 // В буфере обнаружена строка: 1000−7</button></li>
             {phantomSync && <li className="phantom-log"><button type="button" onClick={() => go('/terminal','terminal')}><time>--:--</time> РЕЕСТР САМОСТОЯТЕЛЬНО ДОБАВИЛ ЗАПИСЬ LM-███</button></li>}
           </ul>
         </Panel>
       </div>
       <div className="lower-grid lower-grid--clickable">
-        <Panel title="ПОЛЕВАЯ ГРУППА LM / НА СВЯЗИ"><button type="button" className="panel-link-fill" onClick={() => go('/agents')}><div className="field-team"><Photo src="/assets/host_duo_indoor_camera.png" alt="Сен и Григ с камерой" /><div><b>ЛОВЦЫ МИСТИКИ</b><span>ГРУППА: LM</span><span>СТАТУС: В ПОЛЕ</span><span>СВЯЗЬ: УСТОЙЧИВАЯ</span></div></div></button></Panel>
+        <Panel title="ПОЛЕВАЯ ГРУППА LM / НА СВЯЗИ"><button type="button" className="panel-link-fill" onClick={() => go('/agents')}><div className="field-team"><Photo src="/assets/host_duo_indoor_camera.png" alt="Сен и Григ во время разговора с клиентом" /><div><b>ЛОВЦЫ МИСТИКИ</b><span>ГРУППА: LM</span><span>СТАТУС: В ПОЛЕ</span><span>СВЯЗЬ: УСТОЙЧИВАЯ</span></div></div></button></Panel>
         <Panel title="ОПЕРАТИВНЫЕ АГЕНТЫ"><div className="agent-mini-grid"><button type="button" onClick={() => go('/agents#sen')}><Photo src="/assets/host_duo_closeup.png" alt="Сен и Григ" /><strong>AG-SEN</strong><small>ОТКРЫТЬ ДОСЬЕ</small></button><button type="button" onClick={() => go('/agents#grig')}><Photo src="/assets/host_duo_closeup.png" alt="Сен и Григ" /><strong>AG-GRIG</strong><small>ОТКРЫТЬ ДОСЬЕ</small></button></div></Panel>
-        <Panel title="ПОСЛЕДНИЕ КООРДИНАТЫ"><button type="button" className="panel-link-fill" onClick={() => go('/terminal','terminal')}><div className="map-faux"><span className="map-cross">×</span><b>LM-006</b><i>Следы не заканчиваются здесь?</i></div></button></Panel>
+        <Panel title="ПОСЛЕДНИЕ КООРДИНАТЫ"><button type="button" className="panel-link-fill" onClick={() => go('/cases/lm-005','terminal')}><div className="map-faux"><span className="map-cross">×</span><b>LM-005</b><i>Источник активности локализован в спальне.</i></div></button></Panel>
       </div>
     </div>
   )
