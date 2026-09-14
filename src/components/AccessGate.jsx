@@ -1,17 +1,27 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { audio } from '../audio'
 
-const BOOT_STEPS = [
-  ['channel', 'УСТАНОВКА ЗАЩИЩЁННОГО КАНАЛА…'],
-  ['auth', 'ПРОВЕРКА КЛЮЧЕЙ ДОСТУПА…'],
-  ['sync', 'СИНХРОНИЗАЦИЯ АРХИВА Н.О.Р.М.…'],
-  ['grant', 'ДОСТУП ПРЕДОСТАВЛЕН'],
+const AUTH_STEPS = [
+  ['uplink', 'ПЕРЕДАЧА УЧЁТНЫХ ДАННЫХ…'],
+  ['lookup', 'ПОИСК ПРОФИЛЯ В ЛОКАЛЬНОМ РЕЕСТРЕ…'],
+  ['verify', 'СВЕРКА КЛЮЧА ДОСТУПА…'],
+  ['session', 'СОЗДАНИЕ ЗАЩИЩЁННОЙ СЕССИИ…'],
+  ['grant', 'ДОСТУП ПРЕДОСТАВЛЕН // LEVEL 0'],
 ]
 
 export default function AccessGate({ onEnter }) {
   const [phase, setPhase] = useState('idle')
-  const [message, setMessage] = useState('ТРЕБУЕТСЯ ПОДТВЕРЖДЕНИЕ ДОСТУПА')
+  const [message, setMessage] = useState('ОЖИДАНИЕ ИДЕНТИФИКАЦИИ ОПЕРАТОРА')
+  const [operator, setOperator] = useState('')
+  const [accessKey, setAccessKey] = useState('')
+  const [authStep, setAuthStep] = useState(-1)
+  const [resolvedIdentity, setResolvedIdentity] = useState('')
   const timersRef = useRef([])
+
+  const activity = useMemo(() => {
+    const chars = operator.length + accessKey.length
+    return Math.min(99, 18 + chars * 5)
+  }, [operator, accessKey])
 
   useEffect(() => () => {
     timersRef.current.forEach(window.clearTimeout)
@@ -22,40 +32,122 @@ export default function AccessGate({ onEnter }) {
     timersRef.current.push(timer)
   }
 
-  const enter = () => {
+  const authenticate = (event) => {
+    event.preventDefault()
     if (phase !== 'idle') return
 
-    audio.enable()
-    setPhase('boot')
+    const identity = operator.trim().toUpperCase() || 'GUEST-27491'
+    setResolvedIdentity(identity)
+    setPhase('auth')
+    setAuthStep(0)
+    setMessage(AUTH_STEPS[0][1])
 
-    BOOT_STEPS.forEach(([nextPhase, text], index) => {
+    // The submit gesture gives the browser everything it needs to start the
+    // cinematic audio engine without ever breaking the fiction of the login.
+    audio.enable()
+
+    AUTH_STEPS.slice(1).forEach(([nextPhase, text], index) => {
       schedule(() => {
+        const step = index + 1
         setPhase(nextPhase)
+        setAuthStep(step)
         setMessage(text)
         if (nextPhase === 'grant') audio.grant()
         else audio.terminal()
       }, 360 + index * 360)
     })
 
-    schedule(() => setPhase('exit'), 1800)
-    schedule(onEnter, 2240)
+    schedule(() => setPhase('exit'), 1880)
+    schedule(onEnter, 2280)
+  }
+
+  const onFieldKeyDown = (event) => {
+    if (event.key === 'Escape') event.currentTarget.blur()
   }
 
   return (
     <div className={`access-gate access-gate--${phase}`}>
       <div className="access-gate__noise" aria-hidden="true" />
       <div className="access-gate__scan" aria-hidden="true" />
-      <div className="access-gate__box">
+      <div className="access-gate__box access-login">
         <div className="norm-mark">Н.О.Р.М.</div>
         <div className="access-gate__sub">ВНУТРЕННЯЯ СЕТЬ // NORM-OS 2.4.1</div>
-        <div className="access-gate__log" aria-live="polite">{message}</div>
-        <div className="access-gate__bars" aria-hidden="true">
-          <span /><span /><span /><span /><span /><span />
-        </div>
-        <button type="button" className="access-button" onClick={enter} disabled={phase !== 'idle'}>
-          {phase === 'idle' ? 'ВОЙТИ В СИСТЕМУ' : 'КАНАЛ АКТИВЕН'}
-        </button>
-        <p>Нажатие активирует звуковой режим интерфейса.</p>
+
+        {phase === 'idle' ? (
+          <form className="access-login__form" onSubmit={authenticate} autoComplete="off">
+            <div className="access-login__caption">
+              <span>УЗЕЛ ДОПУСКА // 04</span>
+              <b>ИДЕНТИФИКАЦИЯ ОПЕРАТОРА</b>
+            </div>
+
+            <label className="access-login__field">
+              <span>ID ОПЕРАТОРА</span>
+              <input
+                value={operator}
+                onChange={(event) => setOperator(event.target.value)}
+                onKeyDown={onFieldKeyDown}
+                name="operator-id"
+                spellCheck="false"
+                autoCapitalize="off"
+                autoCorrect="off"
+                placeholder="_"
+                aria-label="ID оператора"
+              />
+              <i aria-hidden="true" />
+            </label>
+
+            <label className="access-login__field">
+              <span>КЛЮЧ ДОСТУПА</span>
+              <input
+                value={accessKey}
+                onChange={(event) => setAccessKey(event.target.value)}
+                onKeyDown={onFieldKeyDown}
+                name="access-key"
+                type="password"
+                spellCheck="false"
+                autoComplete="off"
+                placeholder="_"
+                aria-label="Ключ доступа"
+              />
+              <i aria-hidden="true" />
+            </label>
+
+            <div className="access-login__telemetry" aria-hidden="true">
+              <span>LOCAL NODE</span>
+              <span>INPUT SIGNAL {activity}%</span>
+              <span>ENCRYPTION READY</span>
+            </div>
+
+            <button type="submit" className="access-button access-login__submit">
+              АВТОРИЗОВАТЬСЯ
+            </button>
+          </form>
+        ) : (
+          <div className="access-auth" aria-live="polite">
+            <div className="access-auth__identity">
+              <small>ЗАПРОС ОТ</small>
+              <strong>{resolvedIdentity || 'GUEST-27491'}</strong>
+              <span>SESSION: TEMP / ACCESS: 0</span>
+            </div>
+
+            <div className="access-auth__steps">
+              {AUTH_STEPS.map(([key, text], index) => (
+                <div
+                  className={`access-auth__step ${index < authStep ? 'is-done' : ''} ${index === authStep ? 'is-current' : ''}`}
+                  key={key}
+                >
+                  <span>{index < authStep ? '✓' : index === authStep ? '›' : '·'}</span>
+                  <b>{text}</b>
+                </div>
+              ))}
+            </div>
+
+            <div className="access-gate__log">{message}</div>
+            <div className="access-gate__bars" aria-hidden="true">
+              <span /><span /><span /><span /><span /><span />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
