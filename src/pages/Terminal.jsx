@@ -26,6 +26,7 @@ export default function Terminal() {
   const startedAt = useMemo(() => new Date(), [])
 
   useEffect(() => {
+    audio.terminalOpen()
     let index = 0
     const timers = []
 
@@ -44,7 +45,8 @@ export default function Terminal() {
       const timestamp = new Date(startedAt.getTime() + index * 430)
       setLines((current) => [...current, { text, tone, time: formatTime(timestamp) }])
 
-      if (tone === 'danger' || tone === 'warn') audio.glitch()
+      if (tone === 'danger') audio.systemReply()
+      else if (tone === 'warn') audio.glitch()
       else audio.terminal()
 
       index += 1
@@ -52,7 +54,7 @@ export default function Terminal() {
     }
 
     // Deferring the first line also keeps React StrictMode from duplicating it in dev.
-    schedule(pushNext, 80)
+    schedule(pushNext, 260)
     return () => timers.forEach(window.clearTimeout)
   }, [startedAt])
 
@@ -96,7 +98,7 @@ export default function Terminal() {
           </div>
         </section>
 
-        <section className="terminal-log" aria-live="polite">
+        <section className={`terminal-log ${scanState === 'complete' ? 'terminal-log--complete' : ''}`} aria-live="polite">
           {lines.map((line, index) => (
             <div className={`terminal-line terminal-line--${line.tone}`} key={`${line.text}-${index}`}>
               <time>{line.time}</time>
