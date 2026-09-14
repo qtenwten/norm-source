@@ -11,6 +11,7 @@ import Agents from './pages/Agents'
 import Archive from './pages/Archive'
 import Terminal from './pages/Terminal'
 import Report from './pages/Report'
+import ClearanceZone from './pages/ClearanceZone'
 
 export default function App(){
  const [entered,setEntered]=useState(()=>sessionStorage.getItem('norm-entered')==='1')
@@ -31,10 +32,13 @@ export default function App(){
   <Route path="/agents" element={<Agents/>}/>
   <Route path="/agents/00" element={<Navigate to="/agents#00" replace/>}/>
   <Route path="/archive" element={<Archive/>}/>
-  <Route path="/archive/restricted" element={<Archive/>}/>
-  <Route path="/archive/black" element={<Archive/>}/>
+  <Route path="/archive/restricted" element={<Navigate to="/restricted" replace/>}/>
+  <Route path="/archive/black" element={<Navigate to="/black" replace/>}/>
+  <Route path="/restricted" element={<ClearanceZone zone="restricted"/>}/>
+  <Route path="/black" element={<ClearanceZone zone="black"/>}/>
+  <Route path="/vault" element={<ClearanceZone zone="vault"/>}/>
   <Route path="/terminal" element={<Terminal/>}/>
-  <Route path="/terminal/root" element={<Terminal/>}/>
+  <Route path="/terminal/root" element={<Navigate to="/vault" replace/>}/>
   <Route path="/report" element={<Report/>}/>
   <Route path="*" element={<Navigate to="/" replace/>}/>
  </Routes></Shell>
