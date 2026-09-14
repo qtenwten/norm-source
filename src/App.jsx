@@ -9,9 +9,11 @@ import NightCaseDetail from './pages/NightCaseDetail'
 import Grimoire from './pages/Grimoire'
 import Agents from './pages/Agents'
 import Archive from './pages/Archive'
-import Terminal from './pages/Terminal'
+import TerminalDeep from './pages/TerminalDeep'
 import Report from './pages/Report'
 import ClearanceZone from './pages/ClearanceZone'
+import GhostRegistry from './pages/GhostRegistry'
+import MirrorNode from './pages/MirrorNode'
 
 export default function App(){
  const [entered,setEntered]=useState(()=>sessionStorage.getItem('norm-entered')==='1')
@@ -37,7 +39,9 @@ export default function App(){
   <Route path="/restricted" element={<ClearanceZone zone="restricted"/>}/>
   <Route path="/black" element={<ClearanceZone zone="black"/>}/>
   <Route path="/vault" element={<ClearanceZone zone="vault"/>}/>
-  <Route path="/terminal" element={<Terminal/>}/>
+  <Route path="/ghost-registry" element={<GhostRegistry/>}/>
+  <Route path="/mirror-node" element={<MirrorNode/>}/>
+  <Route path="/terminal" element={<TerminalDeep/>}/>
   <Route path="/terminal/root" element={<Navigate to="/vault" replace/>}/>
   <Route path="/report" element={<Report/>}/>
   <Route path="*" element={<Navigate to="/" replace/>}/>
