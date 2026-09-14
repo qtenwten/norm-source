@@ -47,6 +47,7 @@ export default function Shell({ children }) {
   const [transitionKind, setTransitionKind] = useState('dashboard')
   const [muted, setMuted] = useState(!audio.enabled)
   const timersRef = useRef([])
+  const operator = useMemo(() => sessionStorage.getItem('norm-operator') || 'GUEST-27491', [])
   const stamp = useMemo(
     () => new Date().toLocaleTimeString('ru-RU', { hour12: false }),
     [location.pathname],
@@ -120,7 +121,7 @@ export default function Shell({ children }) {
         </button>
         <div className="topbar__motto">ТАМ, ГДЕ ЗАКАНЧИВАЮТСЯ ОБЪЯСНЕНИЯ — НАЧИНАЕМ МЫ.</div>
         <div className="session">
-          <span>SESSION: GUEST-27491</span>
+          <span>SESSION: {operator}</span>
           <span>ACCESS LEVEL: 0</span>
           <span>СЕТЬ: ВНУТРЕННЯЯ <i className="status-dot" /></span>
         </div>
