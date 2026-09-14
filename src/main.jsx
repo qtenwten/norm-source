@@ -5,6 +5,7 @@ import App from './App.jsx'
 import './styles.css'
 import './v2.css'
 import './cinematic.css'
+import './v3.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
