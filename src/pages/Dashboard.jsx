@@ -72,7 +72,7 @@ export default function Dashboard() {
       </div>
       <div className="lower-grid lower-grid--clickable">
         <Panel title="ПОЛЕВАЯ ГРУППА LM / НА СВЯЗИ"><button type="button" className="panel-link-fill" onClick={() => go('/agents')}><div className="field-team"><Photo src="/assets/host_duo_indoor_camera.png" alt="Сен и Григ во время разговора с клиентом" /><div><b>ЛОВЦЫ МИСТИКИ</b><span>ГРУППА: LM</span><span>СТАТУС: В ПОЛЕ</span><span>СВЯЗЬ: УСТОЙЧИВАЯ</span></div></div></button></Panel>
-        <Panel title="ОПЕРАТИВНЫЕ АГЕНТЫ"><div className="agent-mini-grid"><button type="button" onClick={() => go('/agents#sen')}><Photo src="/assets/host_duo_closeup.png" alt="Сен и Григ" /><strong>AG-SEN</strong><small>ОТКРЫТЬ ДОСЬЕ</small></button><button type="button" onClick={() => go('/agents#grig')}><Photo src="/assets/host_duo_closeup.png" alt="Сен и Григ" /><strong>AG-GRIG</strong><small>ОТКРЫТЬ ДОСЬЕ</small></button></div></Panel>
+        <Panel title="ОПЕРАТИВНЫЕ АГЕНТЫ"><div className="agent-mini-grid"><button type="button" onClick={() => go('/agents#sen')}><Photo src="/assets/agent-sen.webp" alt="Сен" /><strong>AG-SEN</strong><small>ОТКРЫТЬ ДОСЬЕ</small></button><button type="button" onClick={() => go('/agents#grig')}><Photo src="/assets/agent-grig.webp" alt="Григ" /><strong>AG-GRIG</strong><small>ОТКРЫТЬ ДОСЬЕ</small></button></div></Panel>
         <Panel title="ПОСЛЕДНИЕ КООРДИНАТЫ"><button type="button" className="panel-link-fill" onClick={() => go('/cases/lm-005','terminal')}><div className="map-faux"><span className="map-cross">×</span><b>LM-005</b><i>Источник активности локализован в спальне.</i></div></button></Panel>
       </div>
     </div>
