@@ -340,6 +340,32 @@ export const audio = {
     relayClick(0.28)
   },
 
+  key() {
+    dataTick((Math.random() - 0.5) * 0.22, 0.16)
+  },
+
+  command() {
+    relayClick(0.44)
+    window.setTimeout(() => dataTick(0.12, 0.5), 55)
+  },
+
+  error() {
+    oscHit({ frequency: 118, endFrequency: 74, duration: 0.18, gain: 0.025, type: 'triangle' })
+    window.setTimeout(() => relayClick(0.18), 50)
+  },
+
+  scan() {
+    dataTick(-0.45, 0.6)
+    window.setTimeout(() => dataTick(-0.1, 0.5), 90)
+    window.setTimeout(() => dataTick(0.26, 0.55), 180)
+    window.setTimeout(() => oscHit({ frequency: 68, endFrequency: 48, duration: 0.38, gain: 0.021, type: 'sine' }), 120)
+  },
+
+  archive() {
+    archiveClack(0.82)
+    window.setTimeout(() => paperFlick(0.3), 60)
+  },
+
   nav() {
     archiveClack(0.5)
   },
