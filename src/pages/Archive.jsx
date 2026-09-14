@@ -1,0 +1,2 @@
+import Panel from '../components/Panel'
+export default function Archive(){return <div className="page"><h1 className="page-title">АРХИВ МАТЕРИАЛОВ</h1><div className="archive-grid">{['EV-0048 / АУДИО','EV-0051 / ФОТО','DOC-017 / СКАН','REC-009 / ВИДЕО','██████ / ИЗЪЯТО','EV-0064 / ОБЪЕКТ'].map((x,i)=><Panel title={x} key={x}><div className={`evidence-placeholder e${i}`}><span>{i===4?'ДОКУМЕНТ ИЗЪЯТ':'МАТЕРИАЛ ДОСТУПЕН'}</span></div><small>УРОВЕНЬ ДОСТУПА: {i===4?'███':'0'}</small></Panel>)}</div></div>}
