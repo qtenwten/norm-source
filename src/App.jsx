@@ -9,6 +9,7 @@ import NightCaseDetail from './pages/NightCaseDetail'
 import Grimoire from './pages/Grimoire'
 import Agents from './pages/Agents'
 import Archive from './pages/Archive'
+import InvestigationHub from './pages/InvestigationHub'
 import TerminalDeep from './pages/TerminalDeep'
 import Report from './pages/Report'
 import ClearanceZone from './pages/ClearanceZone'
@@ -35,6 +36,12 @@ export default function App(){
   <Route path="/agents" element={<Agents/>}/>
   <Route path="/agents/00" element={<Navigate to="/agents#00" replace/>}/>
   <Route path="/archive" element={<Archive/>}/>
+  <Route path="/investigation" element={<InvestigationHub/>}/>
+  <Route path="/connections" element={<Navigate to="/investigation#map" replace/>}/>
+  <Route path="/messages" element={<Navigate to="/investigation#messages" replace/>}/>
+  <Route path="/objects" element={<Navigate to="/investigation#objects" replace/>}/>
+  <Route path="/media-vault" element={<Navigate to="/investigation#media" replace/>}/>
+  <Route path="/journal" element={<Navigate to="/investigation#journal" replace/>}/>
   <Route path="/archive/restricted" element={<Navigate to="/restricted" replace/>}/>
   <Route path="/archive/black" element={<Navigate to="/black" replace/>}/>
   <Route path="/restricted" element={<ClearanceZone zone="restricted"/>}/>
