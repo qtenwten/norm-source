@@ -1,10 +1,11 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import AccessGate from './components/AccessGate'
 import Shell from './components/Shell'
 import SystemEventDaemon from './components/SystemEventDaemon'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
 import { loadRouteModule } from './routeRecovery'
+import { resetReplaySession, SESSION_RESET_EVENT } from './sessionReset'
 
 const routeModules = {
   Dashboard: () => import('./pages/Dashboard'),
@@ -54,8 +55,20 @@ function RouteLoader(){
 
 export default function App(){
  const location = useLocation()
+ const navigate = useNavigate()
  const [entered,setEntered]=useState(()=>sessionStorage.getItem('norm-entered')==='1')
  useEffect(()=>{if(entered)sessionStorage.setItem('norm-entered','1')},[entered])
+
+ // A reset may originate inside Field Terminal. Bring every reset path through the
+ // same gate transition so logout and replay-reset cannot diverge over time.
+ useEffect(()=>{
+  const onSessionReset=()=>{
+   navigate('/',{replace:true})
+   setEntered(false)
+  }
+  window.addEventListener(SESSION_RESET_EVENT,onSessionReset)
+  return()=>window.removeEventListener(SESSION_RESET_EVENT,onSessionReset)
+ },[navigate])
 
  // Warm every route chunk after the shell becomes interactive. This prevents an
  // already-open session from requesting a stale chunk only after a later deploy.
@@ -72,12 +85,7 @@ export default function App(){
   }
  },[entered])
 
- const logout=()=>{
-  sessionStorage.removeItem('norm-entered')
-  sessionStorage.removeItem('norm-operator')
-  window.history.replaceState(null,'','/')
-  setEntered(false)
- }
+ const logout=()=>resetReplaySession('logout')
  if(!entered)return <AccessGate onEnter={()=>setEntered(true)}/>
  return <Shell onLogout={logout}>
   <SystemEventDaemon/>
