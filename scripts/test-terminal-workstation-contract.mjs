@@ -4,6 +4,7 @@ const read = (path) => readFileSync(path, 'utf8')
 const main = read('src/main.jsx')
 const css = read('src/terminal-workstation.css')
 const polish = read('src/terminal-layout-polish.css')
+const fullhd = read('src/terminal-fullhd-fit.css')
 const terminal = read('src/pages/TerminalDeep.jsx')
 
 const fail = (message) => {
@@ -14,8 +15,10 @@ const expect = (condition, message) => { if (!condition) fail(message) }
 
 expect(main.includes("import './terminal-workstation.css'"), 'terminal workstation stylesheet is not imported')
 expect(main.includes("import './terminal-layout-polish.css'"), 'terminal layout polish stylesheet is not imported')
+expect(main.includes("import './terminal-fullhd-fit.css'"), 'Full-HD terminal fit stylesheet is not imported')
 expect(main.indexOf("./terminal-workstation.css") > main.indexOf("./mail-notifications.css"), 'terminal workstation stylesheet must follow general UI overrides')
-expect(main.indexOf("./terminal-layout-polish.css") > main.indexOf("./terminal-workstation.css"), 'terminal layout polish must be the final terminal override')
+expect(main.indexOf("./terminal-layout-polish.css") > main.indexOf("./terminal-workstation.css"), 'terminal layout polish must follow workstation geometry')
+expect(main.indexOf("./terminal-fullhd-fit.css") > main.indexOf("./responsive-v26.css"), 'Full-HD terminal fit must load after responsive overrides')
 
 for (const token of [
   '--terminal-workstation-height',
@@ -46,6 +49,17 @@ for (const token of [
   '@media(min-width:901px) and (max-height:820px)',
 ]) expect(polish.includes(token), `missing terminal polish rule: ${token}`)
 
+for (const token of [
+  '@media (min-width:1280px) and (max-height:1050px)',
+  '.norm-shell:has(.terminal-files-v2) .sidebar',
+  'overflow:hidden!important',
+  '.norm-shell:has(.terminal-files-v2) .logout-button',
+  '.norm-shell:has(.terminal-files-v2) .sound-toggle',
+  '.volume-console',
+  'display:none!important',
+  '@media (min-width:1280px) and (max-height:900px)',
+]) expect(fullhd.includes(token), `missing Full-HD sidebar fit rule: ${token}`)
+
 expect(terminal.includes('logRef.current.scrollTop=logRef.current.scrollHeight'), 'terminal no longer follows newest output')
 expect(terminal.includes('ref={logRef}'), 'terminal transcript ref missing')
 expect(terminal.includes('terminal-input-row'), 'terminal prompt row missing')
@@ -54,5 +68,5 @@ expect(terminal.includes('terminal-lead-card'), 'terminal lead card missing')
 expect(terminal.includes('terminal-resource-inspector'), 'terminal resource inspector missing')
 
 if (!process.exitCode) {
-  console.log('TERMINAL WORKSTATION CONTRACT: OK // fixed viewport + dense intel rail + contained controls')
+  console.log('TERMINAL WORKSTATION CONTRACT: OK // fixed viewport + Full-HD sidebar fit + contained controls')
 }

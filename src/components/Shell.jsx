@@ -35,7 +35,6 @@ const transitionCopy = {
   '/report': 'ОТКРЫТИЕ КАНАЛА ПРИЁМА',
 }
 
-const FIXED_VOLUME_PERCENT = 100
 const FIXED_AUDIO_GAIN = 5
 const LEGACY_VOLUME_STORAGE_KEY = 'norm-volume-test-percent'
 const SOUND_STORAGE_KEY = 'norm-audio-enabled-v1'
@@ -284,7 +283,6 @@ export default function Shell({ children, onLogout }) {
           <small>ДОПУСК СЕССИИ</small><strong>A-{argProgress.clearance}</strong><span>ОБНАРУЖЕНО: {argProgress.discoveries.length} / ??</span>
           {argProgress.clearance >= 1 && <em>RESTRICTED NODE VISIBLE</em>}{argProgress.clearance >= 2 && <em>BLACK NODE VISIBLE</em>}{argProgress.clearance >= 3 && <em>ROOT VAULT VISIBLE</em>}{argProgress.clearance >= 4 && <em>GHOSTFS MOUNTED</em>}{legacyRouteRestored && <em>LEGACY CASE ROUTE RESTORED</em>}{argProgress.clearance >= 5 && <em>MIRROR NODE VISIBLE</em>}
         </button>
-        <div className="volume-console"><div className="volume-console__head"><span>ГРОМКОСТЬ</span><output htmlFor="norm-volume">{FIXED_VOLUME_PERCENT}%</output></div><input id="norm-volume" className="volume-slider" type="range" min="0" max="100" step="1" value={FIXED_VOLUME_PERCENT} onChange={()=>{}} tabIndex={-1} aria-readonly="true" aria-label="Громкость интерфейса: 100%. Фиксирована." style={{'--volume':'100%',pointerEvents:'none'}}/><div className="volume-console__scale"><span>0</span><span className="volume-reference">100 // LOCKED</span><span>100</span></div><small>СИСТЕМНЫЙ УРОВЕНЬ // 100% · ИЗМЕНЯЕТСЯ ТОЛЬКО MUTE</small></div>
         <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>{muted?'ЗВУК: ВЫКЛ':'ЗВУК: ВКЛ'}</button>
         <button className="logout-button" type="button" data-sound="warning" onClick={logout} disabled={loggingOut}><span>{loggingOut?'ЗАВЕРШЕНИЕ СЕССИИ…':'ВЫЙТИ ИЗ СИСТЕМЫ'}</span><small>СБРОСИТЬ ДОПУСК И ВЕРНУТЬСЯ К ВХОДУ</small></button>
       </aside>
