@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
 import './funMessagesPatch.js'
 import './terminalEnhancements.js'
+import { installGlobalRouteRecovery } from './routeRecovery.js'
 import App from './App.jsx'
 import './styles.css'
 import './v2.css'
@@ -35,6 +36,9 @@ import './terminal-workstation.css'
 import './terminal-layout-polish.css'
 import './responsive-v26.css'
 import './terminal-fullhd-fit.css'
+import './route-recovery.css'
+
+installGlobalRouteRecovery()
 
 const isPublishedBuild = window.location.hostname.endsWith('github.io') || window.location.pathname.startsWith('/norm-source/site')
 const Router = isPublishedBuild ? HashRouter : BrowserRouter
