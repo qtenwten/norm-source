@@ -3,6 +3,7 @@
    output grows inside the screen instead of changing the page geometry. */
 
 .terminal-files-v2{
+  --terminal-workstation-height:clamp(650px,calc(100vh - 265px),840px);
   --terminal-workstation-height:clamp(650px,calc(100dvh - 265px),840px);
   --terminal-scrollbar-track:#050a07;
   --terminal-scrollbar-thumb:#314b3d;
@@ -27,6 +28,12 @@
     height:100%!important;
     min-height:0!important;
     max-height:100%!important;
+  }
+
+  .terminal-files-v2 .terminal-map{
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr)!important;
+    align-content:stretch!important;
   }
 }
 
@@ -173,6 +180,9 @@
     max-height:none!important;
     overflow:visible!important;
   }
+  .terminal-files-v2 .terminal-map{
+    display:block!important;
+  }
   .terminal-files-v2 .terminal-arg-tree{
     max-height:none!important;
     overflow:visible!important;
@@ -182,6 +192,7 @@
     min-height:220px!important;
   }
   .terminal-files-v2 .terminal-console{
+    height:clamp(560px,72vh,700px)!important;
     height:clamp(560px,72dvh,700px)!important;
     min-height:0!important;
     max-height:700px!important;
@@ -195,6 +206,7 @@
 
 @media(max-width:620px){
   .terminal-files-v2 .terminal-console{
+    height:clamp(540px,76vh,660px)!important;
     height:clamp(540px,76dvh,660px)!important;
     max-height:660px!important;
   }
