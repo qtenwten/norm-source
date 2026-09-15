@@ -35,6 +35,9 @@ jobs:
       - name: Responsive layout contract
         run: npm run test:responsive
 
+      - name: Sidebar consistency contract
+        run: npm run test:sidebar
+
       - name: Route recovery contract
         run: npm run test:route-recovery
 
