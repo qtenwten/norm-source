@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "prepare:audio": "node scripts/generate-audio-library.mjs",
+    "prepare:audio": "node scripts/generate-audio-library.mjs && node scripts/clean-audio-library.mjs",
     "predev": "npm run prepare:audio",
     "dev": "vite --host 0.0.0.0",
     "prebuild": "npm run prepare:audio",
