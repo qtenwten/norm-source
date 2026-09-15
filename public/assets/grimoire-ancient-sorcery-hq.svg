@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" role="img" aria-label="Древнючее колдунство — архивная реконструкция">
+<defs><linearGradient id="p" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e1d5ad"/><stop offset="1" stop-color="#aa9870"/></linearGradient><radialGradient id="g"><stop stop-color="#eadfc0"/><stop offset="1" stop-color="#826d4b" stop-opacity="0"/></radialGradient><filter id="n"><feTurbulence baseFrequency=".02" numOctaves="4" seed="12"/><feComponentTransfer><feFuncA type="table" tableValues="0 .12"/></feComponentTransfer></filter><filter id="w"><feTurbulence baseFrequency=".013" numOctaves="2" seed="6" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="5"/></filter></defs>
+<rect width="1200" height="1400" fill="url(#p)"/><rect width="1200" height="1400" filter="url(#n)" opacity=".6"/><ellipse cx="610" cy="690" rx="470" ry="520" fill="url(#g)" opacity=".55"/>
+<g opacity=".27" stroke="#574936" fill="none"><circle cx="610" cy="755" r="348" stroke-width="7"/><circle cx="610" cy="755" r="280" stroke-width="3"/><path d="M610 421L847 892 361 892Z" stroke-width="8"/><path d="M338 623L887 623M427 976L793 488" stroke-width="3"/></g>
+<g filter="url(#w)" stroke="#2c271f" stroke-linejoin="round">
+ <path d="M443 363 C500 309 698 309 759 366 C803 407 816 502 787 583 C763 651 723 693 719 759 C715 830 750 946 787 1060 L426 1060 C463 943 493 835 489 761 C485 690 437 641 416 574 C390 492 401 404 443 363Z" fill="#4b4435" stroke-width="16"/>
+ <path d="M475 392 C533 354 669 349 728 394 C692 437 658 470 616 486 C563 505 513 467 475 392Z" fill="#2f2b25" stroke-width="12"/>
+ <path d="M520 479 C546 448 575 441 602 463" fill="none" stroke-width="9"/><path d="M627 462 C657 440 689 448 710 480" fill="none" stroke-width="9"/>
+ <path d="M559 536 Q610 566 663 536" fill="none" stroke-width="8"/>
+ <path d="M510 627 C540 683 560 752 565 841" fill="none" stroke-width="8" opacity=".65"/>
+ <path d="M708 626 C677 691 657 754 653 844" fill="none" stroke-width="8" opacity=".65"/>
+</g>
+<g stroke="#5a4936" fill="#c9b88e"><path d="M254 719l82-54 84 63-49 100-105-8Z" stroke-width="9"/><circle cx="337" cy="741" r="28" fill="none" stroke-width="8"/><path d="M842 750l82-38 73 65-28 98-113 7-54-75Z" stroke-width="9"/><path d="M875 786l57 0M903 752l0 75" stroke-width="7"/></g>
+<g stroke="#735b3d" fill="none" stroke-width="6" opacity=".7"><path d="M217 344C303 286 339 333 390 375"/><path d="M912 332C1003 277 1045 336 1055 425"/><path d="M180 1067c113-49 205-38 277 11"/></g>
+<g fill="#4f4332" font-family="Georgia,serif" opacity=".8"><text x="70" y="92" font-size="27">K-003 / RITUAL RECONSTRUCTION</text><text x="74" y="1320" font-size="20">N.O.R.M. // OCCULT TRACE // INTERNAL USE</text></g>
+<text x="807" y="215" font-size="23" fill="#883b31" font-family="monospace" transform="rotate(5 807 215)">не повторять</text>
+</svg>

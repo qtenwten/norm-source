@@ -1,0 +1,114 @@
+/* N.O.R.M. v12 — high readability pass without losing the classified-terminal aesthetic */
+
+/* Reduce visual noise first: scanlines/grain were eating fine glyph detail on dark backgrounds. */
+.grain{opacity:.045!important}
+.scanlines{opacity:.028!important}
+
+/* Global utility text */
+.main-area__meta{font-size:12px!important;color:#83958b!important;line-height:1.45}
+.footerline{font-size:11px!important;color:#84938b!important;line-height:1.45}
+.topbar__motto{font-size:13px!important;color:#c0c9c3!important;line-height:1.5}
+.session{font-size:13px!important;gap:8px!important;color:#c3cbc6!important}
+.sidebar a{font-size:15px!important;line-height:1.25!important;padding:14px 12px!important}
+.sidebar__tagline{font-size:13px!important;color:#bac3bd!important;line-height:1.75!important}
+.report-button,.sound-toggle,.logout-button{font-size:12px!important;line-height:1.4!important}
+.logout-button small{font-size:10px!important;line-height:1.45!important}
+.volume-console__head,.volume-console__scale,.volume-console small{font-size:11px!important;line-height:1.45!important}
+.arg-clearance-card small,.arg-clearance-card span,.arg-clearance-card em{font-size:10px!important;line-height:1.45!important}
+.arg-clearance-card strong{font-size:26px!important}
+
+/* Secret-section navigation */
+.secret-nav{gap:7px!important;padding:10px!important}
+.secret-nav>small{font-size:10px!important;color:#8ea097!important}
+.secret-nav a{font-size:11px!important;line-height:1.35!important;padding:9px 10px!important;grid-template-columns:36px 1fr auto!important}
+.secret-nav a span{font-size:12px!important}
+.secret-nav a b{font-size:10px!important;color:#87998f!important}
+
+/* Clearance pages */
+.clearance-zone__head{padding:22px 0 20px!important;margin-bottom:16px!important}
+.clearance-zone__head small{font-size:11px!important;color:#95a69d!important}
+.clearance-zone__head h1{font-size:44px!important;line-height:1.05!important;margin:7px 0 10px!important}
+.clearance-zone__head p{font-size:15px!important;line-height:1.75!important;color:#aab8b0!important;max-width:900px}
+.clearance-zone__badge{min-width:184px!important;padding:16px!important}
+.clearance-zone__badge span{font-size:10px!important;color:#92736b!important}
+.clearance-zone__badge b{font-size:32px!important;line-height:1.1!important}
+.clearance-zone__badge small{font-size:10px!important;color:#9bacA2!important}
+.clearance-zone__notice{padding:13px 15px!important;margin-bottom:14px!important}
+.clearance-zone__notice>span{font-size:19px!important}
+.clearance-zone__notice p{font-size:13px!important;line-height:1.7!important;color:#b2aaa5!important}
+.clearance-zone__stats{gap:9px!important;margin-bottom:15px!important}
+.clearance-zone__stats>span{font-size:11px!important;padding:10px 12px!important;min-width:128px!important;color:#93a49b!important}
+.clearance-zone__stats b{font-size:12px!important;color:#e0e7e3!important}
+.clearance-zone__stats button{font-size:11px!important;padding:10px 15px!important}
+
+/* Classified cards: make each card feel like a document, not microcopy. */
+.classified-grid{gap:14px!important}
+.classified-file{min-height:350px!important;padding:18px 18px 16px!important}
+.classified-file__mark{margin-bottom:13px!important}
+.classified-file__mark span{width:36px!important;height:36px!important;font-size:11px!important}
+.classified-file>small{font-size:10px!important;line-height:1.45!important;color:#93a59b!important}
+.classified-file h2{font-size:19px!important;line-height:1.32!important;margin:7px 0 11px!important;color:#edf1ee!important;letter-spacing:.015em}
+.classified-file p{font-size:13px!important;line-height:1.72!important;color:#adb9b2!important;margin-bottom:15px!important}
+.classified-file dl{gap:6px 10px!important;margin-bottom:15px!important;padding-top:12px!important}
+.classified-file dt{font-size:10px!important;line-height:1.4!important;color:#83968b!important}
+.classified-file dd{font-size:10px!important;line-height:1.4!important;color:#c3cec7!important}
+.classified-file__actions{gap:8px!important}
+.classified-file__actions button{font-size:11px!important;line-height:1.35!important;padding:11px 9px!important}
+
+/* Viewer */
+.classified-viewer header{padding:13px 15px!important}
+.classified-viewer header small{font-size:10px!important;color:#8fa198!important}
+.classified-viewer header b{font-size:16px!important;color:#e1e8e4!important}
+.classified-viewer pre{font-size:14px!important;line-height:1.8!important;padding:22px!important;color:#c6d0ca!important}
+.classified-viewer footer{padding:12px 15px!important}
+.classified-viewer footer span{font-size:11px!important;color:#8da097!important}
+.classified-viewer footer button{font-size:11px!important;padding:10px 14px!important}
+
+/* Locked screens */
+.clearance-denied{padding:34px!important}
+.clearance-denied>small{font-size:11px!important;color:#9b7269!important}
+.clearance-denied>strong{font-size:50px!important}
+.clearance-denied h1{font-size:30px!important;line-height:1.2!important}
+.clearance-denied p{font-size:14px!important;line-height:1.75!important;color:#aeb8b2!important}
+.clearance-denied>div span{font-size:10px!important;padding:8px 10px!important}
+.clearance-denied>button{font-size:11px!important;padding:11px 15px!important}
+
+/* Archive portal cards */
+.archive-portals{gap:12px!important;margin-bottom:16px!important}
+.archive-portals>button{min-height:142px!important;padding:15px!important;column-gap:11px!important}
+.archive-portals>button>span{font-size:10px!important;padding:6px 8px!important}
+.archive-portals>button>b{font-size:10px!important}
+.archive-portals>button>strong{font-size:17px!important;line-height:1.25!important;margin-top:4px!important}
+.archive-portals>button>small{font-size:11px!important;line-height:1.6!important;color:#95a59c!important;margin-top:8px!important}
+.archive-portals>button>em{font-size:10px!important;line-height:1.35!important;margin-top:10px!important}
+
+/* Terminal readability */
+.terminal-arg-status span{font-size:10px!important;padding:7px 10px!important;color:#92a79b!important}
+.terminal-arg-status b{font-size:12px!important;color:#e0e7e3!important}
+.terminal-arg-tree small{font-size:10px!important;color:#8da096!important}
+.terminal-arg-tree button{font-size:12px!important;line-height:1.35!important;padding:7px 7px!important}
+.terminal-arg-hint small{font-size:9px!important}.terminal-arg-hint b{font-size:20px!important}.terminal-arg-hint span{font-size:10px!important;line-height:1.4!important}
+.terminal-line{font-size:13px!important;line-height:1.72!important}
+.terminal-line time{font-size:10px!important}
+.terminal-input-row label,.terminal-input-row input,.terminal-input-row button{font-size:13px!important}
+.terminal-command-help{font-size:10px!important;line-height:1.4!important}
+.terminal-result-link{font-size:10px!important}
+
+/* General archive cards and panels */
+.panel__title{font-size:13px!important;line-height:1.4!important}
+.archive-arg-notice small{font-size:10px!important}.archive-arg-notice b{font-size:12px!important}.archive-arg-notice button{font-size:10px!important;padding:9px 12px!important}
+.archive-viewer__meta span{font-size:11px!important}.archive-viewer__meta p{font-size:13px!important;line-height:1.7!important}.archive-viewer__meta dt,.archive-viewer__meta dd{font-size:10px!important}.archive-viewer__meta button{font-size:11px!important}
+
+/* Improve muted text contrast globally without flattening the palette. */
+.page-lead,.classified-file p,.clearance-zone__head p{color:#aebbb3!important}
+
+@media(max-width:1100px){
+  .classified-grid{grid-template-columns:1fr 1fr!important}
+  .classified-file{min-height:330px!important}
+}
+@media(max-width:720px){
+  .clearance-zone__head h1{font-size:34px!important}
+  .classified-grid{grid-template-columns:1fr!important}
+  .classified-file{min-height:0!important}
+  .sidebar a{font-size:14px!important}
+}

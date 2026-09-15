@@ -1,0 +1,99 @@
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { audio } from '../audio'
+import { discover, getArgState, subscribeArg } from '../arg'
+import { recoveredAgents } from '../argKernel'
+
+function downloadText(agent) {
+  const text = [
+    'N.O.R.M. // GHOSTFS PERSONNEL RECOVERY',
+    `FILE: ${agent.code}.dos`,
+    `NAME: ${agent.name}`,
+    `BORN: ${agent.born}`,
+    `ROLE: ${agent.role}`,
+    `UNIT: ${agent.unit}`,
+    `CLEARANCE: ${agent.clearance}`,
+    `SERVICE: ${agent.years}`,
+    `STATUS: ${agent.status}`,
+    `OFFICIAL: ${agent.official}`,
+    `LAST TRACE: ${agent.last}`,
+    `CASE: ${agent.caseId}`,
+    '',
+    'RECOVERED HISTORY:',
+    ...agent.story.map((item, index)=>`${index+1}. ${item}`),
+    '',
+    `KEY FRAGMENT: ${agent.fragment}`,
+    '',
+    'SYSTEM NOTE:',
+    'Фрагменты ключа собираются в порядке индекса персонала.',
+    'Привилегированная команда требует не пароль, а собранный токен.',
+  ].join('\n')
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'})
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href=url; a.download=`${agent.code}_RECOVERED_DOSSIER.txt`; document.body.appendChild(a); a.click(); a.remove()
+  setTimeout(()=>URL.revokeObjectURL(url),1000)
+}
+
+function downloadPortrait(agent) {
+  const a=document.createElement('a')
+  a.href=agent.image
+  a.download=`${agent.code}_RECOVERED_PORTRAIT.svg`
+  document.body.appendChild(a); a.click(); a.remove()
+}
+
+const caseDir = { 'NO-17':'no-17', 'AR-31':'ar-31', 'IMG-13':'img-13' }
+
+export default function GhostRegistry(){
+  const navigate=useNavigate()
+  const [progress,setProgress]=useState(getArgState)
+  const [selected,setSelected]=useState(recoveredAgents[0])
+  useEffect(()=>subscribeArg(setProgress),[])
+  useEffect(()=>{ if(progress.clearance>=4) discover('GHOST_REGISTRY_VISITED') },[progress.clearance])
+
+  const recoveredCount=useMemo(()=>recoveredAgents.filter(agent=>progress.discoveries.includes(`GHOST_AG${agent.id}`)).length,[progress.discoveries])
+  const allRecovered=recoveredCount===recoveredAgents.length
+  const routeRestored=progress.discoveries.includes('LEGACY_ROUTE_RESTORED')
+
+  if(progress.clearance<4) return <div className="page ghost-registry ghost-registry--locked"><section className="clearance-denied"><small>N.O.R.M. // GHOSTFS</small><strong>VOLUME NOT MOUNTED</strong><h1>ВОССТАНОВЛЕННЫЙ РЕЕСТР</h1><p>Эти записи физически отсутствуют в основном кадровом реестре. Найдите устройство, на котором сохранился старый персональный том.</p><div><span>DEVICE UNKNOWN</span><span>MOUNT REQUIRED</span><span>ACCESS A-4</span></div><button type="button" onClick={()=>navigate('/terminal')}>FIELD TERMINAL →</button></section></div>
+
+  const openAgent=(agent)=>{setSelected(agent);discover(`GHOST_VIEW_${agent.id}`);discover(`GHOST_AG${agent.id}`);audio.archive()}
+  const saveDossier=(agent)=>{downloadText(agent);discover(`GHOST_DOWNLOAD_${agent.id}`);discover(`GHOST_AG${agent.id}`);audio.drawer()}
+  const savePortrait=(agent)=>{downloadPortrait(agent);discover(`GHOST_PHOTO_${agent.id}`);audio.photo()}
+  const openTerminal=(command)=>{sessionStorage.setItem('norm-terminal-prefill',command);navigate('/terminal')}
+  const investigateCase=(agent)=>{
+    if(routeRestored){navigate('/legacy-cases');return}
+    const dir=caseDir[agent.caseId] || 'no-17'
+    openTerminal(`tree /mnt/ghost/cases/${dir}`)
+  }
+  const pursueRoute=()=>{
+    if(routeRestored){navigate('/legacy-cases');return}
+    openTerminal(progress.clearance>=5?'ls -la /mirror':'cat /mnt/ghost/.route-map')
+  }
+
+  return <div className="page ghost-registry">
+    <header className="ghost-head"><div><small>N.O.R.M. // GHOSTFS // RECOVERED PERSONNEL</small><h1>ВОССТАНОВЛЕННЫЙ РЕЕСТР</h1><p>Карточки, удалённые из штатной базы. На низких уровнях эти люди видны только как «пропавшие», «утраченные» или «удалённые». GHOSTFS восстанавливает имена, фотографии, служебные биографии и обстоятельства исчезновения.</p></div><div className="ghost-head__badge"><span>MOUNT</span><b>/mnt/ghost</b><small>RECOVERED {recoveredCount} / {recoveredAgents.length}</small></div></header>
+
+    <div className="ghost-warning"><span>⚠</span><p>Даты, причины смерти и служебные статусы восстановлены из повреждённых внутренних журналов. Это исторический слой мира Н.О.Р.М.; современная группа LM остаётся отдельным поколением полевых сотрудников.</p></div>
+
+    <div className="ghost-grid">
+      {recoveredAgents.map((agent)=><button type="button" className={`ghost-agent-card ${selected.id===agent.id?'is-active':''}`} onClick={()=>openAgent(agent)} key={agent.code}>
+        <div className="ghost-agent-card__photo"><img src={agent.image} alt={`Восстановленный архивный портрет ${agent.code}`} draggable="false"/></div>
+        <div><small>{agent.code} // {agent.years}</small><strong>{agent.name}</strong><span>{agent.role}</span><em>{agent.official}</em></div>
+      </button>)}
+    </div>
+
+    <section className="ghost-dossier" key={selected.id}>
+      <div className="ghost-dossier__photo"><img src={selected.image} alt={selected.name} draggable="false"/></div>
+      <div className="ghost-dossier__body">
+        <div className="ghost-dossier__title"><div><small>{selected.code} // RECOVERED DOSSIER</small><h2>{selected.name}</h2><p>{selected.summary}</p></div><span>{selected.status}</span></div>
+        <dl><dt>ГОД РОЖДЕНИЯ</dt><dd>{selected.born}</dd><dt>СЛУЖБА</dt><dd>{selected.years}</dd><dt>РОЛЬ</dt><dd>{selected.role}</dd><dt>ПОДРАЗДЕЛЕНИЕ</dt><dd>{selected.unit}</dd><dt>ДОПУСК</dt><dd>{selected.clearance}</dd><dt>ПОСЛЕДНИЙ СЛЕД</dt><dd>{selected.last}</dd><dt>ДЕЛО</dt><dd>{selected.caseId}</dd><dt>ОФИЦИАЛЬНО</dt><dd>{selected.official}</dd></dl>
+        <div className="ghost-story">{selected.story.map((item,index)=><article key={item}><span>{String(index+1).padStart(2,'0')}</span><p>{item}</p></article>)}</div>
+        <div className="ghost-dossier__actions"><button type="button" onClick={()=>saveDossier(selected)}>⇩ СКАЧАТЬ ЛИЧНОЕ ДЕЛО</button><button type="button" onClick={()=>savePortrait(selected)}>⇩ СКАЧАТЬ ФОТО</button><button type="button" onClick={()=>openTerminal(`cat /mnt/ghost/personnel/${selected.code.toLowerCase()}.dos`)}>ОТКРЫТЬ В ТЕРМИНАЛЕ →</button><button type="button" onClick={()=>investigateCase(selected)}>{routeRestored?`СВЯЗАННОЕ ДЕЛО ${selected.caseId}`:`ИССЛЕДОВАТЬ КАТАЛОГ ${selected.caseId}`} →</button></div>
+        <div className="ghost-fragment"><small>RECOVERY CHECK</small><p>Фрагмент привилегированного ключа: <b>{selected.fragment}</b>. Три личных дела образуют один токен в порядке индекса персонала.</p></div>
+      </div>
+    </section>
+
+    <section className={`ghost-route-reward ${allRecovered?'is-unlocked':''}`}><div><small>ORPHANED ROUTE STATUS</small><h2>{routeRestored?'ВИЗУАЛЬНЫЙ МАРШРУТ ВОССТАНОВЛЕН':allRecovered?'ЛИЧНЫЕ ДЕЛА СВЯЗАНЫ — МАРШРУТ ВСЁ ЕЩЁ УДАЛЁН':'ВОССТАНОВИТЕ ВСЕ ТРИ ЛИЧНЫХ ДЕЛА'}</h2><p>{routeRestored?'NORM-OS пересобрал удалённый маршрут /legacy-cases. Доступны три исторических расследования, девять экспортируемых материалов и дополнительная корреляционная награда.':allRecovered?'Система нашла три связанных дерева дел, но их визуальная страница удалена. Изучите скрытую route-map, получите MIRROR-доступ и попробуйте восстановить orphaned route.':`Восстановлено ${recoveredCount} из ${recoveredAgents.length}. Каждая карточка содержит часть контекста и фрагмент ключа.`}</p></div><button type="button" disabled={!allRecovered} onClick={pursueRoute}>{routeRestored?'ОТКРЫТЬ LEGACY CASES →':allRecovered?'ПРОДОЛЖИТЬ В ТЕРМИНАЛЕ →':'МАРШРУТ ЕЩЁ НЕ СОБРАН'}</button></section>
+  </div>
+}

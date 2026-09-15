@@ -1,0 +1,332 @@
+/* N.O.R.M. v8 — grimoire entity registry + native image behavior hardening */
+
+/* Photographs and generated plates should behave as interface surfaces, not browser images. */
+img{
+  -webkit-user-drag:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+.norm-photo,
+.monster-plate,
+.monster-material-scan{
+  -webkit-user-select:none;
+  user-select:none;
+}
+.norm-photo img,
+.monster-plate>img,
+.monster-material-scan>img{
+  pointer-events:none;
+}
+
+/* Five currently verified YouTube entities live in one grimoire instead of one static page. */
+.grimoire-page--registry{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(320px,350px);
+  grid-template-areas:
+    "crumb crumb"
+    "records records"
+    "stage side";
+  column-gap:14px;
+  row-gap:10px;
+  align-items:start;
+}
+.grimoire-page--registry .grimoire-breadcrumb{grid-area:crumb}
+.grimoire-page--registry .grimoire-record-strip{grid-area:records}
+.grimoire-page--registry .grimoire-stage{grid-area:stage;min-width:0}
+.grimoire-page--registry .grimoire-side{grid-area:side}
+
+.grimoire-record-strip{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(128px,1fr));
+  gap:6px;
+  padding:7px;
+  border:1px solid #3e5048;
+  background:linear-gradient(180deg,rgba(14,20,17,.96),rgba(7,11,9,.98));
+  box-shadow:inset 0 0 28px rgba(0,0,0,.28);
+  overflow-x:auto;
+}
+.grimoire-record-strip button{
+  min-width:0;
+  min-height:58px;
+  border:1px solid #34453e;
+  background:#0a110e;
+  color:#9ba8a1;
+  padding:7px 8px;
+  text-align:left;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  grid-template-areas:"code case" "name name";
+  gap:3px 7px;
+}
+.grimoire-record-strip button:hover{
+  border-color:#718378;
+  background:#101914;
+  color:#e1e5e2;
+}
+.grimoire-record-strip button.active{
+  border-color:#a55a4e;
+  background:linear-gradient(180deg,#171812,#11120f);
+  color:#f0ead9;
+  box-shadow:inset 3px 0 #a9463d,0 0 18px rgba(118,57,47,.16);
+}
+.grimoire-record-strip span{
+  grid-area:code;
+  color:#b8675a;
+  font-size:9px;
+  letter-spacing:.08em;
+}
+.grimoire-record-strip b{
+  grid-area:name;
+  font-family:Georgia,serif;
+  font-size:11px;
+  line-height:1.13;
+  letter-spacing:.03em;
+  overflow-wrap:anywhere;
+}
+.grimoire-record-strip small{
+  grid-area:case;
+  text-align:right;
+  color:#718078;
+  font-size:8px;
+}
+
+.grimoire-book--monster{
+  width:100%;
+  max-width:none!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+}
+.grimoire-monster-page,
+.grimoire-classification-page{
+  min-height:720px;
+}
+.grimoire-monster-page h1{
+  max-width:92%;
+  font-size:38px;
+  line-height:.94;
+  overflow-wrap:anywhere;
+}
+.grimoire-monster-page>.hand{
+  min-height:44px;
+  margin:9px 0 8px;
+  line-height:1.2;
+}
+
+.monster-plate{
+  position:relative;
+  height:470px;
+  margin:8px -4px 0;
+  overflow:hidden;
+  border:1px solid rgba(69,56,38,.42);
+  background:#9e8d6c;
+  box-shadow:inset 0 0 54px rgba(59,44,29,.22),0 8px 18px rgba(64,48,31,.14);
+  isolation:isolate;
+}
+.monster-plate>img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  filter:sepia(.16) contrast(1.06) brightness(1.02);
+  transform:scale(1.012);
+}
+.monster-plate__shade{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 48%,transparent 40%,rgba(57,44,29,.13) 100%),
+    repeating-linear-gradient(0deg,rgba(41,34,25,.025) 0 1px,transparent 1px 4px);
+  mix-blend-mode:multiply;
+}
+.monster-hotspot{
+  position:absolute;
+  z-index:3;
+  width:38px;
+  height:38px;
+  margin:-19px 0 0 -19px;
+  border:1px solid #9a312d;
+  border-radius:50%;
+  background:rgba(218,205,173,.91);
+  color:#842825;
+  display:grid;
+  place-items:center;
+  padding:0;
+  box-shadow:0 0 0 4px rgba(106,47,37,.08),0 3px 10px rgba(40,25,17,.2);
+}
+.monster-hotspot::after{
+  content:"";
+  position:absolute;
+  width:14px;
+  height:14px;
+  border:1px solid currentColor;
+  border-radius:50%;
+  opacity:.22;
+  animation:monster-ping 2.4s ease-out infinite;
+}
+.monster-hotspot span{font-size:10px;font-weight:900;letter-spacing:.05em}
+.monster-hotspot:hover,
+.monster-hotspot.active{
+  background:#8b312c;
+  color:#f0e2c6;
+  transform:scale(1.08);
+  box-shadow:0 0 0 5px rgba(127,51,43,.12),0 0 18px rgba(128,46,38,.25);
+}
+@keyframes monster-ping{
+  0%{transform:scale(.65);opacity:.38}
+  70%,100%{transform:scale(2.4);opacity:0}
+}
+.monster-hotspot-card{
+  position:absolute;
+  z-index:4;
+  left:18px;
+  right:18px;
+  bottom:18px;
+  min-height:98px;
+  border:1px solid #7e3b35;
+  background:rgba(224,213,183,.96);
+  color:#30291f;
+  padding:12px 42px 12px 13px;
+  box-shadow:0 12px 30px rgba(39,27,18,.34);
+  animation:case-tab-enter .2s ease both;
+}
+.monster-hotspot-card>button{
+  position:absolute;
+  right:8px;
+  top:7px;
+  width:28px;
+  height:28px;
+  border:1px solid #755e49;
+  background:transparent;
+  color:#473a2c;
+  padding:0;
+  font-size:18px;
+}
+.monster-hotspot-card small,
+.monster-hotspot-card b{display:block}
+.monster-hotspot-card small{font-size:8px;color:#9a3932;letter-spacing:.1em}
+.monster-hotspot-card b{margin-top:3px;font-size:12px}
+.monster-hotspot-card p{margin:7px 0 0;font-size:10px;line-height:1.4}
+.grimoire-bottom-note{margin-top:9px!important;font-size:14px!important}
+
+.grimoire-classification-page dl{
+  grid-template-columns:132px 1fr;
+}
+.grimoire-classification-page ul{
+  min-height:138px;
+}
+.grimoire-source-block{
+  border:1px solid rgba(87,72,53,.56);
+  background:rgba(231,221,194,.38);
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.grimoire-source-block>b{
+  font-size:11px;
+  line-height:1.35;
+}
+.grimoire-source-block>span{
+  color:#766753;
+  font-size:8px;
+  letter-spacing:.06em;
+}
+.grimoire-source-block>div{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.grimoire-source-block button{
+  border:1px solid #655b4a;
+  background:rgba(238,227,198,.5);
+  color:#312d24;
+  padding:7px 9px;
+  font-size:9px;
+}
+.grimoire-source-block button:hover{
+  border-color:#8d3c34;
+  color:#812d28;
+}
+
+.grimoire-current-record{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.grimoire-current-record>span{
+  color:#7d8d84;
+  font-size:9px;
+}
+.grimoire-current-record>b{
+  font-family:Georgia,serif;
+  font-size:19px;
+  line-height:1.06;
+  color:#e3e8e4;
+}
+.grimoire-current-record>small{color:#8e9c94;font-size:9px}
+.grimoire-current-record__nav{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:4px;
+}
+.grimoire-current-record__nav button{
+  border:1px solid #3f5148;
+  background:#0b120f;
+  color:#aeb9b2;
+  padding:7px 6px;
+  font-size:9px;
+}
+.grimoire-current-record__nav button:hover{border-color:#72857a;color:#fff}
+
+.monster-material-scan{
+  min-height:360px;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(circle,#232821,#070b09 68%);
+  overflow:hidden;
+}
+.monster-material-scan img{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:360px;
+  object-fit:contain;
+  filter:sepia(.22) grayscale(.3) contrast(1.08) brightness(.9);
+}
+
+/* Keep the observation rail aligned even when the record strip is present. */
+.grimoire-page--registry .grimoire-side--v4{
+  position:sticky!important;
+  top:14px!important;
+  align-self:start;
+}
+
+@media(max-width:1260px){
+  .grimoire-page--registry{
+    grid-template-columns:1fr;
+    grid-template-areas:"crumb" "records" "stage" "side";
+  }
+  .grimoire-page--registry .grimoire-side--v4{position:static!important}
+  .grimoire-record-strip{grid-template-columns:repeat(5,minmax(150px,1fr))}
+}
+
+@media(max-width:900px){
+  .grimoire-book--monster{grid-template-columns:1fr}
+  .grimoire-monster-page,.grimoire-classification-page{min-height:auto}
+  .book-page--left{border-right:1px solid #847353!important;border-bottom:7px solid #6d5d47}
+  .monster-plate{height:520px}
+}
+
+@media(max-width:620px){
+  .grimoire-record-strip{grid-template-columns:repeat(5,138px)}
+  .grimoire-record-strip button{min-height:54px}
+  .grimoire-monster-page h1{font-size:30px}
+  .monster-plate{height:410px}
+  .monster-hotspot{width:34px;height:34px;margin:-17px 0 0 -17px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .monster-hotspot::after{animation:none}
+}

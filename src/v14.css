@@ -1,0 +1,83 @@
+/* N.O.R.M. v14 — guided ARG terminal without breaking immersion */
+
+.terminal-lead-card{
+  gap:6px;
+  padding:12px!important;
+  min-height:132px;
+  justify-content:flex-start!important;
+}
+.terminal-lead-card>small{
+  font-size:9px!important;
+  letter-spacing:.13em;
+  color:#7f9187!important;
+}
+.terminal-lead-card>b{
+  font-size:14px!important;
+  line-height:1.35!important;
+  color:#d8e1dc!important;
+  margin:0!important;
+  overflow-wrap:anywhere;
+}
+.terminal-lead-card>span{
+  font-size:9px!important;
+  line-height:1.4!important;
+  color:#8b9c93!important;
+}
+.terminal-lead-card__actions{
+  margin-top:auto;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:5px;
+}
+.terminal-lead-card__actions button{
+  min-width:0;
+  border:1px solid #3b4d44;
+  background:#0a130f;
+  color:#a9b8b0;
+  padding:7px 5px;
+  font-size:8px;
+  line-height:1.2;
+  white-space:nowrap;
+}
+.terminal-lead-card__actions button:last-child{
+  border-color:#69463f;
+  color:#c47a69;
+}
+.terminal-lead-card__actions button:hover{
+  border-color:#758b80;
+  color:#eef3f0;
+  background:#111c16;
+}
+
+/* Reward links should read as an actual unlocked route, not another log fragment. */
+.terminal-line .terminal-result-link{
+  justify-self:start;
+  margin-top:5px;
+  border-color:#5d7869;
+  background:#0d1812;
+  color:#bad0c3;
+  padding:7px 9px;
+  font-size:10px!important;
+}
+.terminal-line--match .terminal-result-link{
+  border-color:#7b534a;
+  color:#d68b7a;
+}
+
+/* The terminal help footer now carries four distinct affordances. */
+.terminal-command-help{
+  flex-wrap:wrap;
+  gap:7px 12px!important;
+}
+.terminal-command-help span{
+  white-space:nowrap;
+}
+
+@media(max-width:1180px){
+  .terminal-lead-card__actions{grid-template-columns:1fr 1fr}
+  .terminal-lead-card__actions button:last-child{grid-column:1/-1}
+}
+@media(max-width:680px){
+  .terminal-lead-card__actions{grid-template-columns:1fr}
+  .terminal-lead-card__actions button:last-child{grid-column:auto}
+}

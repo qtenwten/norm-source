@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900">
+<defs><filter id="n"><feTurbulence baseFrequency=".76" numOctaves="4" seed="13" result="t"/><feColorMatrix in="t" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 .15 0"/><feBlend in="SourceGraphic" mode="multiply"/></filter></defs>
+<rect width="720" height="900" fill="#d3d3cf"/><rect x="34" y="32" width="652" height="836" fill="#c3c5c1" stroke="#222" stroke-width="3"/>
+<rect x="55" y="55" width="610" height="710" fill="#b5b8b4"/>
+<ellipse cx="360" cy="714" rx="246" ry="148" fill="#2c2e2d"/>
+<path d="M246 390c4-128 48-219 118-219 79 0 125 91 123 218-2 118-42 212-126 212-80 0-119-94-115-211Z" fill="#b1b3b0"/>
+<path d="M237 348c7-113 51-190 130-193 73-2 122 67 126 166-37-31-77-45-125-45-54 0-96 21-131 72Z" fill="#262827"/>
+<ellipse cx="321" cy="423" rx="8" ry="7" fill="#222"/><ellipse cx="405" cy="423" rx="8" ry="7" fill="#222"/>
+<rect x="285" y="397" width="70" height="48" rx="8" fill="none" stroke="#404241" stroke-width="7"/><rect x="373" y="397" width="70" height="48" rx="8" fill="none" stroke="#404241" stroke-width="7"/><path d="M355 419h18" stroke="#404241" stroke-width="7"/>
+<path d="M364 442c-5 38-7 55-18 72 17 7 32 8 48 1" fill="none" stroke="#565856" stroke-width="5"/>
+<path d="M319 544c31 19 62 19 94 0" fill="none" stroke="#454746" stroke-width="7" stroke-linecap="round"/>
+<path d="M268 599c25-31 58-46 97-46 41 0 73 16 97 47l-13 107-170 0Z" fill="#4f5150"/>
+<path d="M300 590l-35 119m159-119 31 119" stroke="#1e201f" stroke-width="10"/>
+<rect x="78" y="790" width="564" height="45" fill="#171918"/><text x="94" y="820" font-family="monospace" font-size="23" fill="#d7d7d2">AG-13 // RECOVERED FRAME 03</text>
+<g opacity=".2"><path d="M55 212h610M55 371h610M55 611h610" stroke="#111"/><path d="M176 55v710M512 55v710" stroke="#111"/></g>
+<rect width="720" height="900" fill="transparent" filter="url(#n)"/>
+</svg>

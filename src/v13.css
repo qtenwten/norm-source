@@ -1,0 +1,289 @@
+/* N.O.R.M. v13 — layout polish after high-readability typography pass.
+   Goal: keep the larger readable type while removing accidental wraps,
+   cramped cards and narrow-sidebar collisions across all primary screens. */
+
+/* ---------- global overflow / wrapping hygiene ---------- */
+.norm-shell,
+.topbar,
+.sidebar,
+.main-area,
+.page,
+.panel,
+.panel__body,
+.classified-grid,
+.classified-file,
+.archive-portals,
+.archive-grid,
+.registry-grid,
+.agent-expanded,
+.terminal-grid,
+.terminal-console,
+.grimoire-page,
+.grimoire-stage,
+.grimoire-side,
+.case-row{min-width:0}
+
+button,a,strong,b,span,small,em,dt,dd,p,h1,h2,h3{
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+}
+
+/* ---------- shell / sidebar ---------- */
+@media (min-width:1201px){
+  .norm-shell{grid-template-columns:220px minmax(0,1fr)!important}
+}
+
+.sidebar{
+  padding-inline:13px!important;
+  gap:15px!important;
+}
+.sidebar nav{gap:6px!important}
+.sidebar a{white-space:nowrap}
+
+/* Secret sectors were the most visible casualty of the larger font pass. */
+.secret-nav{
+  margin:8px 0 2px!important;
+  padding:9px!important;
+  gap:6px!important;
+}
+.secret-nav>small{
+  display:block;
+  font-size:9px!important;
+  line-height:1.35!important;
+  letter-spacing:.08em!important;
+  white-space:normal;
+}
+.secret-nav a{
+  grid-template-columns:30px minmax(0,1fr) 12px!important;
+  gap:6px!important;
+  padding:8px 7px!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  letter-spacing:.025em!important;
+  white-space:nowrap;
+}
+.secret-nav a span{
+  font-size:10px!important;
+  white-space:nowrap;
+}
+.secret-nav a b{
+  font-size:10px!important;
+  text-align:right;
+  white-space:nowrap;
+}
+
+.arg-clearance-card{
+  grid-template-columns:minmax(0,1fr) 54px!important;
+  gap:4px 8px!important;
+  padding:11px!important;
+}
+.arg-clearance-card strong{
+  min-width:54px;
+  white-space:nowrap;
+  text-align:right;
+  line-height:1!important;
+}
+.arg-clearance-card small,
+.arg-clearance-card span,
+.arg-clearance-card em{
+  letter-spacing:.045em!important;
+}
+.arg-clearance-card em{
+  overflow-wrap:normal;
+  word-break:keep-all;
+}
+
+.volume-console{min-width:0}
+.volume-console__head,
+.volume-console__scale{gap:6px}
+.volume-reference{white-space:nowrap;font-size:9px!important}
+.logout-button span,.logout-button small{display:block}
+
+/* ---------- top bar ---------- */
+.brand__copy,.session{min-width:0}
+.brand__logo,.brand__sub,.session span{white-space:nowrap}
+.topbar__motto{padding-inline:14px!important}
+
+/* ---------- clearance sectors ---------- */
+.clearance-zone__head>div:first-child{min-width:0;flex:1}
+.clearance-zone__badge{flex:0 0 auto}
+.clearance-zone__badge span,
+.clearance-zone__badge b,
+.clearance-zone__badge small{white-space:nowrap}
+.clearance-zone__notice p{max-width:none}
+
+.clearance-zone__stats>span{
+  min-width:118px!important;
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+.clearance-zone__stats button{white-space:nowrap}
+
+/* Use intrinsic card width instead of forcing three cramped columns. */
+.classified-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,350px),1fr))!important;
+  align-items:stretch;
+}
+.classified-file{
+  min-width:0;
+  min-height:360px!important;
+}
+.classified-file>small{
+  white-space:normal;
+  letter-spacing:.07em!important;
+}
+.classified-file h2{
+  text-wrap:balance;
+  min-height:2.55em;
+}
+.classified-file p{
+  text-wrap:pretty;
+}
+.classified-file dl{
+  grid-template-columns:max-content minmax(0,1fr)!important;
+}
+.classified-file dt{white-space:nowrap}
+.classified-file dd{
+  min-width:0;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.classified-file__actions button{
+  white-space:nowrap;
+  min-width:0;
+}
+
+.classified-viewer header>div{min-width:0}
+.classified-viewer header b{overflow-wrap:anywhere}
+.classified-viewer pre{overflow-wrap:anywhere;word-break:normal}
+
+/* Archive portal doors */
+.archive-portals{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))!important;
+}
+.archive-portals>button{
+  grid-template-columns:44px minmax(0,1fr)!important;
+  min-width:0;
+}
+.archive-portals>button>span{white-space:nowrap}
+.archive-portals>button>b{white-space:nowrap}
+.archive-portals>button>strong{text-wrap:balance}
+.archive-portals>button>small{text-wrap:pretty}
+
+/* ---------- cases ---------- */
+.case-row{
+  grid-template-columns:90px minmax(190px,.8fr) minmax(240px,1.6fr) 110px 130px!important;
+}
+.case-row__id,.case-row em,.case-row b:last-child{white-space:nowrap}
+.case-row strong{line-height:1.3;text-wrap:balance}
+.case-row span:not(.case-row__id){line-height:1.5}
+
+.case-tabs-v3,
+.tabs{min-width:0}
+.case-tabs-v3 button,
+.tabs span{
+  min-width:0;
+  line-height:1.35!important;
+}
+
+/* ---------- agents ---------- */
+.registry-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr))!important;
+}
+.registry-card{min-width:0}
+.registry-card__copy{min-width:0}
+.registry-card__copy small,
+.registry-card__copy i{white-space:nowrap}
+.registry-card__copy strong{line-height:1.2;text-wrap:balance}
+.registry-filters{display:flex;flex-wrap:wrap;gap:6px}
+.registry-filters button{white-space:nowrap}
+.agent-expanded__body{min-width:0}
+.agent-expanded__title{gap:12px}
+.agent-status-stamp{white-space:nowrap}
+
+/* ---------- grimoire ---------- */
+.grimoire-page{column-gap:18px!important}
+.grimoire-side{min-width:0}
+.grimoire-materials button,
+.grimoire-case-link,
+.grimoire-reveal{line-height:1.35!important}
+.grimoire-index,
+.grimoire-entity-tabs{min-width:0}
+.grimoire-index button,
+.grimoire-entity-tabs button{white-space:normal;line-height:1.35!important}
+.book-page h1{text-wrap:balance}
+.book-page dl{grid-template-columns:minmax(120px,150px) minmax(0,1fr)!important}
+.book-page dd{overflow-wrap:anywhere}
+
+/* ---------- terminal ---------- */
+.terminal-grid--arg{
+  grid-template-columns:minmax(220px,.72fr) minmax(210px,.68fr) minmax(500px,1.9fr)!important;
+}
+.terminal-arg-status{gap:6px!important}
+.terminal-arg-status span{white-space:nowrap}
+.terminal-arg-tree button{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.terminal-quickbar{display:flex;flex-wrap:wrap;gap:5px}
+.terminal-quickbar button{white-space:nowrap}
+.terminal-line{grid-template-columns:86px minmax(0,1fr)!important}
+.terminal-line>span{min-width:0;overflow-wrap:anywhere}
+.terminal-result-link{white-space:nowrap}
+.terminal-input-row{min-width:0}
+.terminal-input-row input{min-width:0}
+
+/* ---------- dashboard / common panels ---------- */
+.stat-grid>div{min-width:0}
+.stat-grid span{line-height:1.35}
+.system-log li{line-height:1.55}
+.panel p{line-height:1.6}
+
+/* Medium desktop / laptop: preserve typography, change composition instead. */
+@media (max-width:1400px){
+  .classified-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .terminal-grid--arg{grid-template-columns:minmax(210px,.72fr) minmax(460px,1.7fr)!important}
+  .terminal-grid--arg .terminal-arg-feeds{grid-column:1;grid-row:2}
+  .terminal-grid--arg .terminal-console{grid-column:2;grid-row:1/3}
+  .case-row{grid-template-columns:86px minmax(180px,.9fr) minmax(220px,1.5fr) 105px!important}
+  .case-row b:last-child{grid-column:2/5;text-align:left!important;padding-top:4px}
+}
+
+@media (max-width:1200px){
+  .norm-shell{grid-template-columns:195px minmax(0,1fr)!important}
+  .secret-nav a{font-size:9px!important;grid-template-columns:27px minmax(0,1fr) 10px!important}
+  .classified-grid{grid-template-columns:1fr 1fr!important}
+  .archive-portals{grid-template-columns:1fr!important}
+  .clearance-zone__head{gap:16px!important}
+  .case-row{grid-template-columns:80px minmax(160px,1fr) minmax(180px,1.5fr)!important}
+  .case-row em{grid-column:1/2}
+  .case-row b:last-child{grid-column:2/4!important}
+  .terminal-grid--arg{grid-template-columns:1fr!important}
+  .terminal-grid--arg .terminal-arg-index,
+  .terminal-grid--arg .terminal-arg-feeds,
+  .terminal-grid--arg .terminal-console{grid-column:1!important;grid-row:auto!important}
+  .terminal-arg-feeds{display:grid!important;grid-template-columns:1fr 1fr!important}
+  .terminal-arg-hint{grid-column:1/-1}
+}
+
+@media (max-width:900px){
+  .classified-grid{grid-template-columns:1fr!important}
+  .classified-file h2{min-height:0}
+  .clearance-zone__head{flex-direction:column!important}
+  .clearance-zone__badge{align-items:flex-start!important}
+  .case-row{display:grid!important;grid-template-columns:86px minmax(0,1fr)!important;gap:7px 12px!important}
+  .case-row__id{grid-column:1}
+  .case-row strong{grid-column:2}
+  .case-row span:not(.case-row__id),.case-row em,.case-row b:last-child{grid-column:1/-1!important}
+  .registry-grid{grid-template-columns:1fr!important}
+}
+
+@media (max-width:720px){
+  .secret-nav a{white-space:normal}
+  .classified-file__actions{grid-template-columns:1fr!important}
+  .classified-file__actions button{white-space:normal}
+  .clearance-zone__stats>span{flex:1 1 120px}
+  .clearance-zone__stats button{width:100%}
+  .terminal-arg-feeds{grid-template-columns:1fr!important}
+  .terminal-line{grid-template-columns:1fr!important;gap:2px!important}
+  .terminal-line time{opacity:.75}
+  .brand__sub,.session span{white-space:normal}
+}

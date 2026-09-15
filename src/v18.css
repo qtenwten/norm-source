@@ -1,0 +1,93 @@
+/* N.O.R.M. v18 — Mirror orphan-route recovery + terminal/file UX + grimoire readability */
+
+.mirror-orphan-recovery{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  margin:12px 0;
+  padding:14px 15px;
+  border:1px solid #60473f;
+  background:linear-gradient(90deg,rgba(34,17,14,.64),rgba(7,12,9,.98));
+}
+.mirror-orphan-recovery>div:first-child{min-width:0;max-width:900px}
+.mirror-orphan-recovery small{font-size:9px;letter-spacing:.13em;color:#936e64}
+.mirror-orphan-recovery h2{font-size:19px;line-height:1.3;margin:5px 0;color:#e0e5e2}
+.mirror-orphan-recovery p{font-size:11px;line-height:1.65;color:#acb7b1;margin:0}
+.mirror-orphan-recovery>div:last-child{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px;flex:0 0 auto;max-width:460px}
+.mirror-orphan-recovery button{border:1px solid #5c4942;background:#130f0d;color:#c27a69;padding:9px 10px;font-size:9px;line-height:1.3;white-space:nowrap}
+.mirror-orphan-recovery button:hover{border-color:#8a6258;color:#e2a08f}
+.mirror-orphan-recovery button:disabled{opacity:.4;cursor:not-allowed}
+.mirror-orphan-recovery.is-restored{border-color:#587064;background:linear-gradient(90deg,rgba(17,34,26,.74),rgba(7,12,9,.98))}
+.mirror-orphan-recovery.is-restored small{color:#819c8e}
+.mirror-orphan-recovery.is-restored button{border-color:#587265;background:#0d1913;color:#bdd2c6}
+
+/* ---------- terminal: every file should explain itself and be actionable ---------- */
+.terminal-deep .terminal-command-log{scrollbar-gutter:stable}
+.terminal-deep .terminal-line>span{line-height:1.62}
+.terminal-deep .terminal-line--command>span{color:#d8dfdb}
+.terminal-deep .terminal-line--danger>span{color:#dc8171}
+.terminal-deep .terminal-line--match>span{color:#bfd1c7}
+.terminal-files-v2 .terminal-arg-feeds{align-content:start;gap:9px}
+.terminal-uplinks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.terminal-uplinks>button{min-width:0}
+.terminal-resource-inspector{border:1px solid #3d5147;background:linear-gradient(180deg,rgba(11,20,15,.98),rgba(6,11,8,.99));padding:11px 12px;min-width:0;display:flex;flex-direction:column;gap:5px;position:relative;overflow:hidden}
+.terminal-resource-inspector::after{content:"";position:absolute;right:-32px;top:-36px;width:95px;height:95px;border:1px solid rgba(94,122,106,.14);transform:rotate(45deg);pointer-events:none}
+.terminal-resource-inspector>small{font-size:9px;letter-spacing:.14em;color:#758b80}
+.terminal-resource-inspector>b{font-size:15px;line-height:1.25;color:#e0e7e3;overflow-wrap:anywhere}
+.terminal-resource-inspector>code{font-size:9px;color:#8fa49a;overflow-wrap:anywhere;background:rgba(4,8,6,.6);border-left:2px solid #40574b;padding:4px 6px}
+.terminal-resource-inspector>p{font-size:11px;line-height:1.5;color:#b1bdb7;margin:2px 0 0}
+.terminal-resource-inspector>em{font-size:10px;line-height:1.5;color:#c18b7f;font-style:normal;border-top:1px solid #27382f;padding-top:7px;margin-top:2px}
+.terminal-resource-kind{font-size:9px;color:#d17a69;letter-spacing:.08em}
+.terminal-resource-status{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.terminal-resource-status span{border:1px solid #344a3e;background:#08110d;color:#9fb2a7;padding:4px 6px;font-size:8px;white-space:nowrap}
+.terminal-resource-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:3px}
+.terminal-resource-actions button{min-width:0;border:1px solid #42594d;background:#0a1510;color:#aebeb5;padding:6px 5px;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.terminal-resource-actions button:last-child{border-color:#684b43;color:#d08473;background:#150f0d}
+.terminal-resource-inspector.is-binary{border-color:#67483f;background:linear-gradient(180deg,rgba(27,15,12,.8),rgba(7,10,8,.99))}
+.terminal-line{align-items:flex-start}
+.terminal-line>span{min-width:0;overflow-wrap:anywhere}
+.terminal-line-actions{display:inline-flex;gap:4px;flex-wrap:wrap;margin-left:7px;vertical-align:middle}
+.terminal-line-actions button{border:1px solid #3d5147;background:#09120e;color:#9eb1a6;padding:3px 6px;font-size:8px;line-height:1.15;white-space:nowrap}
+.terminal-line-actions button:hover{border-color:#61796c;color:#d1ddd6;background:#0d1a13}
+.terminal-line-actions button.is-export{border-color:#674940;color:#c87b6b;background:#140e0c}
+.terminal-line-actions button.is-export:hover{border-color:#9a6659;color:#e0a093}
+
+/* ---------- grimoire: readable markers and scalable HQ illustration presentation ---------- */
+.grimoire-book--monster .book-page{font-size:15px}
+.grimoire-monster-page h1{font-size:38px!important;line-height:1.02!important;margin-bottom:7px!important}
+.grimoire-monster-page .hand{font-size:16px!important;line-height:1.42!important}
+.monster-plate{min-height:520px;background:#d8cfad;border:1px solid rgba(70,54,35,.42);box-shadow:inset 0 0 0 5px rgba(255,255,255,.12),inset 0 0 38px rgba(43,34,25,.18);overflow:hidden}
+.monster-plate>img{width:100%;height:100%;object-fit:cover;object-position:center;image-rendering:auto;filter:sepia(.06) contrast(1.035) saturate(.92);transform:none!important}
+.monster-plate>img[src$="grimoire-river-gadina.webp"],.monster-material-scan img[src$="grimoire-river-gadina.webp"]{content:url('/assets/grimoire-river-gadina-hq.svg')}
+.monster-plate>img[src$="grimoire-ancient-sorcery.webp"],.monster-material-scan img[src$="grimoire-ancient-sorcery.webp"]{content:url('/assets/grimoire-ancient-sorcery-hq.svg')}
+.monster-plate>img[src$="grimoire-devils-marionette.webp"],.monster-material-scan img[src$="grimoire-devils-marionette.webp"]{content:url('/assets/grimoire-devils-marionette-hq.svg')}
+.monster-plate>img[src$="grimoire-night-dusnila.webp"],.monster-material-scan img[src$="grimoire-night-dusnila.webp"]{content:url('/assets/grimoire-night-dusnila-hq.svg')}
+.monster-plate>img[src$="grimoire-zoomer-demon.webp"],.monster-material-scan img[src$="grimoire-zoomer-demon.webp"]{content:url('/assets/grimoire-zoomer-demon-hq.svg')}
+.monster-plate__shade{background:linear-gradient(180deg,rgba(255,247,219,.02),rgba(60,44,28,.05))!important;mix-blend-mode:multiply;pointer-events:none}
+.monster-hotspot{width:40px!important;height:40px!important;margin:-20px 0 0 -20px!important;border:2px solid #84342e!important;background:rgba(248,238,203,.96)!important;box-shadow:0 2px 0 rgba(62,37,26,.35),0 0 0 4px rgba(248,238,203,.34)!important;display:grid!important;place-items:center!important;z-index:8!important}
+.monster-hotspot span{font-size:13px!important;font-weight:900!important;line-height:1!important;color:#7b2d27!important;text-shadow:none!important;letter-spacing:0!important}
+.monster-hotspot:hover,.monster-hotspot.active{transform:scale(1.12)!important;background:#7d302a!important;border-color:#5f201c!important;box-shadow:0 3px 0 rgba(62,37,26,.3),0 0 0 6px rgba(125,48,42,.16)!important}
+.monster-hotspot:hover span,.monster-hotspot.active span{color:#f4ead0!important}
+.monster-hotspot-card{left:18px!important;right:18px!important;bottom:18px!important;width:auto!important;max-width:520px!important;padding:16px 50px 16px 17px!important;border:2px solid rgba(101,51,43,.65)!important;background:rgba(247,237,204,.98)!important;box-shadow:0 13px 30px rgba(49,35,24,.24)!important;color:#2d261d!important;z-index:12!important}
+.monster-hotspot-card small{display:block;font-size:11px!important;line-height:1.25!important;letter-spacing:.11em!important;color:#8b4438!important;margin-bottom:5px!important}
+.monster-hotspot-card b{display:block;font-size:19px!important;line-height:1.18!important;color:#2c251d!important;margin-bottom:7px!important}
+.monster-hotspot-card p{font-size:14px!important;line-height:1.56!important;color:#40362a!important;margin:0!important;max-width:48ch}
+.monster-hotspot-card>button{position:absolute!important;right:12px!important;top:11px!important;width:30px!important;height:30px!important;border:1px solid rgba(95,48,40,.46)!important;background:#efe3c0!important;color:#7d302a!important;font-size:20px!important;line-height:1!important}
+.grimoire-classification-page h2{font-size:25px!important}
+.grimoire-classification-page h3{font-size:14px!important;margin-top:16px!important}
+.grimoire-classification-page dl{font-size:13px!important;line-height:1.5!important}
+.grimoire-classification-page li{font-size:13px!important;line-height:1.55!important;margin-bottom:5px!important}
+.warning-paper{font-size:13px!important;line-height:1.5!important;padding:10px 12px!important}
+.grimoire-source-block b{font-size:13px!important;line-height:1.45!important}
+.grimoire-source-block span,.red-pencil,.grimoire-hidden-layer{font-size:11px!important;line-height:1.45!important}
+.grimoire-record-strip button b{font-size:11px!important;line-height:1.25!important}
+.grimoire-record-strip button span,.grimoire-record-strip button small{font-size:9px!important}
+.material-viewer__scan.monster-material-scan{height:min(64vh,720px)!important;padding:16px!important;background:#d5caa6!important}
+.material-viewer__scan.monster-material-scan img{width:100%;height:100%;object-fit:contain!important;filter:sepia(.05) contrast(1.03)!important;image-rendering:auto}
+
+@media(min-width:1280px){.terminal-files-v2 .terminal-grid--deep{grid-template-columns:minmax(255px,.62fr) minmax(320px,.82fr) minmax(0,2.2fr)}.terminal-files-v2 .terminal-console{min-width:0}}
+@media(max-width:1279px){.terminal-uplinks{grid-template-columns:1fr 1fr}.terminal-resource-actions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:980px){.mirror-orphan-recovery{flex-direction:column;align-items:stretch}.mirror-orphan-recovery>div:last-child{max-width:none;justify-content:flex-start}.monster-plate{min-height:470px}}
+@media(max-width:760px){.terminal-uplinks{grid-template-columns:1fr}.terminal-resource-inspector{padding:10px}.terminal-line-actions{display:flex;margin:5px 0 0;width:100%}.terminal-line-actions button{font-size:9px;padding:5px 7px}.monster-hotspot{width:36px!important;height:36px!important;margin:-18px 0 0 -18px!important}.monster-hotspot-card{left:10px!important;right:10px!important;bottom:10px!important;padding:13px 42px 13px 14px!important}.monster-hotspot-card b{font-size:17px!important}.monster-hotspot-card p{font-size:13px!important}}
+@media(max-width:640px){.mirror-orphan-recovery>div:last-child{display:grid;grid-template-columns:1fr}.mirror-orphan-recovery button{white-space:normal;width:100%}.monster-plate{min-height:420px}}

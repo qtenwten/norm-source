@@ -1,0 +1,196 @@
+/* N.O.R.M. cinematic scenarios: dashboard / grimoire / field terminal */
+
+.route-transition__glyphs{
+  position:absolute;
+  left:50%;
+  bottom:17%;
+  transform:translateX(-50%);
+  color:rgba(188,198,193,.22);
+  font-size:9px;
+  letter-spacing:.32em;
+  white-space:nowrap;
+  opacity:0;
+}
+
+/* Dashboard: optical re-indexing, like a secure archive camera locking focus. */
+.route-transition--dashboard::before{
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  border:0;
+  background:
+    linear-gradient(90deg,transparent 49.8%,rgba(205,214,209,.16) 50%,transparent 50.2%),
+    linear-gradient(0deg,transparent 49.8%,rgba(205,214,209,.1) 50%,transparent 50.2%);
+  opacity:0;
+}
+.route-transition--dashboard.is-active::before{animation:dashboard-lock .58s ease both}
+.route-transition--dashboard.is-active .route-transition__glyphs{animation:glyph-flicker .52s steps(3) both}
+.route-transition--dashboard .route-transition__label{border-left-color:#7f8d86}
+
+/* Grimoire: paper/scan handoff rather than a digital wipe. */
+.route-transition--grimoire::before{
+  left:50%;
+  top:-8%;
+  bottom:auto;
+  width:1px;
+  height:116%;
+  border:0;
+  background:rgba(207,199,179,.52);
+  box-shadow:-34vw 0 70px rgba(166,147,107,.025),34vw 0 70px rgba(166,147,107,.025);
+  transform:scaleY(0);
+  transform-origin:center;
+}
+.route-transition--grimoire.is-active::before{animation:grimoire-spine .72s cubic-bezier(.16,.76,.22,1) both}
+.route-transition--grimoire .route-transition__beam{
+  background:
+    radial-gradient(ellipse at 50% 50%,rgba(172,151,110,.065),transparent 46%),
+    rgba(2,3,3,.18);
+  backdrop-filter:contrast(1.04) brightness(.72);
+}
+.route-transition--grimoire .route-transition__label{
+  border-left-color:rgba(190,171,132,.58);
+  font-family:Georgia,serif;
+  background:rgba(7,7,6,.91);
+}
+.route-transition--grimoire .route-transition__label small{font-family:"Courier New",monospace}
+.route-transition--grimoire.is-active .route-transition__glyphs{animation:glyph-flicker .7s steps(2) both;color:rgba(190,171,132,.18)}
+
+/* Terminal: CRT collapse + data acquisition. */
+.route-transition--terminal::before{
+  left:0;
+  top:50%;
+  width:100%;
+  height:1px;
+  border:0;
+  background:rgba(199,211,204,.72);
+  box-shadow:0 0 26px rgba(165,196,179,.2);
+}
+.route-transition--terminal.is-active::before{animation:terminal-crt-line .62s cubic-bezier(.12,.68,.15,1) both}
+.route-transition--terminal .route-transition__beam{
+  background:
+    repeating-linear-gradient(0deg,transparent 0 5px,rgba(255,255,255,.018) 6px),
+    rgba(1,2,2,.15);
+  backdrop-filter:contrast(1.14) brightness(.54);
+}
+.route-transition--terminal .route-transition__label{
+  border-left-color:rgba(144,180,160,.72);
+  background:rgba(2,4,3,.94);
+}
+.route-transition--terminal.is-active .route-transition__glyphs{animation:terminal-data .58s steps(5) both}
+
+@keyframes dashboard-lock{
+  0%{opacity:0;transform:scale(1.14)}
+  32%{opacity:.72}
+  70%{opacity:.3;transform:scale(.96)}
+  100%{opacity:0;transform:scale(1)}
+}
+@keyframes grimoire-spine{
+  0%{opacity:0;transform:scaleY(0)}
+  25%{opacity:1;transform:scaleY(1)}
+  65%{opacity:.8;box-shadow:-42vw 0 100px rgba(166,147,107,.07),42vw 0 100px rgba(166,147,107,.07)}
+  100%{opacity:0;transform:scaleY(1)}
+}
+@keyframes terminal-crt-line{
+  0%{opacity:0;transform:scaleX(.05)}
+  20%{opacity:1;transform:scaleX(.92)}
+  52%{opacity:.9;transform:scaleX(1)}
+  100%{opacity:0;transform:scaleX(.08)}
+}
+@keyframes terminal-data{
+  0%,100%{opacity:0;transform:translateX(-50%) translateY(4px)}
+  25%,68%{opacity:.75;transform:translateX(-50%)}
+  45%{opacity:.22}
+}
+@keyframes glyph-flicker{
+  0%,100%{opacity:0}
+  22%,62%{opacity:.72}
+  38%{opacity:.18}
+}
+
+/* Route entry motion: three distinct cinematic identities. */
+.norm-shell--dashboard .main-area{animation:dashboard-resolve .62s cubic-bezier(.2,.8,.2,1)}
+.norm-shell--grimoire .main-area{animation:grimoire-focus .72s cubic-bezier(.18,.75,.2,1)}
+.norm-shell--terminal .main-area{animation:terminal-acquire .48s steps(4)}
+@keyframes dashboard-resolve{from{opacity:0;filter:blur(3px) contrast(.8);transform:scale(.994)}to{opacity:1;filter:none;transform:none}}
+@keyframes grimoire-focus{from{opacity:0;filter:sepia(.28) blur(2px);transform:translateY(8px) scale(.996)}to{opacity:1;filter:none;transform:none}}
+@keyframes terminal-acquire{0%{opacity:0;filter:brightness(.4) contrast(1.5)}35%{opacity:.72;filter:brightness(1.18) contrast(1.25)}55%{opacity:.38}100%{opacity:1;filter:none}}
+
+/* Dashboard anomaly: intentionally brief and easy to miss. */
+.stat-grid>div{transition:border-color .16s ease,box-shadow .16s ease,filter .16s ease}
+.stat-grid>div.stat-anomaly{
+  border-color:rgba(184,70,64,.55);
+  box-shadow:inset 2px 0 0 rgba(184,70,64,.65),0 0 18px rgba(184,70,64,.06);
+  animation:stat-desync 1.25s steps(2) both;
+}
+.stat-grid>div.stat-anomaly b,.stat-grid>div.stat-anomaly em{color:#c95a54}
+.phantom-log{
+  color:#c86a64;
+  animation:phantom-log-in 1.25s steps(2) both;
+}
+@keyframes stat-desync{0%,100%{filter:none}30%{filter:contrast(1.25);transform:translateX(1px)}55%{transform:translateX(-1px)}75%{filter:brightness(.82)}}
+@keyframes phantom-log-in{0%{opacity:0}18%,76%{opacity:1}42%{opacity:.34}100%{opacity:0}}
+
+/* Grimoire gets a physical reveal layer. */
+.grimoire-stage{position:relative;perspective:1400px}
+.grimoire-stage .book-wrap{transition:transform .75s cubic-bezier(.2,.75,.2,1),box-shadow .75s ease}
+.grimoire-page--revealed .book-wrap{transform:perspective(1200px) rotateX(.5deg) rotateY(-.45deg);box-shadow:0 34px 70px #000b}
+.grimoire-reveal{
+  position:relative;
+  z-index:4;
+  margin-top:10px;
+  border:1px solid rgba(76,66,49,.62);
+  background:rgba(50,45,34,.08);
+  color:#3a3428;
+  padding:7px 10px;
+  font-size:10px;
+  letter-spacing:.08em;
+}
+.grimoire-reveal:hover{background:rgba(50,45,34,.16)}
+.grimoire-hidden-layer{
+  position:absolute;
+  left:20px;
+  right:20px;
+  bottom:18px;
+  z-index:3;
+  display:grid;
+  grid-template-columns:110px 1fr;
+  gap:7px 12px;
+  padding:12px 14px;
+  color:#d8d0bc;
+  background:rgba(17,17,14,.95);
+  border:1px solid rgba(130,113,79,.65);
+  box-shadow:0 14px 28px rgba(0,0,0,.28);
+  opacity:0;
+  transform:translateY(12px) scaleY(.92);
+  transform-origin:bottom;
+  pointer-events:none;
+  transition:opacity .32s ease,transform .42s cubic-bezier(.2,.8,.2,1);
+}
+.grimoire-hidden-layer small{grid-column:1/-1;color:#8e846d;letter-spacing:.12em}
+.grimoire-hidden-layer strong{font-size:28px;color:#b33c35}
+.grimoire-hidden-layer span{font-size:10px;line-height:1.5;align-self:center}
+.grimoire-hidden-layer code{grid-column:1/-1;color:#b5a98d;font-size:10px}
+.grimoire-page--revealed .grimoire-hidden-layer{opacity:1;transform:none}
+.grimoire-page--revealed .entity-sketch{animation:ink-breathe 4.8s ease-in-out infinite}
+@keyframes ink-breathe{50%{filter:contrast(1.42) brightness(.93);transform:scale(1.004)}}
+
+/* Terminal completion leaves a faint after-image rather than more noise. */
+.terminal-log{transition:box-shadow .45s ease,border-color .45s ease}
+.terminal-log--complete{border-color:rgba(138,69,64,.5);box-shadow:inset 0 -32px 70px rgba(88,18,15,.035)}
+.terminal-log--complete::after{
+  content:"CHANNEL OPEN // SOURCE UNKNOWN";
+  display:block;
+  margin-top:10px;
+  color:rgba(188,77,70,.34);
+  font-size:9px;
+  letter-spacing:.18em;
+  animation:terminal-afterimage 4s ease-in-out infinite;
+}
+@keyframes terminal-afterimage{0%,78%,100%{opacity:.18}82%{opacity:.72}86%{opacity:.08}91%{opacity:.4}}
+
+@media (prefers-reduced-motion:reduce){
+  .norm-shell--dashboard .main-area,.norm-shell--grimoire .main-area,.norm-shell--terminal .main-area,
+  .stat-grid>div.stat-anomaly,.phantom-log,.grimoire-page--revealed .entity-sketch,.terminal-log--complete::after{animation:none!important}
+  .grimoire-stage .book-wrap,.grimoire-hidden-layer{transition:none!important}
+}

@@ -1,0 +1,173 @@
+/* N.O.R.M. v6 — portrait separation, brighter photography and audio calibration */
+
+/* Keep the archive monochrome look, but stop crushing faces and detail into black. */
+.norm-photo img{
+  filter:grayscale(1) contrast(1.01) brightness(1.42)!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+}
+.norm-photo:hover img{
+  filter:grayscale(1) contrast(1.03) brightness(1.5)!important;
+}
+
+/* Agent dossiers need especially readable faces. */
+.registry-portrait img{
+  filter:grayscale(1) contrast(1) brightness(1.5)!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+}
+.registry-card:hover .registry-portrait img,
+.agent-expanded:hover .registry-portrait img{
+  filter:grayscale(1) contrast(1.02) brightness(1.58)!important;
+}
+
+/* Reduce darkening on large monochrome photographic headers as well. */
+.city-banner{
+  filter:grayscale(1) contrast(1.02) brightness(1.12)!important;
+  padding:26px 42px!important;
+}
+.city-banner--button:hover{
+  filter:grayscale(1) contrast(1.04) brightness(1.18)!important;
+}
+
+/* Separate portrait crops: Sen on the left, Grig on the right. */
+.registry-card[data-agent="sen"] .registry-portrait img,
+.agent-expanded[data-agent="sen"] .registry-portrait img{
+  object-position:28% center!important;
+}
+.registry-card[data-agent="grig"] .registry-portrait img,
+.agent-expanded[data-agent="grig"] .registry-portrait img{
+  object-position:72% center!important;
+}
+
+/* Preserve detail in the tiny dashboard portraits. */
+.agent-mini-grid .norm-photo img{
+  filter:grayscale(1) contrast(1) brightness(1.5)!important;
+}
+
+/* Permanent volume control. The final loudness profile is calibrated in audio.js. */
+.volume-console{
+  border:1px solid #3d4c45;
+  background:linear-gradient(180deg,#0c1310,#080d0b);
+  padding:10px 9px 9px;
+  margin-top:2px;
+  box-shadow:inset 0 0 22px rgba(0,0,0,.25);
+}
+.volume-console__head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+  color:#aebbb4;
+  font-size:10px;
+  letter-spacing:.08em;
+}
+.volume-console__head output{
+  color:#dce4df;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.04em;
+}
+.volume-slider{
+  --volume:20%;
+  width:100%;
+  height:18px;
+  margin:0;
+  background:transparent;
+  accent-color:#91bba4;
+  cursor:ew-resize;
+}
+.volume-slider::-webkit-slider-runnable-track{
+  height:4px;
+  border:1px solid #526159;
+  background:linear-gradient(90deg,#91bba4 0 var(--volume),#16201b var(--volume) 100%);
+}
+.volume-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:12px;
+  height:18px;
+  margin-top:-8px;
+  border:1px solid #cbd5cf;
+  border-radius:0;
+  background:#19231e;
+  box-shadow:0 0 0 2px #080d0b,0 0 9px rgba(145,187,164,.3);
+}
+.volume-slider::-moz-range-track{
+  height:4px;
+  border:1px solid #526159;
+  background:#16201b;
+}
+.volume-slider::-moz-range-progress{
+  height:4px;
+  background:#91bba4;
+}
+.volume-slider::-moz-range-thumb{
+  width:11px;
+  height:17px;
+  border:1px solid #cbd5cf;
+  border-radius:0;
+  background:#19231e;
+  box-shadow:0 0 0 2px #080d0b,0 0 9px rgba(145,187,164,.3);
+}
+.volume-slider:focus-visible{
+  outline:1px solid #91aa9d;
+  outline-offset:4px;
+}
+.volume-console__scale{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px;
+  margin-top:3px;
+  color:#6f7f76;
+  font-size:8px;
+  line-height:1.2;
+}
+.volume-console__scale .volume-reference{display:none}
+.volume-console__scale span:last-child{text-align:right}
+.volume-console>small{display:none}
+.sound-toggle{margin-top:7px;width:100%}
+
+/* Session termination is deliberately visible but less prominent than the anomaly report action. */
+.logout-button{
+  width:100%;
+  margin-top:7px;
+  padding:9px 8px 8px;
+  border:1px solid #673a3a;
+  background:linear-gradient(180deg,rgba(49,20,20,.3),rgba(18,10,10,.58));
+  color:#cb8c86;
+  font:inherit;
+  text-align:left;
+  letter-spacing:.05em;
+  cursor:pointer;
+  transition:border-color .14s ease,background .14s ease,color .14s ease,transform .08s ease;
+}
+.logout-button span{
+  display:block;
+  font-size:10px;
+  font-weight:700;
+}
+.logout-button small{
+  display:block;
+  margin-top:4px;
+  color:#876864;
+  font-size:7px;
+  line-height:1.3;
+  letter-spacing:.04em;
+}
+.logout-button:hover{
+  border-color:#a4544c;
+  background:linear-gradient(180deg,rgba(70,25,24,.42),rgba(22,10,10,.72));
+  color:#e3aaa3;
+}
+.logout-button:active{transform:translateY(1px)}
+.logout-button:focus-visible{outline:1px solid #bf6e65;outline-offset:2px}
+.logout-button:disabled{opacity:.58;cursor:wait}
+
+@media(max-width:760px){
+  .city-banner{padding:20px 22px!important}
+  .volume-console{padding:9px 8px}
+  .volume-console__head{font-size:9px}
+  .logout-button span{font-size:9px}
+}
