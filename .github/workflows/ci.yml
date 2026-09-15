@@ -29,5 +29,8 @@ jobs:
       - name: Investigation contract
         run: npm run test:investigation
 
+      - name: N.O.R.M. 2.0 contract
+        run: npm run test:norm20
+
       - name: Build
         run: npm run build

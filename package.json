@@ -9,7 +9,8 @@
     "build:pages": "vite build --base=/norm-source/site/ && node scripts/fix-pages-assets.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test:terminal": "node scripts/test-terminal-contract.mjs",
-    "test:investigation": "node scripts/test-investigation-contract.mjs"
+    "test:investigation": "node scripts/test-investigation-contract.mjs",
+    "test:norm20": "node scripts/test-norm20-contract.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^6.0.0",

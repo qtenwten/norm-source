@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
 import './funMessagesPatch.js'
+import './terminalEnhancements.js'
 import App from './App.jsx'
 import './styles.css'
 import './v2.css'
@@ -28,6 +29,7 @@ import './v21.css'
 import './v22.css'
 import './v23.css'
 import './v24.css'
+import './v25.css'
 
 const isPublishedBuild = window.location.hostname.endsWith('github.io') || window.location.pathname.startsWith('/norm-source/site')
 const Router = isPublishedBuild ? HashRouter : BrowserRouter
