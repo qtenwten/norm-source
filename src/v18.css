@@ -53,18 +53,23 @@
 .terminal-line-actions button.is-export{border-color:#674940;color:#c87b6b;background:#140e0c}
 .terminal-line-actions button.is-export:hover{border-color:#9a6659;color:#e0a093}
 
-/* ---------- grimoire: readable markers and crisp illustration presentation ---------- */
+/* ---------- grimoire: readable markers and scalable HQ illustration presentation ---------- */
 .grimoire-book--monster .book-page{font-size:15px}
 .grimoire-monster-page h1{font-size:38px!important;line-height:1.02!important;margin-bottom:7px!important}
 .grimoire-monster-page .hand{font-size:16px!important;line-height:1.42!important}
 .monster-plate{min-height:520px;background:#d8cfad;border:1px solid rgba(70,54,35,.42);box-shadow:inset 0 0 0 5px rgba(255,255,255,.12),inset 0 0 38px rgba(43,34,25,.18);overflow:hidden}
-.monster-plate>img{width:100%;height:100%;object-fit:cover;object-position:center;image-rendering:auto;filter:sepia(.11) contrast(1.06) saturate(.82);transform:none!important}
-.monster-plate__shade{background:linear-gradient(180deg,rgba(255,247,219,.03),rgba(60,44,28,.08))!important;mix-blend-mode:multiply;pointer-events:none}
-.monster-hotspot{width:40px!important;height:40px!important;margin:-20px 0 0 -20px!important;border:2px solid #84342e!important;background:rgba(248,238,203,.95)!important;box-shadow:0 2px 0 rgba(62,37,26,.35),0 0 0 4px rgba(248,238,203,.34)!important;display:grid!important;place-items:center!important;z-index:8!important}
+.monster-plate>img{width:100%;height:100%;object-fit:cover;object-position:center;image-rendering:auto;filter:sepia(.06) contrast(1.035) saturate(.92);transform:none!important}
+.monster-plate>img[src$="grimoire-river-gadina.webp"],.monster-material-scan img[src$="grimoire-river-gadina.webp"]{content:url('/assets/grimoire-river-gadina-hq.svg')}
+.monster-plate>img[src$="grimoire-ancient-sorcery.webp"],.monster-material-scan img[src$="grimoire-ancient-sorcery.webp"]{content:url('/assets/grimoire-ancient-sorcery-hq.svg')}
+.monster-plate>img[src$="grimoire-devils-marionette.webp"],.monster-material-scan img[src$="grimoire-devils-marionette.webp"]{content:url('/assets/grimoire-devils-marionette-hq.svg')}
+.monster-plate>img[src$="grimoire-night-dusnila.webp"],.monster-material-scan img[src$="grimoire-night-dusnila.webp"]{content:url('/assets/grimoire-night-dusnila-hq.svg')}
+.monster-plate>img[src$="grimoire-zoomer-demon.webp"],.monster-material-scan img[src$="grimoire-zoomer-demon.webp"]{content:url('/assets/grimoire-zoomer-demon-hq.svg')}
+.monster-plate__shade{background:linear-gradient(180deg,rgba(255,247,219,.02),rgba(60,44,28,.05))!important;mix-blend-mode:multiply;pointer-events:none}
+.monster-hotspot{width:40px!important;height:40px!important;margin:-20px 0 0 -20px!important;border:2px solid #84342e!important;background:rgba(248,238,203,.96)!important;box-shadow:0 2px 0 rgba(62,37,26,.35),0 0 0 4px rgba(248,238,203,.34)!important;display:grid!important;place-items:center!important;z-index:8!important}
 .monster-hotspot span{font-size:13px!important;font-weight:900!important;line-height:1!important;color:#7b2d27!important;text-shadow:none!important;letter-spacing:0!important}
 .monster-hotspot:hover,.monster-hotspot.active{transform:scale(1.12)!important;background:#7d302a!important;border-color:#5f201c!important;box-shadow:0 3px 0 rgba(62,37,26,.3),0 0 0 6px rgba(125,48,42,.16)!important}
 .monster-hotspot:hover span,.monster-hotspot.active span{color:#f4ead0!important}
-.monster-hotspot-card{left:18px!important;right:18px!important;bottom:18px!important;width:auto!important;max-width:520px!important;padding:16px 50px 16px 17px!important;border:2px solid rgba(101,51,43,.65)!important;background:rgba(247,237,204,.97)!important;box-shadow:0 13px 30px rgba(49,35,24,.24)!important;color:#2d261d!important;z-index:12!important}
+.monster-hotspot-card{left:18px!important;right:18px!important;bottom:18px!important;width:auto!important;max-width:520px!important;padding:16px 50px 16px 17px!important;border:2px solid rgba(101,51,43,.65)!important;background:rgba(247,237,204,.98)!important;box-shadow:0 13px 30px rgba(49,35,24,.24)!important;color:#2d261d!important;z-index:12!important}
 .monster-hotspot-card small{display:block;font-size:11px!important;line-height:1.25!important;letter-spacing:.11em!important;color:#8b4438!important;margin-bottom:5px!important}
 .monster-hotspot-card b{display:block;font-size:19px!important;line-height:1.18!important;color:#2c251d!important;margin-bottom:7px!important}
 .monster-hotspot-card p{font-size:14px!important;line-height:1.56!important;color:#40362a!important;margin:0!important;max-width:48ch}
@@ -79,7 +84,7 @@
 .grimoire-record-strip button b{font-size:11px!important;line-height:1.25!important}
 .grimoire-record-strip button span,.grimoire-record-strip button small{font-size:9px!important}
 .material-viewer__scan.monster-material-scan{height:min(64vh,720px)!important;padding:16px!important;background:#d5caa6!important}
-.material-viewer__scan.monster-material-scan img{width:100%;height:100%;object-fit:contain!important;filter:sepia(.08) contrast(1.05)!important;image-rendering:auto}
+.material-viewer__scan.monster-material-scan img{width:100%;height:100%;object-fit:contain!important;filter:sepia(.05) contrast(1.03)!important;image-rendering:auto}
 
 @media(min-width:1280px){.terminal-files-v2 .terminal-grid--deep{grid-template-columns:minmax(255px,.62fr) minmax(320px,.82fr) minmax(0,2.2fr)}.terminal-files-v2 .terminal-console{min-width:0}}
 @media(max-width:1279px){.terminal-uplinks{grid-template-columns:1fr 1fr}.terminal-resource-actions{grid-template-columns:repeat(2,minmax(0,1fr))}}
