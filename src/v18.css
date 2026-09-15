@@ -1,0 +1,39 @@
+/* N.O.R.M. v18 — Mirror orphan-route recovery */
+
+.mirror-orphan-recovery{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  margin:12px 0;
+  padding:14px 15px;
+  border:1px solid #60473f;
+  background:linear-gradient(90deg,rgba(34,17,14,.64),rgba(7,12,9,.98));
+}
+.mirror-orphan-recovery>div:first-child{min-width:0;max-width:900px}
+.mirror-orphan-recovery small{font-size:9px;letter-spacing:.13em;color:#936e64}
+.mirror-orphan-recovery h2{font-size:19px;line-height:1.3;margin:5px 0;color:#e0e5e2}
+.mirror-orphan-recovery p{font-size:11px;line-height:1.65;color:#acb7b1;margin:0}
+.mirror-orphan-recovery>div:last-child{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px;flex:0 0 auto;max-width:460px}
+.mirror-orphan-recovery button{border:1px solid #5c4942;background:#130f0d;color:#c27a69;padding:9px 10px;font-size:9px;line-height:1.3;white-space:nowrap}
+.mirror-orphan-recovery button:hover{border-color:#8a6258;color:#e2a08f}
+.mirror-orphan-recovery button:disabled{opacity:.4;cursor:not-allowed}
+.mirror-orphan-recovery.is-restored{border-color:#587064;background:linear-gradient(90deg,rgba(17,34,26,.74),rgba(7,12,9,.98))}
+.mirror-orphan-recovery.is-restored small{color:#819c8e}
+.mirror-orphan-recovery.is-restored button{border-color:#587265;background:#0d1913;color:#bdd2c6}
+
+/* More comfortable terminal output for the expanded filesystem. */
+.terminal-deep .terminal-command-log{scrollbar-gutter:stable}
+.terminal-deep .terminal-line>span{line-height:1.62}
+.terminal-deep .terminal-line--command>span{color:#d8dfdb}
+.terminal-deep .terminal-line--danger>span{color:#dc8171}
+.terminal-deep .terminal-line--match>span{color:#bfd1c7}
+
+@media(max-width:980px){
+  .mirror-orphan-recovery{flex-direction:column;align-items:stretch}
+  .mirror-orphan-recovery>div:last-child{max-width:none;justify-content:flex-start}
+}
+@media(max-width:640px){
+  .mirror-orphan-recovery>div:last-child{display:grid;grid-template-columns:1fr}
+  .mirror-orphan-recovery button{white-space:normal;width:100%}
+}
