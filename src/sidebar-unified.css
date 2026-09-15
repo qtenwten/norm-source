@@ -1,0 +1,324 @@
+/* N.O.R.M. unified sidebar contract
+   The left navigation is application chrome, not route content. Its geometry and
+   visual language must therefore be identical on every route at a given viewport.
+   Loaded last so historical route/theme overrides cannot reshape the shell. */
+
+:root{
+  --norm-sidebar-header-h:112px;
+  --norm-sidebar-footer-h:34px;
+  --norm-sidebar-bg:#060d0b;
+  --norm-sidebar-panel:#0a1210;
+  --norm-sidebar-hover:#0e1a16;
+  --norm-sidebar-line:#33453e;
+  --norm-sidebar-active:#678272;
+  --norm-sidebar-text:#cad0cb;
+  --norm-sidebar-muted:#8ca097;
+}
+
+@media (min-width:1025px) and (max-width:1599px){
+  :root{--norm-sidebar-header-h:96px;--norm-sidebar-footer-h:32px}
+}
+
+/* Short desktop viewports use one compact shell profile everywhere, rather than
+   letting Field Terminal secretly resize the left rail on its route only. */
+@media (min-width:1280px) and (max-height:1050px){
+  :root{--norm-sidebar-header-h:96px;--norm-sidebar-footer-h:28px}
+  .norm-shell[data-route]{grid-template-rows:96px minmax(0,1fr) 28px!important}
+  .norm-shell[data-route] .topbar{height:96px!important;min-height:96px!important}
+  .norm-shell[data-route] .footerline{height:28px!important;min-height:0!important;padding:7px 16px!important;line-height:1!important}
+}
+
+@media (min-width:1280px) and (max-height:900px){
+  :root{--norm-sidebar-header-h:84px;--norm-sidebar-footer-h:24px}
+  .norm-shell[data-route]{grid-template-rows:84px minmax(0,1fr) 24px!important}
+  .norm-shell[data-route] .topbar{height:84px!important;min-height:84px!important}
+  .norm-shell[data-route] .footerline{height:24px!important;padding:5px 14px!important}
+}
+
+@media (min-width:1025px){
+  .norm-shell[data-route] .sidebar{
+    position:sticky!important;
+    top:0!important;
+    align-self:start!important;
+    width:auto!important;
+    height:calc(100dvh - var(--norm-sidebar-header-h) - var(--norm-sidebar-footer-h))!important;
+    min-height:0!important;
+    max-height:calc(100dvh - var(--norm-sidebar-header-h) - var(--norm-sidebar-footer-h))!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:10px!important;
+    padding:12px 9px 10px!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    scrollbar-width:thin!important;
+    scrollbar-color:#43564d #050a08!important;
+    border-right:1px solid var(--norm-sidebar-line)!important;
+    border-bottom:0!important;
+    background:var(--norm-sidebar-bg)!important;
+    color:var(--norm-sidebar-text)!important;
+    white-space:normal!important;
+  }
+
+  .norm-shell[data-route] .sidebar-emblem{
+    display:none!important;
+  }
+
+  .norm-shell[data-route] .sidebar nav{
+    display:flex!important;
+    flex-direction:column!important;
+    flex:0 0 auto!important;
+    gap:4px!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  .norm-shell[data-route] .sidebar a,
+  .norm-shell[data-route] .secret-nav a{
+    position:relative;
+    min-height:34px!important;
+    display:flex!important;
+    align-items:center!important;
+    flex:0 0 auto!important;
+    margin:0!important;
+    padding:8px 9px!important;
+    border:1px solid transparent!important;
+    background:transparent!important;
+    color:var(--norm-sidebar-text)!important;
+    font-size:10.5px!important;
+    line-height:1.05!important;
+    letter-spacing:.07em!important;
+    text-decoration:none!important;
+    transform:none!important;
+  }
+
+  .norm-shell[data-route] .sidebar nav a.sidebar-mail-link{
+    padding-right:58px!important;
+  }
+
+  .norm-shell[data-route] .sidebar a.active,
+  .norm-shell[data-route] .sidebar a:hover,
+  .norm-shell[data-route] .sidebar a:focus-visible,
+  .norm-shell[data-route] .secret-nav a.active,
+  .norm-shell[data-route] .secret-nav a:hover,
+  .norm-shell[data-route] .secret-nav a:focus-visible{
+    border-color:var(--norm-sidebar-active)!important;
+    background:var(--norm-sidebar-hover)!important;
+    color:#fff!important;
+    outline:none!important;
+  }
+
+  .norm-shell[data-route] .nav-glyph{
+    width:21px!important;
+    flex:0 0 21px!important;
+    color:#9cb3a7!important;
+  }
+
+  .norm-shell[data-route] .secret-nav{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    flex:0 0 auto!important;
+    gap:3px!important;
+    margin:2px 0 0!important;
+    padding:8px 0 0!important;
+    border-top:1px solid rgba(103,130,114,.32)!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-left:0!important;
+    background:transparent!important;
+  }
+
+  .norm-shell[data-route] .secret-nav>small{
+    display:block!important;
+    margin:0 0 3px!important;
+    padding:0 7px!important;
+    color:#6f8378!important;
+    font-size:7.5px!important;
+    line-height:1.3!important;
+    letter-spacing:.11em!important;
+  }
+
+  .norm-shell[data-route] .secret-nav a{
+    display:grid!important;
+    grid-template-columns:27px minmax(0,1fr) auto!important;
+    gap:4px!important;
+    min-height:29px!important;
+    padding:6px 7px!important;
+    font-size:8px!important;
+  }
+
+  .norm-shell[data-route] .secret-nav a span,
+  .norm-shell[data-route] .secret-nav a b{
+    color:#789487!important;
+    font-size:7.5px!important;
+  }
+
+  .norm-shell[data-route] .secret-nav a strong{
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:8px!important;
+  }
+
+  .norm-shell[data-route] .report-button,
+  .norm-shell[data-route] .sound-toggle,
+  .norm-shell[data-route] .logout-button,
+  .norm-shell[data-route] .arg-clearance-card{
+    width:100%!important;
+    flex:0 0 auto!important;
+    margin:0!important;
+    border-radius:0!important;
+    box-sizing:border-box!important;
+    transform:none!important;
+  }
+
+  .norm-shell[data-route] .report-button{
+    min-height:48px!important;
+    padding:8px 7px!important;
+    border:1px solid #8d2c2a!important;
+    background:#180b0b!important;
+    color:#ff6f69!important;
+    font-size:9px!important;
+    line-height:1.25!important;
+  }
+
+  .norm-shell[data-route] .sidebar__tagline{
+    margin-top:auto!important;
+    margin-bottom:0!important;
+    padding:4px 6px!important;
+    color:#8d9a93!important;
+    font-size:8.5px!important;
+    line-height:1.35!important;
+    letter-spacing:.06em!important;
+  }
+
+  .norm-shell[data-route] .arg-clearance-card{
+    min-height:56px!important;
+    display:block!important;
+    padding:7px 8px!important;
+    border:1px solid #384b42!important;
+    background:#08110e!important;
+    color:#aebcb4!important;
+    text-align:left!important;
+  }
+
+  .norm-shell[data-route] .arg-clearance-card small,
+  .norm-shell[data-route] .arg-clearance-card span,
+  .norm-shell[data-route] .arg-clearance-card em{
+    display:block!important;
+    margin:0!important;
+    color:#71847a!important;
+    font-size:7px!important;
+    line-height:1.28!important;
+    font-style:normal!important;
+    letter-spacing:.06em!important;
+  }
+
+  .norm-shell[data-route] .arg-clearance-card strong{
+    display:block!important;
+    margin:2px 0!important;
+    color:#b7d3c3!important;
+    font-size:21px!important;
+    line-height:1!important;
+  }
+
+  .norm-shell[data-route] .arg-clearance-card.is-anomalous{
+    border-color:#6b4d3a!important;
+    box-shadow:inset 2px 0 0 #b58f55!important;
+  }
+
+  .norm-shell[data-route] .sound-toggle{
+    min-height:32px!important;
+    padding:7px 8px!important;
+    border:1px solid var(--norm-sidebar-line)!important;
+    background:var(--norm-sidebar-panel)!important;
+    color:#90a79b!important;
+    font-size:9px!important;
+    line-height:1!important;
+  }
+
+  .norm-shell[data-route] .logout-button{
+    min-height:46px!important;
+    padding:7px 8px!important;
+    border:1px solid #4b3a38!important;
+    background:#0d0b0a!important;
+    color:#b6a3a0!important;
+    text-align:left!important;
+  }
+
+  .norm-shell[data-route] .logout-button span{
+    display:block!important;
+    color:#d1b5b1!important;
+    font-size:8.5px!important;
+    line-height:1.15!important;
+    letter-spacing:.07em!important;
+  }
+
+  .norm-shell[data-route] .logout-button small{
+    display:block!important;
+    margin-top:3px!important;
+    color:#746866!important;
+    font-size:6.5px!important;
+    line-height:1.2!important;
+    letter-spacing:.04em!important;
+  }
+}
+
+/* One compact desktop profile for every route. The terminal no longer owns a
+   special sidebar size simply because its content is a workstation. */
+@media (min-width:1280px) and (max-height:1050px){
+  .norm-shell[data-route] .sidebar{
+    padding:9px 9px 7px!important;
+    gap:7px!important;
+  }
+  .norm-shell[data-route] .sidebar nav{gap:3px!important}
+  .norm-shell[data-route] .sidebar a{min-height:34px!important;padding:7px 9px!important}
+  .norm-shell[data-route] .report-button{min-height:46px!important;padding:7px!important}
+  .norm-shell[data-route] .sidebar__tagline{padding:3px 5px!important;font-size:8px!important}
+  .norm-shell[data-route] .arg-clearance-card{min-height:54px!important;padding:6px 7px!important}
+  .norm-shell[data-route] .sound-toggle{min-height:31px!important;padding:6px 7px!important}
+  .norm-shell[data-route] .logout-button{min-height:44px!important;padding:6px 7px!important}
+}
+
+@media (min-width:1280px) and (max-height:900px){
+  .norm-shell[data-route] .sidebar{
+    padding:7px 8px 6px!important;
+    gap:5px!important;
+  }
+  .norm-shell[data-route] .sidebar a{min-height:30px!important;padding:6px 8px!important;font-size:9.5px!important}
+  .norm-shell[data-route] .nav-glyph{width:18px!important;flex-basis:18px!important}
+  .norm-shell[data-route] .secret-nav{padding-top:5px!important;gap:2px!important}
+  .norm-shell[data-route] .secret-nav>small{font-size:7px!important;margin-bottom:1px!important}
+  .norm-shell[data-route] .secret-nav a{min-height:25px!important;padding:5px 6px!important}
+  .norm-shell[data-route] .report-button{min-height:40px!important;padding:5px 6px!important;font-size:8.5px!important}
+  .norm-shell[data-route] .sidebar__tagline{padding:2px 5px!important;font-size:7.5px!important;line-height:1.2!important}
+  .norm-shell[data-route] .arg-clearance-card{min-height:48px!important;padding:5px 6px!important}
+  .norm-shell[data-route] .arg-clearance-card strong{font-size:19px!important}
+  .norm-shell[data-route] .arg-clearance-card small,
+  .norm-shell[data-route] .arg-clearance-card span,
+  .norm-shell[data-route] .arg-clearance-card em{font-size:6.5px!important}
+  .norm-shell[data-route] .sound-toggle{min-height:29px!important;padding:5px 6px!important}
+  .norm-shell[data-route] .logout-button{min-height:39px!important;padding:5px 6px!important}
+  .norm-shell[data-route] .logout-button small{font-size:6px!important}
+}
+
+/* Responsive layout may change the sidebar from a rail into a horizontal bar,
+   but route themes still do not get to recolor or resize it independently. */
+@media (max-width:1024px){
+  .norm-shell[data-route] .sidebar{
+    background:rgba(5,12,9,.98)!important;
+    border-color:var(--norm-sidebar-line)!important;
+    color:var(--norm-sidebar-text)!important;
+  }
+  .norm-shell[data-route] .sidebar a,
+  .norm-shell[data-route] .secret-nav a{color:var(--norm-sidebar-text)!important}
+  .norm-shell[data-route] .sidebar a.active,
+  .norm-shell[data-route] .sidebar a:hover,
+  .norm-shell[data-route] .secret-nav a.active,
+  .norm-shell[data-route] .secret-nav a:hover{
+    border-color:var(--norm-sidebar-active)!important;
+    background:var(--norm-sidebar-hover)!important;
+    color:#fff!important;
+  }
+}
