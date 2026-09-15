@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Shell, audio cleanup and replay reset
+
+- Hardened the shared sidebar as true application chrome so Dashboard, Cases, Grimoire, Agents, Archive, Mail, Investigation and Field Terminal use the same rail geometry and utility cluster at the same viewport.
+- Bounded unlocked secret-sector navigation inside the rail so ARG progression cannot push access, sound and logout controls below the viewport.
+- Made the file-backed production audio layer primary and stopped mixing the procedural noise engine underneath every production cue.
+- Added a deterministic clean-mastering pass with DC removal and gentle low-pass filtering for the SFX sprite and all four ambience loops; hover now uses a quiet production cue instead of the old high-frequency procedural tick.
+- Added the A-5 `ACCESS RESET` replay flow with aliases, a 20-second confirmation window and `CANCEL RESET`.
+- Added one shared replay reset routine for terminal reset and logout; it clears ARG clearance/discoveries, live system events and ARG mail state while preserving the user's sound on/off preference.
+- Added sidebar, audio and replay-reset CI contracts to protect the new behavior before normal builds and Pages publication.
+
 ### Production audio library pass
 
 - Added a deterministic studio renderer that produces a file-backed 18-cue cinematic SFX sprite for interface, mechanical, paper, radio, transition and anomaly events.
