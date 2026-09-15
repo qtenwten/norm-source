@@ -16,6 +16,7 @@
     "test:audio-policy": "node scripts/test-audio-policy-contract.mjs",
     "test:audio-library": "npm run prepare:audio && node scripts/test-audio-library-contract.mjs",
     "test:responsive": "node scripts/test-responsive-contract.mjs",
+    "test:sidebar": "node scripts/test-sidebar-contract.mjs",
     "test:route-recovery": "node scripts/test-route-recovery-contract.mjs",
     "test:terminal": "node scripts/test-terminal-contract.mjs",
     "test:terminal-workstation": "node scripts/test-terminal-workstation-contract.mjs",
