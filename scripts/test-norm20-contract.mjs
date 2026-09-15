@@ -22,7 +22,7 @@ const expect = (condition, message) => { if (!condition) fail(message) }
 
 for (const route of ['/desk','/forensics','/mail','/equipment']) expect(app.includes(`path="${route}"`), `missing route ${route}`)
 expect(app.includes('SystemEventDaemon'), 'system event daemon is not mounted')
-expect(app.includes('lazy(() => import('), 'route-level lazy loading missing')
+expect(app.includes('lazyRoute(') && app.includes('loadRouteModule('), 'route-level resilient lazy loading missing')
 expect(main.includes("'./terminalEnhancements.js'"), 'terminal 2.5 enhancement layer missing')
 expect(main.includes("'./v25.css'"), 'v25 style layer missing')
 expect(main.includes("'./mail-notifications.css'"), 'mail notification style layer missing')
