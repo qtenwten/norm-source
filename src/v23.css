@@ -1,0 +1,232 @@
+/* N.O.R.M. v23 — terminal action alignment, console hardening and overflow safety */
+
+/* The terminal log is a two-column transcript: timestamp + content. Action controls
+   always belong to the content column and must never fall into the timestamp rail. */
+.terminal-files-v2 .terminal-command-log{
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+}
+
+.terminal-files-v2 .terminal-line{
+  display:grid!important;
+  grid-template-columns:72px minmax(0,1fr)!important;
+  grid-template-areas:
+    "time text"
+    ". controls"!important;
+  column-gap:10px!important;
+  row-gap:0!important;
+  align-items:start!important;
+  width:100%!important;
+  max-width:100%!important;
+  padding:4px 0!important;
+  overflow:visible!important;
+}
+
+.terminal-files-v2 .terminal-line>time{
+  grid-area:time!important;
+  min-width:0!important;
+  padding-top:2px!important;
+  white-space:nowrap!important;
+}
+
+.terminal-files-v2 .terminal-line>span{
+  grid-area:text!important;
+  display:block!important;
+  min-width:0!important;
+  max-width:100%!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+
+/* Results that expose actions are treated as one visual record. */
+.terminal-files-v2 .terminal-line:has(.terminal-line-actions),
+.terminal-files-v2 .terminal-line:has(.terminal-result-link){
+  margin:5px 0!important;
+  padding:8px 9px 9px!important;
+  border-left:2px solid rgba(102,136,117,.46)!important;
+  background:linear-gradient(90deg,rgba(20,35,27,.28),rgba(5,10,7,0) 82%)!important;
+}
+
+.terminal-files-v2 .terminal-line-actions{
+  grid-area:controls!important;
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:6px!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin:7px 0 0!important;
+  padding:0!important;
+  vertical-align:initial!important;
+}
+
+.terminal-files-v2 .terminal-line-actions button,
+.terminal-files-v2 .terminal-result-link{
+  width:auto!important;
+  min-width:76px!important;
+  max-width:220px!important;
+  min-height:31px!important;
+  height:auto!important;
+  flex:0 0 auto!important;
+  margin:0!important;
+  padding:6px 10px!important;
+  border:1px solid #435a4e!important;
+  background:#0a1510!important;
+  color:#b8c9c0!important;
+  font:800 11px/1.25 "Courier New",monospace!important;
+  letter-spacing:.035em!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow-wrap:normal!important;
+  word-break:keep-all!important;
+  text-overflow:ellipsis!important;
+  overflow:hidden!important;
+}
+
+.terminal-files-v2 .terminal-line-actions button:hover,
+.terminal-files-v2 .terminal-result-link:hover{
+  border-color:#789482!important;
+  background:#102219!important;
+  color:#edf5f0!important;
+}
+
+.terminal-files-v2 .terminal-line-actions button.is-export{
+  border-color:#765148!important;
+  background:#17100e!important;
+  color:#dc9584!important;
+}
+.terminal-files-v2 .terminal-line-actions button.is-export:hover{
+  border-color:#a96e60!important;
+  background:#211410!important;
+  color:#f2b09f!important;
+}
+
+.terminal-files-v2 .terminal-result-link{
+  grid-column:2!important;
+  grid-row:2!important;
+  justify-self:start!important;
+  margin-top:7px!important;
+  color:#c8d9cf!important;
+}
+
+/* Inspector controls use predictable two-column buttons instead of squeezing labels. */
+.terminal-files-v2 .terminal-resource-actions{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+  width:100%!important;
+  margin-top:7px!important;
+}
+.terminal-files-v2 .terminal-resource-actions button{
+  width:100%!important;
+  min-width:0!important;
+  min-height:34px!important;
+  padding:7px 8px!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  overflow-wrap:normal!important;
+  word-break:keep-all!important;
+}
+
+/* The lead card is allowed to grow; no control should escape its frame. */
+.terminal-files-v2 .terminal-lead-card,
+.terminal-files-v2 .terminal-resource-inspector,
+.terminal-files-v2 .terminal-uplinks>button,
+.terminal-files-v2 .terminal-arg-tree,
+.terminal-files-v2 .terminal-console{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+}
+.terminal-files-v2 .terminal-lead-card>div{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+}
+.terminal-files-v2 .terminal-lead-card>div button{
+  flex:1 1 88px!important;
+  min-height:32px!important;
+  white-space:nowrap!important;
+}
+
+/* Paths and long forensic strings may wrap, but controls and timestamps may not. */
+.terminal-files-v2 :where(code,.terminal-resource-kind,.terminal-resource-inspector p,.terminal-resource-inspector em){
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+
+/* Keep the prompt visually anchored and impossible to mistake for output. */
+.terminal-files-v2 .terminal-input-row{
+  isolation:isolate!important;
+}
+.terminal-files-v2 .terminal-input-row input{
+  min-width:0!important;
+  text-overflow:clip!important;
+}
+.terminal-files-v2 .terminal-input-row button{
+  white-space:nowrap!important;
+  overflow-wrap:normal!important;
+  word-break:keep-all!important;
+}
+
+/* Quickbar stays usable when labels or viewport grow. */
+.terminal-files-v2 .terminal-quickbar{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+}
+.terminal-files-v2 .terminal-quickbar button{
+  flex:0 0 auto!important;
+  white-space:nowrap!important;
+  overflow-wrap:normal!important;
+  word-break:keep-all!important;
+}
+
+@media(max-width:900px){
+  .terminal-files-v2 .terminal-line{
+    grid-template-columns:58px minmax(0,1fr)!important;
+    column-gap:8px!important;
+  }
+  .terminal-files-v2 .terminal-line-actions button,
+  .terminal-files-v2 .terminal-result-link{
+    min-width:70px!important;
+    max-width:100%!important;
+  }
+}
+
+@media(max-width:620px){
+  .terminal-files-v2 .terminal-line{
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "time"
+      "text"
+      "controls"!important;
+    row-gap:3px!important;
+  }
+  .terminal-files-v2 .terminal-line>time{
+    opacity:.72!important;
+  }
+  .terminal-files-v2 .terminal-line-actions{
+    width:100%!important;
+  }
+  .terminal-files-v2 .terminal-line-actions button,
+  .terminal-files-v2 .terminal-result-link{
+    flex:1 1 112px!important;
+  }
+  .terminal-files-v2 .terminal-result-link{
+    grid-column:1!important;
+    grid-row:auto!important;
+    justify-self:stretch!important;
+    width:100%!important;
+  }
+  .terminal-files-v2 .terminal-resource-actions{
+    grid-template-columns:1fr!important;
+  }
+}
