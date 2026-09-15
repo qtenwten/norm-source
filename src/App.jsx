@@ -14,6 +14,7 @@ import Report from './pages/Report'
 import ClearanceZone from './pages/ClearanceZone'
 import GhostRegistry from './pages/GhostRegistry'
 import MirrorNode from './pages/MirrorNode'
+import LegacyCases from './pages/LegacyCases'
 
 export default function App(){
  const [entered,setEntered]=useState(()=>sessionStorage.getItem('norm-entered')==='1')
@@ -40,6 +41,7 @@ export default function App(){
   <Route path="/black" element={<ClearanceZone zone="black"/>}/>
   <Route path="/vault" element={<ClearanceZone zone="vault"/>}/>
   <Route path="/ghost-registry" element={<GhostRegistry/>}/>
+  <Route path="/legacy-cases" element={<LegacyCases/>}/>
   <Route path="/mirror-node" element={<MirrorNode/>}/>
   <Route path="/terminal" element={<TerminalDeep/>}/>
   <Route path="/terminal/root" element={<Navigate to="/vault" replace/>}/>
