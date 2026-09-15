@@ -2,6 +2,8 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { audio } from '../audio'
 import { getArgState, subscribeArg } from '../arg'
+import { getMailRead, getUnreadMail, NEW_MAIL_EVENT, subscribeMailRead } from '../mailState'
+import { getSystemEventState, subscribeSystemEvents } from '../systemEvents'
 import NormEmblem from './NormEmblem'
 
 const links = [
@@ -10,6 +12,7 @@ const links = [
   ['/grimoire', 'ГРИМУАР'],
   ['/agents', 'АГЕНТЫ'],
   ['/archive', 'АРХИВ'],
+  ['/mail', 'ПОЧТА'],
   ['/investigation', 'РАССЛЕДОВАНИЕ'],
   ['/terminal', 'ТЕРМИНАЛ'],
 ]
@@ -20,6 +23,7 @@ const transitionCopy = {
   '/grimoire': 'РАСШИФРОВКА ГРИМУАРА',
   '/agents': 'ДОСТУП К ЛИЧНЫМ ДЕЛАМ',
   '/archive': 'ПОДКЛЮЧЕНИЕ К АРХИВУ',
+  '/mail': 'ПОДКЛЮЧЕНИЕ К INTERNAL MAIL',
   '/investigation': 'СИНХРОНИЗАЦИЯ CORRELATION DESK',
   '/terminal': 'ЗАПУСК ПОЛЕВОГО ТЕРМИНАЛА',
   '/restricted': 'ОТКРЫТИЕ ЗАКРЫТОГО СЕКТОРА 17-B',
@@ -55,7 +59,7 @@ function getStoredSoundEnabled() {
 function getRouteTone(pathname) {
   if (pathname.startsWith('/grimoire')) return 'grimoire'
   if (pathname.startsWith('/terminal')) return 'terminal'
-  if (pathname.startsWith('/investigation')) return 'archive'
+  if (pathname.startsWith('/investigation') || pathname.startsWith('/mail')) return 'archive'
   if (pathname.startsWith('/cases')) return 'case'
   if (pathname.startsWith('/agents') || pathname.startsWith('/ghost-registry')) return 'agents'
   if (pathname.startsWith('/legacy-cases')) return 'case'
@@ -93,18 +97,42 @@ export default function Shell({ children, onLogout }) {
   const [volumePercent, setVolumePercent] = useState(getStoredVolumePercent)
   const [loggingOut, setLoggingOut] = useState(false)
   const [argProgress, setArgProgress] = useState(getArgState)
+  const [mailRead, setMailRead] = useState(getMailRead)
+  const [systemEvents, setSystemEvents] = useState(getSystemEventState)
+  const [mailPulse, setMailPulse] = useState(false)
   const timersRef = useRef([])
+  const mailPulseTimerRef = useRef(null)
   const lastHoverRef = useRef({ control: null, at: 0 })
   const operator = useMemo(() => sessionStorage.getItem('norm-operator') || 'GUEST-27491', [])
   const stamp = useMemo(() => new Date().toLocaleTimeString('ru-RU', { hour12: false }), [location.pathname])
   const routeTone = getRouteTone(location.pathname)
+  const unreadMail = useMemo(() => getUnreadMail(argProgress, systemEvents, mailRead).length, [argProgress, systemEvents, mailRead])
 
   useEffect(() => subscribeArg(setArgProgress), [])
+  useEffect(() => subscribeMailRead(setMailRead), [])
+  useEffect(() => subscribeSystemEvents(setSystemEvents), [])
   useEffect(() => { audio.scene(routeTone) }, [routeTone])
   useEffect(() => {
     audio.setVolume(volumeGain(volumePercent))
     window.localStorage.setItem(VOLUME_STORAGE_KEY, String(volumePercent))
   }, [volumePercent])
+
+  useEffect(() => {
+    const onNewMail = () => {
+      setMailPulse(true)
+      if (mailPulseTimerRef.current) window.clearTimeout(mailPulseTimerRef.current)
+      mailPulseTimerRef.current = window.setTimeout(() => setMailPulse(false), 12000)
+    }
+    window.addEventListener(NEW_MAIL_EVENT, onNewMail)
+    return () => {
+      window.removeEventListener(NEW_MAIL_EVENT, onNewMail)
+      if (mailPulseTimerRef.current) window.clearTimeout(mailPulseTimerRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (location.pathname === '/mail') setMailPulse(false)
+  }, [location.pathname])
 
   // A refresh can restore the authenticated UI without rendering AccessGate. Audio state,
   // however, lives in memory and used to reset to disabled. Restore the user's preference
@@ -164,6 +192,7 @@ export default function Shell({ children, onLogout }) {
   useEffect(() => () => { timersRef.current.forEach(window.clearTimeout) }, [])
 
   const go = (to) => {
+    if (to === '/mail') setMailPulse(false)
     if (location.pathname === to || transition || loggingOut) return
     const nextTone = getRouteTone(to)
     const timing = getTransitionDuration(nextTone)
@@ -239,7 +268,7 @@ export default function Shell({ children, onLogout }) {
       </header>
       <aside className="sidebar">
         <div className="sidebar-emblem" aria-hidden="true"><NormEmblem compact /></div>
-        <nav>{links.map(([to,label]) => <NavLink key={to} to={to} end={to==='/' } onClick={(event)=>{event.preventDefault();go(to)}}><span className="nav-glyph">⌁</span>{label}</NavLink>)}</nav>
+        <nav>{links.map(([to,label]) => <NavLink key={to} to={to} end={to==='/' } className={to === '/mail' ? `sidebar-mail-link ${mailPulse ? 'is-new-mail' : ''}` : undefined} onClick={(event)=>{event.preventDefault();go(to)}}><span className="nav-glyph">⌁</span>{label}{to === '/mail' && unreadMail > 0 && <b className="sidebar-mail-badge" aria-label={`${unreadMail} непрочитанных сообщений`}>{unreadMail > 99 ? '99+' : unreadMail}</b>}{to === '/mail' && mailPulse && <em className="sidebar-mail-flash">НОВОЕ</em>}</NavLink>)}</nav>
         {secretLinks.length>0 && <div className="secret-nav"><small>РАЗБЛОКИРОВАННЫЕ СЕКТОРЫ</small>{secretLinks.map(([to,label,level])=><NavLink key={to} to={to} onClick={(event)=>{event.preventDefault();go(to)}}><span>{level}</span><strong>{label}</strong><b>↗</b></NavLink>)}</div>}
         <button className="report-button" type="button" onClick={() => go('/report')}>⚠ СООБЩИТЬ<br />ОБ АНОМАЛИИ</button>
         <div className="sidebar__tagline">НАБЛЮДАЕМ.<br />ФИКСИРУЕМ.<br />РАЗБИРАЕМСЯ.</div>
