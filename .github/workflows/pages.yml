@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: HTTPS entry contract
+        run: npm run test:https-entry
+
       - name: Terminal contract
         run: npm run test:terminal
 
