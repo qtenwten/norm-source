@@ -26,6 +26,9 @@ jobs:
       - name: HTTPS entry contract
         run: npm run test:https-entry
 
+      - name: Audio policy contract
+        run: npm run test:audio-policy
+
       - name: Terminal contract
         run: npm run test:terminal
 
