@@ -1,1 +1,0 @@
-import{m as e}from"./index-CwZNpvht.js";var t=e();function n({title:e,children:n,className:r=``,danger:i=!1}){return(0,t.jsxs)(`section`,{className:`panel ${i?`panel--danger`:``} ${r}`.trim(),children:[e&&(0,t.jsx)(`header`,{className:`panel__title`,children:e}),(0,t.jsx)(`div`,{className:`panel__body`,children:n})]})}export{n as t};
