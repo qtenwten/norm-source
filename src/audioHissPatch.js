@@ -117,8 +117,8 @@ function installDigitalSpyAudio() {
   Object.defineProperty(audio, INSTALL_FLAG, { value: true, enumerable: false })
 
   // This is a complete audible override. The rendered noise beds and the legacy
-  // procedural noise generator stay dormant, so no white/pink/brown-noise, radio
-  // static or "sea-wave" ambience can leak back through another route or event.
+  // procedural noise generator stay dormant, so broadband static, radio hiss and
+  // the old wave-like ambience cannot leak back through another route or event.
   Object.defineProperty(audio, 'enabled', { configurable: true, enumerable: true, get: () => digitalEnabled })
 
   audio.enable = function digitalEnable() {
