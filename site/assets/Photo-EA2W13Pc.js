@@ -1,1 +1,0 @@
-import{m as e}from"./index-BVX2nTCA.js";var t=e();function n({src:e,alt:n,className:r=``,label:i}){return(0,t.jsxs)(`figure`,{className:`norm-photo ${r}`.trim(),children:[(0,t.jsx)(`img`,{src:e,alt:n,draggable:!1,onDragStart:e=>e.preventDefault()}),i&&(0,t.jsx)(`figcaption`,{children:i})]})}export{n as t};
