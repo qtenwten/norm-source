@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Production audio library pass
+
+- Added a deterministic studio renderer that produces a file-backed 18-cue cinematic SFX sprite for interface, mechanical, paper, radio, transition and anomaly events.
+- Added dedicated server-room, archive-room, Grimoire and terminal ambience loops with scene crossfades.
+- Reworked the Web Audio engine into a hybrid sample + procedural system: samples provide physical texture while synthesis adds variation and remains a failure-safe fallback.
+- Kept the approved fixed 100% audio policy and explicit mute-only control.
+- Added an audio-library CI contract covering the rendered assets, sprite cue inventory and fallback architecture.
+- Rewrote the README to reflect the current N.O.R.M. 2.0 feature set, cases, terminal, deployment checks and audio architecture.
+
 ### Cinematic v4 pass
 
 - Added the N.O.R.M. tower/radio emblem and applied it to the shell and immersive login.
