@@ -11,6 +11,7 @@
     "test:https-entry": "node scripts/test-https-entry-contract.mjs",
     "test:audio-policy": "node scripts/test-audio-policy-contract.mjs",
     "test:responsive": "node scripts/test-responsive-contract.mjs",
+    "test:route-recovery": "node scripts/test-route-recovery-contract.mjs",
     "test:terminal": "node scripts/test-terminal-contract.mjs",
     "test:terminal-workstation": "node scripts/test-terminal-workstation-contract.mjs",
     "test:investigation": "node scripts/test-investigation-contract.mjs",
