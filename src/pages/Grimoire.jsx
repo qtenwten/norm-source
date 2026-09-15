@@ -8,12 +8,12 @@ const monsters = [
   {
     key:'river', code:'R-002', caseCode:'LM-002', name:'РЕЧНАЯ ГАДИНА', alias:'ПРИБРЕЖНАЯ СУЩНОСТЬ',
     subtitle:'появляется у воды и связана с исчезновениями людей', type:'Водная сущность', category:'Криптид / прибрежная', danger:'III', origin:'Не установлено',
-    image:'https://i.ytimg.com/vi/jdN2KjOlaC8/maxresdefault.jpg', fallbackImage:'/assets/grimoire-river-gadina.webp', warning:'НЕ ПРИБЛИЖАТЬСЯ К ВОДЕ В ОДИНОЧКУ В ЗОНЕ ПРОЯВЛЕНИЯ.',
+    image:'/assets/grimoire-river-gadina-generated.svg', fallbackImage:'/assets/grimoire-river-gadina.webp', warning:'НЕ ПРИБЛИЖАТЬСЯ К ВОДЕ В ОДИНОЧКУ В ЗОНЕ ПРОЯВЛЕНИЯ.',
     source:'«РЕЧНАЯ ГАДИНА похищает людей»', videoId:'jdN2KjOlaC8',
     facts:['в деле расследуются таинственные исчезновения людей','зона расследования связана с водой и береговой линией','сущность получила рабочее название «Речная гадина»','основная версия проверяется непосредственно на месте'],
     hotspots:[
       {n:'01',x:27,y:20,title:'СПИННОЙ ПРОФИЛЬ',body:'Силуэт маскируется под растительность и тёмную кромку воды.'},
-      {n:'02',x:80,y:31,title:'ГОЛОВА',body:'Визуальная реконструкция подчёркивает низкую посадку головы и амфибийные черты.'},
+      {n:'02',x:80,y:31,title:'ГОЛОВА',body:'Служебная реконструкция подчёркивает низкую посадку головы и амфибийные черты.'},
       {n:'03',x:17,y:62,title:'ПЕРЕДНЯЯ КОНЕЧНОСТЬ',body:'Удлинённая конечность рассчитана на опору у кромки воды.'},
       {n:'04',x:72,y:68,title:'ВОДНЫЙ СЛЕД',body:'Точка фиксации связана с мелководьем и прибрежным илом.'},
     ],
@@ -26,7 +26,7 @@ const monsters = [
   {
     key:'sorcery', code:'K-003', caseCode:'LM-003', name:'ДРЕВНЮЧЕЕ КОЛДУНСТВО', alias:'ПРОКЛЯТИЕ ГАДАЛКИ',
     subtitle:'ритуальное воздействие, которое продолжает работать после контакта', type:'Ритуальная аномалия', category:'Проклятие / оккультное', danger:'II', origin:'Связано с гадалкой',
-    image:'https://i.ytimg.com/vi/TUk1JwcbxEg/maxresdefault.jpg', fallbackImage:'/assets/grimoire-ancient-sorcery.webp', warning:'НЕ ПОВТОРЯТЬ ОБРЯДЫ И НЕ АКТИВИРОВАТЬ НАЙДЕННЫЕ ПРЕДМЕТЫ.',
+    image:'/assets/grimoire-ancient-sorcery-generated.svg', fallbackImage:'/assets/grimoire-ancient-sorcery.webp', warning:'НЕ ПОВТОРЯТЬ ОБРЯДЫ И НЕ АКТИВИРОВАТЬ НАЙДЕННЫЕ ПРЕДМЕТЫ.',
     source:'«ДРЕВНЮЧЕЕ КОЛДУНСТВО вышло на связь»', videoId:'TUk1JwcbxEg',
     facts:['клиент связывает происходящее с проклятием гадалки','воздействие описано как длительное и навязчивое','расследование строится вокруг ритуального происхождения аномалии','источник воздействия проверяется группой в ходе выезда'],
     hotspots:[
@@ -44,7 +44,7 @@ const monsters = [
   {
     key:'marionette', code:'C-004', caseCode:'LM-004', name:'МАРИОНЕТКА ДЬЯВОЛА', alias:'ОДЕРЖИМАЯ КУКЛА',
     subtitle:'аномалия привязана к кукле и проявляется через неё', type:'Аномальный объект', category:'Одержимый предмет', danger:'III', origin:'Не установлено',
-    image:'https://i.ytimg.com/vi/UJ4zoCABeeE/maxresdefault.jpg', fallbackImage:'/assets/grimoire-devils-marionette.webp', warning:'НЕ ОСТАВЛЯТЬ ОБЪЕКТ БЕЗ НАБЛЮДЕНИЯ И НЕ ПЫТАТЬСЯ РАЗОБРАТЬ.',
+    image:'/assets/grimoire-devils-marionette-generated.svg', fallbackImage:'/assets/grimoire-devils-marionette.webp', warning:'НЕ ОСТАВЛЯТЬ ОБЪЕКТ БЕЗ НАБЛЮДЕНИЯ И НЕ ПЫТАТЬСЯ РАЗОБРАТЬ.',
     source:'«МАРИОНЕТКА ДЬЯВОЛА вселилась в КУКЛУ»', videoId:'UJ4zoCABeeE',
     facts:['заявитель связывает серию событий с куклой','аномалия описывается как сущность, вселившаяся в предмет','объект является центральным элементом расследования','после контакта влияние распространяется на бытовую среду владельца'],
     hotspots:[
@@ -62,7 +62,7 @@ const monsters = [
   {
     key:'night', code:'N-005', caseCode:'LM-005', name:'НОЧНОЙ ДУШНИЛА', alias:'НОЧНАЯ СУЩНОСТЬ',
     subtitle:'садится на грудь спящего, лишает движения и душит', type:'Ночная сущность', category:'Сон / физический контакт', danger:'II', origin:'Не установлено',
-    image:'/assets/night-dusnila-monitor-entity.webp', fallbackImage:'/assets/grimoire-night-dusnila.webp', warning:'ПОСЛЕ ПРОЯВЛЕНИЯ НЕ ОСТАВЛЯТЬ КЛИЕНТА БЕЗ НАБЛЮДЕНИЯ.',
+    image:'/assets/grimoire-night-dusnila-generated.svg', fallbackImage:'/assets/grimoire-night-dusnila.webp', warning:'ПОСЛЕ ПРОЯВЛЕНИЯ НЕ ОСТАВЛЯТЬ КЛИЕНТА БЕЗ НАБЛЮДЕНИЯ.',
     source:'«НОЧНОЙ ДУШНИЛА мешает ночью спать»', videoId:'bZRVUyb19qI', casePath:'/cases/lm-005#entity',
     facts:['клиент не спал более 57 часов','первичная версия группы — сонный паралич','в 02:59–03:00 камера и анализатор фиксируют аномальную активность','нейтрализация произошла после контакта с ловцом снов'],
     hotspots:[
@@ -80,11 +80,11 @@ const monsters = [
   {
     key:'zoomer', code:'Z-006', caseCode:'LM-006', name:'ЗУМЕРСКИЙ ДЕМОН', alias:'DEAD INSIDE',
     subtitle:'аномальный паттерн поведения, речи и игровой символики', type:'Рабочая классификация', category:'Поведенческая / цифровая', danger:'II', origin:'Не установлено',
-    image:'https://i.ytimg.com/vi/FQ6mBEm4Hnc/maxresdefault.jpg', fallbackImage:'/assets/grimoire-zoomer-demon.webp', warning:'НЕ ОТВЕЧАТЬ НА ПОВТОРЯЮЩИЙСЯ ПАТТЕРН «1000−7» КАК НА ВЫЗОВ.',
+    image:'/assets/grimoire-zoomer-demon-generated.svg', fallbackImage:'/assets/grimoire-zoomer-demon.webp', warning:'НЕ ОТВЕЧАТЬ НА ПОВТОРЯЮЩИЙСЯ ПАТТЕРН «1000−7» КАК НА ВЫЗОВ.',
     source:'«ЗУМЕРСКИЙ ДЕМОН стращает мать»', videoId:'FQ6mBEm4Hnc', casePath:'/cases/lm-006#entity',
     facts:['субъект повторяет «1000−7»','зафиксированы реплики голосом Shadow Fiend','наблюдается физическая аномалия — поворот головы на 360°','после ритуала сохраняется остаточный речевой паттерн'],
     hotspots:[
-      {n:'01',x:31,y:24,title:'ЦИФРОВОЙ ШУМ',body:'Визуальная реконструкция связывает проявление с экранной и игровой средой.'},
+      {n:'01',x:31,y:24,title:'ЦИФРОВОЙ ШУМ',body:'Служебная визуализация связывает проявление с экранной и игровой средой.'},
       {n:'02',x:73,y:39,title:'НОСИТЕЛЬ',body:'Рабочая классификация описывает аномалию через поведение субъекта.'},
       {n:'03',x:39,y:67,title:'ЭКРАН',body:'Игровая среда становится частью проявления и языка сущности.'},
       {n:'04',x:72,y:79,title:'ПАТТЕРН',body:'Повтор «1000−7» используется как устойчивый маркер дела.'},
@@ -175,7 +175,7 @@ export default function Grimoire() {
             <h1>{monster.name}</h1>
             <p className="hand">{monster.subtitle}</p>
             <div className="monster-plate" aria-label={`Изображение: ${monster.name}`}>
-              <img src={monster.image} alt={monster.name} draggable="false" onDragStart={(event) => event.preventDefault()} onError={useFallbackImage} referrerPolicy="no-referrer" />
+              <img src={monster.image} alt={monster.name} draggable="false" onDragStart={(event) => event.preventDefault()} onError={useFallbackImage} />
               <div className="monster-plate__shade" aria-hidden="true" />
               {monster.hotspots.map((item) => (
                 <button type="button" className={`monster-hotspot ${activeHotspot === item.n ? 'active' : ''}`} style={{ left:`${item.x}%`, top:`${item.y}%` }} onClick={() => inspectHotspot(item)} aria-label={`${item.n}: ${item.title}`} key={item.n}>
@@ -208,7 +208,7 @@ export default function Grimoire() {
                 {monster.casePath && <button type="button" onClick={() => jump(monster.casePath, 'stamp')}>ОТКРЫТЬ ДЕЛО →</button>}
               </div>
             </div>
-            <p className="red-pencil">Архивное изображение привязано к исходному выпуску; интерактивные маркеры поверх него являются служебным слоем Н.О.Р.М.</p>
+            <p className="red-pencil">Служебная визуализация Н.О.Р.М. — уникальная реконструкция сущности по материалам дела; интерактивные маркеры 01–04 нанесены поверх изображения.</p>
             <button type="button" className="grimoire-reveal" onClick={reveal} aria-pressed={revealed}>{revealed ? 'СКРЫТЬ СЛУЖЕБНЫЙ СЛОЙ' : 'ПРОЯВИТЬ СЛУЖЕБНЫЙ СЛОЙ'}</button>
             <div className="grimoire-hidden-layer" aria-hidden={!revealed}>
               <small>СЛОЙ РАСПОЗНАВАНИЯ // NORM-LINGUA</small><strong>{monster.caseCode}</strong>
@@ -239,7 +239,7 @@ export default function Grimoire() {
         <div className="material-viewer" role="dialog" aria-modal="true" aria-label={material.type} onClick={() => setMaterial(null)}>
           <section className="material-viewer__panel" onClick={(event) => event.stopPropagation()}>
             <header><small>N.O.R.M. // ATTACHMENT // {monster.code}</small><button type="button" onClick={() => { audio.click(); setMaterial(null) }}>×</button></header>
-            <div className="material-viewer__scan monster-material-scan"><img src={monster.image} alt={monster.name} draggable="false" onDragStart={(event) => event.preventDefault()} onError={useFallbackImage} referrerPolicy="no-referrer" /></div>
+            <div className="material-viewer__scan monster-material-scan"><img src={monster.image} alt={monster.name} draggable="false" onDragStart={(event) => event.preventDefault()} onError={useFallbackImage} /></div>
             <div className="material-viewer__copy"><span>{material.id}</span><h2>{material.type}</h2><code>{material.meta}</code><p>{material.body}</p><button type="button" onClick={() => jump('/archive', 'archive')}>ПЕРЕЙТИ В АРХИВ →</button></div>
           </section>
         </div>
