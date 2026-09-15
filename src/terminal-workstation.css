@@ -1,0 +1,241 @@
+/* N.O.R.M. terminal workstation — fixed viewport, internal scroll, stable prompt.
+   This file is intentionally loaded last so the terminal behaves like a real terminal:
+   output grows inside the screen instead of changing the page geometry. */
+
+.terminal-files-v2{
+  --terminal-workstation-height:clamp(650px,calc(100vh - 265px),840px);
+  --terminal-workstation-height:clamp(650px,calc(100dvh - 265px),840px);
+  --terminal-scrollbar-track:#050a07;
+  --terminal-scrollbar-thumb:#314b3d;
+  --terminal-scrollbar-thumb-hover:#4b6b59;
+}
+
+/* The workstation itself owns a fixed-height viewport on desktop. New output must
+   never push the terminal, prompt, side rails, or the rest of the page downward. */
+@media(min-width:901px){
+  .terminal-files-v2 .terminal-grid--deep{
+    height:var(--terminal-workstation-height)!important;
+    min-height:0!important;
+    max-height:var(--terminal-workstation-height)!important;
+    align-items:stretch!important;
+    overflow:hidden!important;
+    contain:layout paint;
+  }
+
+  .terminal-files-v2 .terminal-map,
+  .terminal-files-v2 .terminal-console,
+  .terminal-files-v2 .terminal-arg-feeds{
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+  }
+
+  .terminal-files-v2 .terminal-map{
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr)!important;
+    align-content:stretch!important;
+  }
+}
+
+@media(min-width:1280px){
+  .terminal-files-v2 .terminal-grid--deep{
+    grid-template-rows:minmax(0,1fr)!important;
+  }
+}
+
+/* The two-column workstation used below 1280px previously had auto-sized rows,
+   which allowed the right/left rails to make the console taller. Lock both rows. */
+@media(min-width:901px) and (max-width:1279px){
+  .terminal-files-v2 .terminal-grid--deep{
+    grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;
+  }
+  .terminal-files-v2 .terminal-map,
+  .terminal-files-v2 .terminal-arg-feeds{
+    overflow:hidden!important;
+  }
+}
+
+/* Console is a true terminal frame: toolbar, scrollable screen, prompt, status bar. */
+.terminal-files-v2 .terminal-console{
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr) auto auto!important;
+  overflow:hidden!important;
+  contain:layout paint;
+  isolation:isolate;
+}
+
+.terminal-files-v2 .terminal-quickbar{
+  min-height:0!important;
+  max-height:92px;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  scrollbar-gutter:stable;
+}
+
+.terminal-files-v2 .terminal-command-log{
+  min-height:0!important;
+  height:100%!important;
+  max-height:100%!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable both-edges;
+  scroll-behavior:smooth;
+  overflow-anchor:none;
+  contain:layout paint;
+}
+
+/* Prompt is structurally outside the transcript row, so it never travels when
+   hundreds of lines are printed. */
+.terminal-files-v2 .terminal-input-row{
+  align-self:end!important;
+  flex:none!important;
+  z-index:3;
+}
+
+.terminal-files-v2 .terminal-command-help{
+  align-self:end!important;
+  flex:none!important;
+  min-height:0!important;
+  background:#050b08;
+  border-top:1px solid rgba(76,101,88,.28)!important;
+  z-index:2;
+}
+
+/* Side rails remain part of the same workstation height. Each rail scrolls inside
+   itself when an inspector/dossier becomes taller than the available viewport. */
+.terminal-files-v2 .terminal-map{
+  overflow:hidden!important;
+}
+.terminal-files-v2 .terminal-arg-tree{
+  min-height:0!important;
+  max-height:52%;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.terminal-files-v2 .terminal-map-button{
+  min-height:0!important;
+  height:100%!important;
+}
+
+.terminal-files-v2 .terminal-arg-feeds{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  align-content:start!important;
+}
+.terminal-files-v2 .terminal-resource-inspector{
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* A restrained hardware-like scrollbar: visible enough to tell that the terminal
+   has history, but not so bright that it looks like a browser panel. */
+.terminal-files-v2 :is(.terminal-command-log,.terminal-quickbar,.terminal-arg-tree,.terminal-arg-feeds){
+  scrollbar-width:thin;
+  scrollbar-color:var(--terminal-scrollbar-thumb) var(--terminal-scrollbar-track);
+}
+.terminal-files-v2 :is(.terminal-command-log,.terminal-quickbar,.terminal-arg-tree,.terminal-arg-feeds)::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+.terminal-files-v2 :is(.terminal-command-log,.terminal-quickbar,.terminal-arg-tree,.terminal-arg-feeds)::-webkit-scrollbar-track{
+  background:var(--terminal-scrollbar-track);
+  border-left:1px solid rgba(75,100,87,.18);
+}
+.terminal-files-v2 :is(.terminal-command-log,.terminal-quickbar,.terminal-arg-tree,.terminal-arg-feeds)::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#395346,#263a30);
+  border:2px solid var(--terminal-scrollbar-track);
+  border-radius:0;
+}
+.terminal-files-v2 :is(.terminal-command-log,.terminal-quickbar,.terminal-arg-tree,.terminal-arg-feeds)::-webkit-scrollbar-thumb:hover{
+  background:var(--terminal-scrollbar-thumb-hover);
+}
+
+/* Keep long command output visually separated without affecting geometry. */
+.terminal-files-v2 .terminal-command-log::after{
+  content:'';
+  display:block;
+  height:8px;
+  pointer-events:none;
+}
+
+/* Tablet/mobile: stacked auxiliary panels stay natural, while the console itself
+   still behaves like a terminal window and cannot grow with its transcript. */
+@media(max-width:900px){
+  .terminal-files-v2 .terminal-grid--deep{
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .terminal-files-v2 .terminal-map,
+  .terminal-files-v2 .terminal-arg-feeds{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .terminal-files-v2 .terminal-map{
+    display:block!important;
+  }
+  .terminal-files-v2 .terminal-arg-tree{
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .terminal-files-v2 .terminal-map-button{
+    height:auto!important;
+    min-height:220px!important;
+  }
+  .terminal-files-v2 .terminal-console{
+    height:clamp(560px,72vh,700px)!important;
+    height:clamp(560px,72dvh,700px)!important;
+    min-height:0!important;
+    max-height:700px!important;
+  }
+  .terminal-files-v2 .terminal-command-log{
+    min-height:0!important;
+    height:100%!important;
+    max-height:100%!important;
+  }
+}
+
+@media(max-width:620px){
+  .terminal-files-v2 .terminal-console{
+    height:clamp(540px,76vh,660px)!important;
+    height:clamp(540px,76dvh,660px)!important;
+    max-height:660px!important;
+  }
+  .terminal-files-v2 .terminal-quickbar{
+    max-height:104px;
+  }
+}
+
+/* Short laptop screens need a compact but still fixed workstation. */
+@media(min-width:901px) and (max-height:820px){
+  .terminal-files-v2{
+    --terminal-workstation-height:600px;
+  }
+  .terminal-files-v2 .terminal-input-row{
+    margin-top:34px!important;
+  }
+}
+
+@media(min-width:901px) and (max-height:720px){
+  .terminal-files-v2{
+    --terminal-workstation-height:540px;
+  }
+  .terminal-files-v2 .terminal-quickbar{
+    max-height:70px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .terminal-files-v2 .terminal-command-log{
+    scroll-behavior:auto;
+  }
+}

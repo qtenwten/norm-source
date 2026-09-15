@@ -37,6 +37,9 @@ jobs:
       - name: Terminal contract
         run: npm run test:terminal
 
+      - name: Terminal workstation contract
+        run: npm run test:terminal-workstation
+
       - name: Investigation contract
         run: npm run test:investigation
 
