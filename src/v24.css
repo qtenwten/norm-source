@@ -1,0 +1,107 @@
+/* N.O.R.M. v24 — correlation map selection reliability + unmistakable active state */
+
+/* The SVG is decorative topology only. It must never steal clicks from interactive nodes. */
+.correlation-canvas svg{
+  pointer-events:none!important;
+  z-index:0!important;
+}
+
+.correlation-canvas svg *{
+  pointer-events:none!important;
+}
+
+/* Every node sits above the topology layer and owns its full rectangular hit area. */
+.correlation-node{
+  z-index:2!important;
+  cursor:pointer!important;
+  touch-action:manipulation;
+  isolation:isolate;
+  transition:border-color .14s ease, background-color .14s ease, box-shadow .14s ease, transform .14s ease, filter .14s ease;
+}
+
+.correlation-node:hover{
+  z-index:3!important;
+  transform:translate(-50%,-50%) scale(1.025)!important;
+}
+
+/* Connected is intentionally subtler than selected. Previously these states were too similar. */
+.correlation-node.connected:not(.active){
+  border-color:rgba(139,174,153,.5)!important;
+  box-shadow:inset 0 0 0 1px rgba(139,174,153,.035),0 8px 24px rgba(0,0,0,.2)!important;
+}
+
+/* Selected node must be visually unambiguous. */
+.correlation-node.active{
+  z-index:5!important;
+  border-color:#d7f0df!important;
+  background:linear-gradient(180deg,#173427,#0b2118)!important;
+  box-shadow:
+    0 0 0 2px rgba(193,228,205,.28),
+    0 0 0 5px rgba(117,172,139,.08),
+    0 0 28px rgba(96,174,126,.2),
+    0 12px 30px rgba(0,0,0,.4)!important;
+  filter:brightness(1.08);
+}
+
+.correlation-node.active::after{
+  content:'ACTIVE';
+  position:absolute;
+  right:5px;
+  top:5px;
+  padding:2px 4px;
+  border:1px solid rgba(190,229,203,.38);
+  background:#10291d;
+  color:#c9e9d4;
+  font:800 7px/1.15 var(--mono,monospace);
+  letter-spacing:.08em;
+  pointer-events:none;
+}
+
+/* v22 declared .locked after .active, so locked nodes visually erased their selected state.
+   Keep them classified as locked, but make selection obvious. */
+.correlation-node.locked.active{
+  border-color:#dc9288!important;
+  background:linear-gradient(180deg,rgba(61,22,20,.98),rgba(31,10,10,.98))!important;
+  color:#e4b0a9!important;
+  box-shadow:
+    0 0 0 2px rgba(220,146,136,.25),
+    0 0 0 5px rgba(151,65,59,.08),
+    0 0 26px rgba(151,65,59,.18),
+    0 12px 30px rgba(0,0,0,.4)!important;
+  filter:brightness(1.08);
+}
+
+.correlation-node.locked.active::after{
+  content:'SELECTED';
+  border-color:rgba(224,151,141,.42);
+  background:#35110f;
+  color:#efb6ae;
+}
+
+.correlation-node:focus-visible{
+  z-index:6!important;
+  outline:2px solid #d9eee0!important;
+  outline-offset:4px!important;
+}
+
+.correlation-node:active{
+  transform:translate(-50%,-50%) scale(.985)!important;
+}
+
+/* Inspector-side relationship buttons also get a clear selected peer state on interaction. */
+.correlation-links button:focus-visible{
+  outline:2px solid #b7d5c1;
+  outline-offset:2px;
+}
+
+/* Prevent labels/lines from ever becoming an invisible click shield in WebKit/Blink. */
+.correlation-canvas{
+  isolation:isolate;
+}
+
+@media(max-width:760px){
+  .correlation-node.active::after,
+  .correlation-node.locked.active::after{
+    font-size:6px;
+  }
+}
