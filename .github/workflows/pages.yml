@@ -40,6 +40,9 @@ jobs:
       - name: Audio policy contract
         run: npm run test:audio-policy
 
+      - name: Production audio library contract
+        run: npm run test:audio-library
+
       - name: Responsive layout contract
         run: npm run test:responsive
 
