@@ -9,6 +9,9 @@ const [app, main, recovery, boundary, css, pages] = await Promise.all([
   readFile('.github/workflows/pages.yml','utf8'),
 ])
 
+const recoveryCssIndex = main.indexOf("import './route-recovery.css'")
+const previousCssIndex = main.indexOf("import './terminal-fullhd-fit.css'")
+
 const checks = [
   ['resilient lazy loader', app.includes('loadRouteModule(routeModules[name], name)')],
   ['route error boundary', app.includes('<RouteErrorBoundary')],
@@ -19,7 +22,7 @@ const checks = [
   ['reload loop guard', recovery.includes('RECOVERY_WINDOW_MS')],
   ['visible recovery UI', boundary.includes('МОДУЛЬ НЕ ОТВЕТИЛ') && css.includes('.norm-route-failure')],
   ['recovery installed before boot', main.indexOf('installGlobalRouteRecovery()') < main.indexOf('ReactDOM.createRoot')],
-  ['recovery css is final', main.trim().includes("<App />\n    </Router>\n  </React.StrictMode>,\n)\n") && main.includes("import './route-recovery.css'")],
+  ['recovery css is final', recoveryCssIndex > previousCssIndex && recoveryCssIndex !== -1],
   ['previous generation assets retained', pages.includes('Previous route chunks') && pages.includes('.current-assets.txt')],
 ]
 
