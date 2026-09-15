@@ -1,0 +1,260 @@
+/* N.O.R.M. terminal layout polish — dense workstation, stable intel rail.
+   Loaded after terminal-workstation.css. It fixes the wide-screen dead zone and
+   prevents the right intelligence rail from squeezing controls into half-width cards. */
+
+.terminal-files-v2{
+  --terminal-workstation-height:clamp(660px,calc(100vh - 150px),900px);
+  --terminal-workstation-height:clamp(660px,calc(100dvh - 150px),900px);
+}
+
+/* Use more of the available viewport. The terminal remains fixed-height; only its
+   internal panes scroll. This removes the large unused band below the workstation. */
+@media(min-width:901px){
+  .terminal-files-v2 .terminal-grid--deep{
+    margin-bottom:0!important;
+  }
+}
+
+/* Wide workstation: the right rail is one coherent vertical instrument. The old
+   lead/inspector split produced two ~200px cards, clipped labels and escaped buttons. */
+@media(min-width:1380px){
+  .terminal-files-v2 .terminal-grid--deep{
+    grid-template-columns:minmax(275px,.70fr) minmax(600px,1.62fr) minmax(430px,1.02fr)!important;
+  }
+
+  .terminal-files-v2 .terminal-arg-feeds{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:auto auto minmax(0,1fr)!important;
+    grid-template-areas:
+      "uplinks"
+      "lead"
+      "inspector"!important;
+    gap:9px!important;
+    align-content:stretch!important;
+    overflow:hidden!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks{
+    grid-area:uplinks!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    padding:9px!important;
+    min-height:0!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks::before{
+    grid-column:1/-1!important;
+    padding:0 2px 5px!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks>button{
+    grid-template-columns:82px minmax(0,1fr)!important;
+    grid-template-rows:auto auto 1fr!important;
+    gap:3px 9px!important;
+    min-height:122px!important;
+    height:122px!important;
+    padding:8px!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks>button::before{
+    content:'FIELD PERSONNEL'!important;
+    top:7px!important;
+    right:8px!important;
+    font-size:8px!important;
+    letter-spacing:.06em!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks .live-feed__frame{
+    width:82px!important;
+    height:102px!important;
+    grid-column:1!important;
+    grid-row:1/4!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks>button>b{
+    margin-top:18px!important;
+    font-size:16px!important;
+    line-height:1.05!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks>button>small{
+    font-size:10px!important;
+    line-height:1.25!important;
+  }
+
+  .terminal-files-v2 .terminal-uplinks>button::after{
+    padding-top:5px!important;
+    font-size:9px!important;
+    line-height:1.32!important;
+  }
+
+  .terminal-files-v2 .terminal-lead-card{
+    grid-area:lead!important;
+    min-height:0!important;
+    padding:11px 12px!important;
+    overflow:hidden!important;
+  }
+
+  .terminal-files-v2 .terminal-lead-card>b{
+    margin-top:3px!important;
+    font-size:15px!important;
+    line-height:1.2!important;
+  }
+
+  .terminal-files-v2 .terminal-lead-card>span{
+    display:block!important;
+    margin-top:5px!important;
+    font-size:11px!important;
+    line-height:1.42!important;
+  }
+
+  .terminal-files-v2 .terminal-lead-card>div{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+    margin-top:8px!important;
+  }
+
+  .terminal-files-v2 .terminal-lead-card>div button{
+    width:100%!important;
+    min-width:0!important;
+    min-height:31px!important;
+    height:31px!important;
+    padding:5px 6px!important;
+    font-size:9.5px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .terminal-files-v2 .terminal-resource-inspector{
+    grid-area:inspector!important;
+    display:flex!important;
+    flex-direction:column!important;
+    min-height:0!important;
+    height:100%!important;
+    max-height:100%!important;
+    padding:11px 12px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior:contain!important;
+    scrollbar-gutter:stable!important;
+  }
+
+  .terminal-files-v2 .terminal-resource-inspector>b{
+    font-size:15px!important;
+    line-height:1.18!important;
+  }
+
+  .terminal-files-v2 .terminal-resource-inspector>p,
+  .terminal-files-v2 .terminal-resource-inspector>em{
+    margin-top:6px!important;
+    margin-bottom:5px!important;
+    font-size:11px!important;
+    line-height:1.42!important;
+  }
+
+  .terminal-files-v2 .terminal-resource-status{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:5px!important;
+    margin-top:7px!important;
+  }
+
+  .terminal-files-v2 .terminal-resource-status span{
+    flex:0 1 auto!important;
+    min-width:0!important;
+    padding:4px 6px!important;
+    font-size:9px!important;
+  }
+
+  .terminal-files-v2 .terminal-resource-actions{
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(88px,1fr))!important;
+    gap:6px!important;
+    width:100%!important;
+    margin-top:auto!important;
+    padding-top:8px!important;
+  }
+
+  .terminal-files-v2 .terminal-resource-actions button{
+    width:100%!important;
+    min-width:0!important;
+    min-height:31px!important;
+    height:31px!important;
+    padding:5px 6px!important;
+    font-size:9.5px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+}
+
+/* Medium desktop: keep the split workstation, but give the lower intelligence rail
+   more room and let its own content scroll rather than deforming the console. */
+@media(min-width:901px) and (max-width:1379px){
+  .terminal-files-v2 .terminal-grid--deep{
+    grid-template-rows:minmax(0,.42fr) minmax(0,.58fr)!important;
+  }
+  .terminal-files-v2 .terminal-arg-feeds{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:8px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+  .terminal-files-v2 .terminal-uplinks{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .terminal-files-v2 .terminal-uplinks>button{
+    min-height:112px!important;
+  }
+  .terminal-files-v2 .terminal-lead-card,
+  .terminal-files-v2 .terminal-resource-inspector{
+    flex:0 0 auto!important;
+    width:100%!important;
+  }
+}
+
+/* The prior 600/540px presets created the visible dead band on laptop-height
+   screens. Keep adaptive geometry instead of collapsing the workstation too early. */
+@media(min-width:901px) and (max-height:820px){
+  .terminal-files-v2{
+    --terminal-workstation-height:clamp(620px,calc(100vh - 145px),720px);
+    --terminal-workstation-height:clamp(620px,calc(100dvh - 145px),720px);
+  }
+  .terminal-files-v2 .terminal-input-row{
+    margin-top:36px!important;
+  }
+}
+
+@media(min-width:901px) and (max-height:720px){
+  .terminal-files-v2{
+    --terminal-workstation-height:clamp(540px,calc(100vh - 135px),620px);
+    --terminal-workstation-height:clamp(540px,calc(100dvh - 135px),620px);
+  }
+  .terminal-files-v2 .terminal-quickbar{
+    max-height:64px!important;
+  }
+}
+
+/* Narrow screens keep the existing stacked layout, but controls must never escape
+   cards when Russian labels wrap. */
+@media(max-width:900px){
+  .terminal-files-v2 .terminal-lead-card>div,
+  .terminal-files-v2 .terminal-resource-actions{
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(110px,1fr))!important;
+    gap:6px!important;
+  }
+  .terminal-files-v2 .terminal-lead-card button,
+  .terminal-files-v2 .terminal-resource-actions button{
+    width:100%!important;
+    min-width:0!important;
+    white-space:normal!important;
+  }
+}
