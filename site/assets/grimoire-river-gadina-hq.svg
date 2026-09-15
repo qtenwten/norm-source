@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" role="img" aria-label="Речная гадина — архивная реконструкция">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ddd2ac"/><stop offset=".55" stop-color="#c7ba8f"/><stop offset="1" stop-color="#a99970"/></linearGradient>
+ <radialGradient id="mist"><stop stop-color="#f3ecd2" stop-opacity=".72"/><stop offset="1" stop-color="#8b7955" stop-opacity="0"/></radialGradient>
+ <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="3" seed="9"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .13"/></feComponentTransfer></filter>
+ <filter id="ink"><feTurbulence type="fractalNoise" baseFrequency=".011" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter>
+ <filter id="shadow"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<rect width="1200" height="1400" fill="url(#bg)"/><rect width="1200" height="1400" filter="url(#paper)" opacity=".5"/>
+<ellipse cx="640" cy="1135" rx="520" ry="130" fill="#514b3a" opacity=".20" filter="url(#shadow)"/>
+<path d="M0 1110 C180 1050 290 1160 450 1105 C640 1040 760 1170 930 1090 C1050 1035 1120 1050 1200 1010 L1200 1400 0 1400Z" fill="#82765a" opacity=".55"/>
+<g opacity=".34" stroke="#443c2f" stroke-width="9" fill="none"><path d="M45 980Q220 905 380 970T720 960T1150 925"/><path d="M20 1040Q180 995 350 1030T730 1020T1185 990"/></g>
+<ellipse cx="470" cy="780" rx="420" ry="370" fill="url(#mist)"/>
+<g filter="url(#ink)" stroke="#2a2721" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M322 676 C360 530 468 421 626 404 C735 392 829 441 865 536 C885 590 878 651 840 695 C813 727 786 743 759 762 C736 779 730 815 754 844 C787 884 836 903 889 934 C922 953 925 989 900 1012 C877 1034 838 1024 804 1005 C745 972 705 946 660 912 C635 893 610 890 587 901 C526 932 468 965 401 996 C366 1012 321 1003 306 969 C292 935 316 902 350 882 C414 843 451 813 467 777 C482 744 458 720 421 716 C371 711 309 724 267 704 C238 691 231 664 247 642 C265 616 292 625 322 676Z" fill="#454437" stroke-width="18"/>
+ <path d="M548 520 C596 475 685 462 747 493 C799 519 831 567 825 616 C820 655 791 680 750 690 C687 705 615 682 571 646 C532 615 519 557 548 520Z" fill="#36362f" stroke-width="13"/>
+ <path d="M723 532 C767 538 792 555 808 582 C777 572 749 576 725 592" fill="none" stroke-width="10"/>
+ <circle cx="744" cy="559" r="12" fill="#d9c694" stroke-width="7"/><circle cx="744" cy="559" r="4" fill="#241f1a" stroke="none"/>
+ <path d="M830 639 C874 644 910 657 938 681 C899 677 866 685 837 705" fill="none" stroke-width="11"/>
+ <path d="M474 724 C409 735 348 767 297 817 C270 842 256 879 271 908" fill="none" stroke-width="24"/>
+ <path d="M644 854 C700 904 739 951 768 1010 C783 1041 809 1073 847 1095" fill="none" stroke-width="26"/>
+ <path d="M556 891 C516 949 480 1001 426 1047 C399 1070 365 1094 324 1106" fill="none" stroke-width="24"/>
+ <path d="M345 654 C306 605 287 544 286 481" fill="none" stroke-width="18"/>
+ <path d="M372 635 C355 568 361 508 384 445" fill="none" stroke-width="14"/>
+</g>
+<g opacity=".34" stroke="#564c37" fill="none"><path d="M137 392Q168 636 93 863" stroke-width="18"/><path d="M1004 337Q944 612 1016 842" stroke-width="22"/><path d="M1116 437Q1048 615 1082 900" stroke-width="12"/></g>
+<g fill="#443c2f" opacity=".32"><ellipse cx="92" cy="448" rx="37" ry="122"/><ellipse cx="1090" cy="538" rx="45" ry="170"/><ellipse cx="1010" cy="442" rx="30" ry="120"/></g>
+<g fill="#4c4332" font-family="Georgia,serif" opacity=".72"><text x="74" y="92" font-size="27">R-002 / SHORELINE RECONSTRUCTION</text><text x="80" y="1320" font-size="20">N.O.R.M. // FIELD SKETCH // VISUAL INTERPRETATION</text></g>
+<path d="M860 242l168-54" stroke="#873c31" stroke-width="5" opacity=".65"/><text x="867" y="225" font-size="22" fill="#873c31" font-family="monospace" transform="rotate(-9 867 225)">не заходить в воду</text>
+</svg>
