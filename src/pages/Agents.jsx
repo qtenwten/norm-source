@@ -13,7 +13,7 @@ const baseAgents = [
   { id:'02', code:'AG-02', name:'НЕ ЧИСЛИТСЯ', status:'НЕСООТВЕТСТВИЕ РЕЕСТРУ', category:'anomaly', clearance:'?', group:'—', records:['ДАТА СОЗДАНИЯ: НЕДОСТУПНА','ИСТОЧНИК: UNKNOWN NODE','СВЯЗАННЫЕ ДЕЛА: 0'], note:'Система не находит сотрудника с таким номером, однако карточка появляется снова после удаления.', actions:[['/terminal','ОПРОСИТЬ UNKNOWN NODE']] },
 ]
 
-const filters = [['all','ВСЕ'],['active','АКТИВНЫЕ'],['archive','ДЕАКТИВИРОВАННЫЕ'],['lost','УТРАЧЕННЫЕ'],['restricted','ЗАКРЫТЫЕ']]
+const filters = [['all','ВСЕ'],['active','АКТИВНЫЕ'],['archive','ДЕАКТИВИРОВАННЫЕ'],['lost','УТРАЧЕННЫЕ'],['recovered','ВОССТАНОВЛЕННЫЕ'],['restricted','ЗАКРЫТЫЕ']]
 
 function matchesFilter(agent, filter) {
   if (filter === 'all') return true
@@ -34,13 +34,14 @@ function recoverAgent(agent, clearance) {
     ...agent,
     name:recovered.name,
     status:recovered.status,
-    clearance:'HIST',
+    category:'recovered',
+    clearance:recovered.clearance || 'HIST',
     group:'N.O.R.M. / LEGACY',
     image:recovered.image,
     position:'50%',
     records:[`СЛУЖБА: ${recovered.years}`,`ПОСЛЕДНЕЕ ДЕЛО: ${recovered.caseId}`,`ОФИЦИАЛЬНО: ${recovered.official}`,`ПОСЛЕДНИЙ СЛЕД: ${recovered.last}`],
     note: clearance >= 5 ? `${recovered.cause} MIRROR NODE подтверждает, что карточка удалялась из видимого реестра намеренно.` : recovered.cause,
-    actions:[['/ghost-registry', 'ВОССТАНОВЛЕННОЕ ДОСЬЕ'],['/terminal','ОТКРЫТЬ ФАЙЛ В ТЕРМИНАЛЕ']],
+    actions:[['/ghost-registry','ВОССТАНОВЛЕННОЕ ДОСЬЕ'],['/legacy-cases','СВЯЗАННОЕ СКРЫТОЕ ДЕЛО']],
     recovered:true,
   }
 }
@@ -82,8 +83,8 @@ export default function Agents() {
     setSelectedId(agent.id)
     window.history.replaceState(null,'',`${window.location.pathname}#${agent.id}`)
     if(agent.id==='00') discover('AG00_CARD')
-    if(agent.recovered) discover(`RECOVERED_${agent.code}`)
-    ['deleted','anomaly','lost','phantom'].includes(agent.category)?audio.glitch():audio.stamp()
+    if(agent.recovered) discover(`GHOST_AG${agent.id}`)
+    ['deleted','anomaly','lost','phantom'].includes(agent.category)?audio.glitch():agent.recovered?audio.archive():audio.stamp()
   }
   const changeFilter=(next)=>{setFilter(next);audio.tab()}
   const follow=(path)=>{audio.transition(path.startsWith('/terminal')?'terminal':path.startsWith('/archive')||path.startsWith('/ghost')||path.startsWith('/black')?'archive':'case');window.setTimeout(()=>navigate(path),160)}
