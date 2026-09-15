@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { audio } from '../audio'
 import { getArgState, subscribeArg } from '../arg'
-import { artifactRecords, correlationEdges, correlationNodes, internalMessages, journalEntries, mediaRecords, storyThreads } from '../worldData'
+import { artifactRecords, correlationEdges, correlationNodes, journalEntries, mediaRecords, storyThreads } from '../worldData'
 
 const TABS = [
   ['map','СВЯЗИ'],
-  ['messages','СООБЩЕНИЯ'],
   ['objects','ОБЪЕКТЫ'],
   ['media','МЕДИА'],
   ['journal','ЖУРНАЛ'],
@@ -58,7 +57,6 @@ export default function InvestigationHub() {
   const [arg, setArg] = useState(getArgState)
   const [seen, setSeen] = useState(loadSeen)
   const [selectedNode, setSelectedNode] = useState('norm0')
-  const [selectedMessage, setSelectedMessage] = useState(null)
   const [selectedObject, setSelectedObject] = useState(null)
   const [selectedMedia, setSelectedMedia] = useState(null)
 
@@ -90,20 +88,11 @@ export default function InvestigationHub() {
     navigate(route)
   }
 
-  const visibleMessages = useMemo(() => internalMessages.filter((item) => canOpen(item)).filter((item) => matches(item, query)), [arg.clearance, query])
-  const lockedMessages = internalMessages.filter((item) => !canOpen(item)).length
   const visibleObjects = useMemo(() => artifactRecords.filter((item) => canOpen(item)).filter((item) => matches(item, query)), [arg.clearance, query])
   const visibleMedia = useMemo(() => mediaRecords.filter((item) => canOpen(item)).filter((item) => matches(item, query)), [arg.clearance, query])
   const currentNode = correlationNodes.find((item) => item.id === selectedNode) || correlationNodes[0]
   const connected = new Set(correlationEdges.filter(([a,b]) => a === selectedNode || b === selectedNode).flatMap(([a,b]) => [a,b]))
-  const unread = visibleMessages.filter((item) => !seen.includes(item.id)).length
   const journalSolved = journalEntries.filter(journalResolved).length
-
-  const openMessage = (item) => {
-    setSelectedMessage(item)
-    markSeen(item.id)
-    audio.drawer()
-  }
 
   const openObject = (item) => {
     setSelectedObject(item)
@@ -115,13 +104,6 @@ export default function InvestigationHub() {
     setSelectedMedia(item)
     markSeen(item.id)
     audio.photo()
-  }
-
-  const downloadMessage = (item) => {
-    const body = [`N.O.R.M. INTERNAL MESSAGE`, `ID: ${item.id}`, `DATE: ${item.date}`, `FROM: ${item.from}`, `TO: ${item.to}`, `SUBJECT: ${item.subject}`, '', ...item.body, '', `TAGS: ${item.tags.join(', ')}`].join('\n')
-    downloadText(`${item.id}.txt`, body)
-    markSeen(item.id)
-    audio.confirm()
   }
 
   const downloadObject = (item) => {
@@ -144,11 +126,11 @@ export default function InvestigationHub() {
         <div>
           <small>N.O.R.M. // CORRELATION & REVIEW DESK</small>
           <h1>РАССЛЕДОВАТЕЛЬСКИЙ ЦЕНТР</h1>
-          <p>Не каталог фактов, а рабочее место для сопоставления дел, сотрудников, объектов и системных следов. Корреляция не считается доказательством причинности.</p>
+          <p>Рабочее место для сопоставления дел, сотрудников, объектов и системных следов. Служебная переписка вынесена в отдельный канал «ПОЧТА» в левом меню.</p>
         </div>
         <div className="investigation-hero__stats">
           <span><b>A-{arg.clearance}</b>ДОПУСК</span>
-          <span><b>{unread}</b>НЕПРОЧИТАНО</span>
+          <span><b>{correlationNodes.length}</b>УЗЛОВ</span>
           <span><b>{journalSolved}/{journalEntries.length}</b>ВЫВОДЫ</span>
           <span><b>{seen.length}</b>ИЗУЧЕНО</span>
         </div>
@@ -159,7 +141,7 @@ export default function InvestigationHub() {
       </section>
 
       <nav className="investigation-tabs" aria-label="Разделы расследовательского центра">
-        {TABS.map(([id,label]) => <button type="button" className={tab === id ? 'active' : ''} onClick={() => changeTab(id)} key={id}><span>{label}</span>{id === 'messages' && unread > 0 && <b>{unread}</b>}</button>)}
+        {TABS.map(([id,label]) => <button type="button" className={tab === id ? 'active' : ''} onClick={() => changeTab(id)} key={id}><span>{label}</span></button>)}
       </nav>
 
       {tab !== 'map' && <div className="investigation-search"><span>ПОИСК ПО ТЕКУЩЕМУ РАЗДЕЛУ</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="код, дело, агент, фраза…" /><button type="button" onClick={() => setQuery('')}>ОЧИСТИТЬ</button></div>}
@@ -187,13 +169,6 @@ export default function InvestigationHub() {
             <small>ACTIVE CORRELATION NODE</small>
             {canOpen(currentNode) ? <><span className={`correlation-inspector__kind kind-${currentNode.kind}`}>{currentNode.kind}</span><h2>{currentNode.title}</h2><h3>{currentNode.subtitle}</h3><p>{currentNode.summary}</p><div className="correlation-links"><b>СВЯЗИ</b>{correlationEdges.filter(([a,b]) => a === currentNode.id || b === currentNode.id).map(([a,b,label]) => { const peer = correlationNodes.find((node) => node.id === (a === currentNode.id ? b : a)); return <button type="button" onClick={() => setSelectedNode(peer.id)} key={`${a}-${b}`}>{label}<span>{canOpen(peer) ? peer.title : `A-${peer.clearance} // LOCKED`}</span></button> })}</div>{currentNode.route && <button type="button" className="investigation-primary" onClick={() => openRoute(currentNode.route)}>ОТКРЫТЬ ИСХОДНУЮ ЗАПИСЬ →</button>}</> : <div className="investigation-locked-panel"><b>ДАННЫЕ ОГРАНИЧЕНЫ</b><p>Топология связи видна, содержимое узла требует допуска A-{currentNode.clearance}. Система намеренно не раскрывает подписи соседних закрытых записей.</p><button type="button" onClick={() => openRoute('/terminal')}>ПЕРЕЙТИ В ТЕРМИНАЛ →</button></div>}
           </aside>
-        </section>
-      )}
-
-      {tab === 'messages' && (
-        <section className="message-workbench">
-          <div className="message-list"><header><b>INTERNAL MAILBOX</b><span>{visibleMessages.length} доступно // {lockedMessages} закрыто</span></header>{visibleMessages.map((item) => <button type="button" key={item.id} className={`${selectedMessage?.id === item.id ? 'active' : ''} ${seen.includes(item.id) ? 'read' : 'unread'}`} onClick={() => openMessage(item)}><time>{item.date}</time><strong>{item.subject}</strong><span>{item.from} → {item.to}</span><small>{item.tags.join(' / ')}</small></button>)}</div>
-          <article className="message-reader">{selectedMessage ? <><header><small>{selectedMessage.id}</small><h2>{selectedMessage.subject}</h2><dl><dt>ОТ</dt><dd>{selectedMessage.from}</dd><dt>КОМУ</dt><dd>{selectedMessage.to}</dd><dt>ВРЕМЯ</dt><dd>{selectedMessage.date}</dd></dl></header><div className="message-reader__body">{selectedMessage.body.map((line,index) => <p key={`${selectedMessage.id}-${index}`}>{line}</p>)}</div><footer><div>{selectedMessage.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><button type="button" onClick={() => downloadMessage(selectedMessage)}>ЭКСПОРТ .TXT ↓</button></footer></> : <div className="empty-reader"><b>ВЫБЕРИТЕ СООБЩЕНИЕ</b><p>Переписка смешивает бытовые детали, полевые отчёты и материалы, которые не попали в официальные карточки дел.</p></div>}</article>
         </section>
       )}
 
