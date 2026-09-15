@@ -5,6 +5,8 @@ const production = readFileSync('src/productionAudio.js', 'utf8')
 const main = readFileSync('src/main.jsx', 'utf8')
 const docs = readFileSync('docs/audio-library.md', 'utf8')
 const generator = readFileSync('scripts/generate-audio-library.mjs', 'utf8')
+const cleaner = readFileSync('scripts/clean-audio-library.mjs', 'utf8')
+const packageJson = readFileSync('package.json', 'utf8')
 const manifest = JSON.parse(readFileSync('public/audio/audio-manifest.json', 'utf8'))
 
 const fail = (message) => {
@@ -34,10 +36,24 @@ for (const token of [
   'syncAmbience(',
   'productionEnable',
   'productionDisable',
+  'proceduralFallbackEnabled',
+  'enableProceduralFallback()',
+  "Object.defineProperty(audio, 'enabled'",
   'N.O.R.M. production SFX unavailable; procedural layer remains active.',
-]) expect(production.includes(token), `hybrid sample engine is incomplete: ${token}`)
+]) expect(production.includes(token), `production sample engine is incomplete: ${token}`)
+expect(production.includes("hover: () => cueOrFallback('hover', 'click'"), 'hover must use the quiet production layer instead of raw procedural hiss')
+expect(!production.includes('const result = original[name](...args)'), 'production cues must not stack the old procedural effect underneath every sound')
 expect(main.includes("import './productionAudio.js'"), 'production audio layer is not installed at app bootstrap')
 expect(audio.includes('const FIXED_MASTER_GAIN = 5'), 'legacy calibrated Web Audio layer must remain the procedural fallback')
+
+for (const token of [
+  'onePoleLowpass',
+  'dcBlock',
+  'server-room-loop.wav',
+  'terminal-radio-loop.wav',
+  'N.O.R.M. AUDIO MASTER: OK // hiss reduction + ambience cleanup',
+]) expect(cleaner.includes(token), `clean mastering pass is incomplete: ${token}`)
+expect(packageJson.includes('node scripts/generate-audio-library.mjs && node scripts/clean-audio-library.mjs'), 'prepare:audio must run the cleanup mastering pass')
 
 const expectedCues = [
   'click', 'relay', 'switch', 'key', 'confirm', 'deny', 'warning', 'paper', 'drawer',
@@ -51,6 +67,7 @@ expect(generator.includes('const cueOrder = ['), 'deterministic audio renderer h
 expect(generator.includes('mulberry32(0x4e4f524d)'), 'audio renderer lost its deterministic seed')
 expect(docs.includes('18 cues'), 'audio documentation does not describe the sprite inventory')
 expect(docs.includes('hybrid sample + Web Audio'), 'audio documentation does not describe the hybrid architecture')
+expect(docs.includes('only the production layer plays'), 'audio documentation must prohibit simultaneous procedural hiss layering')
 expect(docs.includes('do not contain third-party recordings or samples'), 'audio provenance is not documented')
 
-if (!process.exitCode) console.log('AUDIO LIBRARY CONTRACT: OK // deterministic 18-cue sprite + 4 scene ambiences + procedural fallback')
+if (!process.exitCode) console.log('AUDIO LIBRARY CONTRACT: OK // clean 18-cue production layer + 4 mastered ambiences + fallback-only procedural engine')
