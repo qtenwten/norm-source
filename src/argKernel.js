@@ -256,7 +256,7 @@ export function availableDirectories(progress) {
   const dirs = ['/', '/cases', '/cases/lm-005', '/cases/lm-006', '/entities', '/agents']
   if (level >= 1) dirs.push('/restricted')
   if (level >= 2) dirs.push('/black')
-  if (level >= 3) dirs.push('/etc','/var','/var/log','/home','/home/ag-04','/home/ag-09','/home/ag-13','/home/ag-13/.camera','/proc','/proc/norm0','/dev','/opt','/opt/norm','/tmp','/mnt')
+  if (level >= 3) dirs.push('/etc','/var','/var/log','/home','/home/ag-04','/home/ag-09','/home/ag-09/.cache','/home/ag-13','/home/ag-13/.camera','/proc','/proc/norm0','/dev','/opt','/opt/norm','/tmp','/mnt')
   if (level >= 4 || progress.mountedGhost) dirs.push('/mnt/ghost','/mnt/ghost/personnel','/mnt/ghost/cases','/mnt/ghost/cases/no-17','/mnt/ghost/cases/ar-31','/mnt/ghost/cases/img-13')
   if (level >= 5) dirs.push('/mirror','/mirror/cases')
   return dirs
