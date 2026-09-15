@@ -1,0 +1,368 @@
+/* N.O.R.M. v19 — terminal workstation layout + secure prompt + raster grimoire pass */
+
+/* ---------- Field Terminal: use the whole workstation ---------- */
+.terminal-files-v2 .terminal-grid--deep{
+  width:100%;
+  align-items:stretch;
+}
+
+@media(min-width:1280px){
+  .terminal-files-v2 .terminal-grid--deep{
+    display:grid;
+    grid-template-columns:minmax(245px,.66fr) minmax(520px,1.9fr) minmax(300px,.82fr);
+    grid-template-areas:"nav console intel";
+    gap:10px;
+  }
+  .terminal-files-v2 .terminal-map{
+    grid-area:nav;
+    min-width:0;
+    min-height:690px;
+    display:grid;
+    grid-template-rows:auto 1fr;
+    align-content:start;
+  }
+  .terminal-files-v2 .terminal-console{
+    grid-area:console!important;
+    min-width:0;
+    min-height:690px;
+    height:100%;
+    display:grid;
+    grid-template-rows:auto minmax(0,1fr) auto auto;
+  }
+  .terminal-files-v2 .terminal-arg-feeds{
+    grid-area:intel;
+    min-width:0;
+    min-height:690px;
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    align-content:stretch;
+  }
+  .terminal-files-v2 .terminal-command-log{
+    min-height:0!important;
+    max-height:none!important;
+    height:auto!important;
+  }
+}
+
+/* Filesystem panel becomes a compact navigation instrument. */
+.terminal-files-v2 .terminal-arg-index{
+  border:1px solid #384a40;
+  background:linear-gradient(180deg,rgba(7,14,10,.99),rgba(4,8,6,.99));
+}
+.terminal-files-v2 .terminal-arg-tree{
+  padding:11px 11px 7px;
+  border-bottom:1px solid #27372f;
+}
+.terminal-files-v2 .terminal-arg-tree>small{
+  display:block;
+  margin-bottom:7px;
+  font-size:9px;
+  letter-spacing:.16em;
+  color:#81968b;
+}
+.terminal-files-v2 .terminal-arg-tree button{
+  min-height:27px;
+  border-left:2px solid transparent!important;
+  padding:5px 7px!important;
+}
+.terminal-files-v2 .terminal-arg-tree button:hover{
+  border-left-color:#668676!important;
+  background:rgba(127,161,143,.055)!important;
+}
+.terminal-files-v2 .terminal-map-button{
+  min-height:220px;
+  align-self:stretch;
+  border:0!important;
+}
+
+/* ---------- Right intelligence rail ---------- */
+.terminal-files-v2 .terminal-uplinks{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:7px;
+  border:1px solid #384a40;
+  background:#060b08;
+  padding:8px;
+}
+.terminal-files-v2 .terminal-uplinks::before{
+  content:"FIELD UPLINKS // ACTIVE CHANNELS";
+  display:block;
+  font-size:9px;
+  line-height:1.3;
+  letter-spacing:.13em;
+  color:#7e9388;
+  padding:1px 2px 5px;
+}
+.terminal-files-v2 .terminal-uplinks>button{
+  position:relative;
+  display:grid!important;
+  grid-template-columns:76px minmax(0,1fr);
+  grid-template-rows:auto auto auto;
+  column-gap:10px;
+  row-gap:2px;
+  min-height:86px;
+  padding:7px!important;
+  text-align:left!important;
+  background:linear-gradient(90deg,rgba(14,25,19,.96),rgba(6,11,8,.98))!important;
+  border:1px solid #35483e!important;
+  overflow:hidden;
+}
+.terminal-files-v2 .terminal-uplinks>button:hover{
+  border-color:#5f7b6c!important;
+  background:linear-gradient(90deg,rgba(18,34,25,.98),rgba(8,14,11,.99))!important;
+}
+.terminal-files-v2 .terminal-uplinks .live-feed__frame{
+  grid-column:1;
+  grid-row:1/4;
+  width:76px;
+  height:70px;
+  margin:0;
+  overflow:hidden;
+  border:1px solid #4a5e53;
+  background:#111;
+}
+.terminal-files-v2 .terminal-uplinks .live-feed__frame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 22%;
+  filter:grayscale(1) contrast(1.05) brightness(1.18)!important;
+}
+.terminal-files-v2 .terminal-uplinks>button>b{
+  grid-column:2;
+  align-self:end;
+  font-size:14px;
+  line-height:1.2;
+  color:#e0e7e3;
+}
+.terminal-files-v2 .terminal-uplinks>button>small{
+  grid-column:2;
+  font-size:9px;
+  line-height:1.35;
+  color:#8fa298;
+}
+.terminal-files-v2 .terminal-uplinks>button::after{
+  grid-column:2;
+  display:block;
+  align-self:start;
+  font-size:8px;
+  line-height:1.35;
+  letter-spacing:.07em;
+  color:#70aa89;
+  padding-top:3px;
+  border-top:1px solid #26372f;
+}
+.terminal-files-v2 .terminal-uplinks>button:nth-of-type(1)::after{content:"UPLINK 98%  ·  LAST SYNC 00:14  ·  DOSSIER A-3"}
+.terminal-files-v2 .terminal-uplinks>button:nth-of-type(2)::after{content:"UPLINK 96%  ·  LAST SYNC 00:09  ·  DOSSIER A-3"}
+
+.terminal-files-v2 .terminal-lead-card{
+  margin:0;
+  padding:11px 12px;
+  border-color:#59443d;
+  background:linear-gradient(180deg,rgba(29,17,14,.82),rgba(10,12,9,.97));
+}
+.terminal-files-v2 .terminal-lead-card>small{font-size:9px;letter-spacing:.12em}
+.terminal-files-v2 .terminal-lead-card>b{font-size:14px;line-height:1.3;margin-top:3px}
+.terminal-files-v2 .terminal-lead-card>span{font-size:10px;line-height:1.5;margin-top:4px}
+.terminal-files-v2 .terminal-lead-card>div{margin-top:8px}
+
+.terminal-files-v2 .terminal-resource-inspector{
+  flex:1 1 auto;
+  min-height:220px;
+  justify-content:flex-start;
+}
+.terminal-files-v2 .terminal-resource-inspector>p{font-size:11px;line-height:1.55}
+.terminal-files-v2 .terminal-resource-inspector>em{font-size:10px;line-height:1.55}
+
+/* ---------- Main console ---------- */
+.terminal-files-v2 .terminal-console{
+  border-color:#40544a;
+  background:
+    linear-gradient(rgba(3,8,5,.96),rgba(2,5,3,.985)),
+    repeating-linear-gradient(0deg,transparent 0 2px,rgba(126,167,145,.025) 2px 3px);
+  box-shadow:inset 0 0 80px rgba(74,122,94,.045),0 12px 35px rgba(0,0,0,.18);
+}
+.terminal-files-v2 .terminal-quickbar{
+  padding:8px 9px;
+  gap:6px;
+  background:#07100b;
+  border-bottom-color:#304239;
+}
+.terminal-files-v2 .terminal-quickbar button{
+  min-height:26px;
+  padding:5px 9px;
+  font-size:9px;
+}
+.terminal-files-v2 .terminal-command-log{
+  padding:12px 11px 18px;
+  background:transparent;
+}
+.terminal-files-v2 .terminal-line{
+  grid-template-columns:58px minmax(0,1fr);
+  column-gap:8px;
+  padding:2px 0;
+}
+.terminal-files-v2 .terminal-line time{
+  font-size:8px;
+  color:#506259;
+}
+.terminal-files-v2 .terminal-line>span{
+  font-size:11px;
+  line-height:1.62;
+}
+
+/* ---------- Secure command prompt ---------- */
+.terminal-files-v2 .terminal-input-row{
+  position:relative;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:stretch;
+  gap:0;
+  min-height:62px;
+  margin:0 10px 9px;
+  border:1px solid #557565;
+  background:linear-gradient(180deg,#0b1610,#07100b);
+  box-shadow:inset 0 0 0 1px rgba(164,206,182,.025),0 0 0 1px rgba(0,0,0,.5),0 7px 22px rgba(0,0,0,.28);
+  overflow:hidden;
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.terminal-files-v2 .terminal-input-row::before{
+  content:"SECURE COMMAND BUS";
+  position:absolute;
+  left:12px;
+  top:5px;
+  z-index:2;
+  font-size:7px;
+  line-height:1;
+  letter-spacing:.17em;
+  color:#5f7569;
+  pointer-events:none;
+}
+.terminal-files-v2 .terminal-input-row:focus-within{
+  border-color:#7ba087;
+  background:linear-gradient(180deg,#0d1c14,#08130d);
+  box-shadow:inset 0 0 28px rgba(79,139,102,.055),0 0 0 1px rgba(99,145,119,.14),0 0 22px rgba(78,131,98,.08);
+}
+.terminal-files-v2 .terminal-input-row label{
+  position:relative;
+  display:flex;
+  align-items:center;
+  min-width:116px;
+  max-width:210px;
+  padding:20px 11px 8px;
+  border-right:1px solid #40584b;
+  background:#09130d;
+  color:#7eb092;
+  font:700 10px/1.25 "Courier New",monospace;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.terminal-files-v2 .terminal-input-row label::after{
+  content:"NODE04";
+  position:absolute;
+  left:11px;
+  top:8px;
+  font-size:7px;
+  letter-spacing:.13em;
+  color:#566a60;
+}
+.terminal-files-v2 .terminal-input-row input{
+  width:100%;
+  min-width:0;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#d8e6de!important;
+  padding:19px 14px 8px!important;
+  font:600 14px/1.3 "Courier New",monospace!important;
+  caret-color:#9dd8b4;
+  letter-spacing:.015em;
+  box-shadow:none!important;
+}
+.terminal-files-v2 .terminal-input-row input::placeholder{
+  color:#53675d;
+  opacity:1;
+}
+.terminal-files-v2 .terminal-input-row button{
+  min-width:86px;
+  border:0!important;
+  border-left:1px solid #4c6858!important;
+  background:linear-gradient(180deg,#14241a,#0b1710)!important;
+  color:#a9cbb8!important;
+  padding:18px 14px 8px!important;
+  font:700 10px/1 "Courier New",monospace!important;
+  letter-spacing:.12em;
+}
+.terminal-files-v2 .terminal-input-row button::before{
+  content:"RUN";
+  display:block;
+  margin-bottom:5px;
+  color:#5d7768;
+  font-size:7px;
+  letter-spacing:.14em;
+}
+.terminal-files-v2 .terminal-input-row button:hover{
+  color:#e0ece5!important;
+  background:linear-gradient(180deg,#1a3223,#0e2016)!important;
+}
+.terminal-files-v2 .terminal-command-help{
+  padding:5px 11px 8px;
+  border-top:0;
+  color:#52675c;
+}
+
+/* ---------- Grimoire: raster source images, not vector-look reconstruction ---------- */
+.grimoire-page--registry .monster-plate{
+  min-height:520px;
+  background:#15130f;
+  border:1px solid rgba(71,54,37,.5);
+  box-shadow:inset 0 0 0 5px rgba(255,255,255,.07),inset 0 0 44px rgba(26,20,14,.28);
+}
+.grimoire-page--registry .monster-plate>img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  transform:none!important;
+  image-rendering:auto;
+  filter:sepia(.12) saturate(.82) contrast(1.05) brightness(.95)!important;
+}
+.grimoire-page--registry .monster-plate__shade{
+  background:linear-gradient(180deg,rgba(242,225,176,.035),rgba(27,22,15,.15))!important;
+}
+.grimoire-page--registry .monster-hotspot{
+  backdrop-filter:blur(1px);
+}
+.grimoire-page--registry .red-pencil{
+  max-width:56ch;
+}
+.grimoire-page--registry .material-viewer__scan.monster-material-scan img{
+  object-fit:contain!important;
+  filter:sepia(.08) saturate(.9) contrast(1.04)!important;
+}
+
+@media(max-width:1279px){
+  .terminal-files-v2 .terminal-grid--deep{
+    grid-template-columns:minmax(240px,.7fr) minmax(0,1.6fr);
+  }
+  .terminal-files-v2 .terminal-map{grid-column:1;grid-row:1}
+  .terminal-files-v2 .terminal-arg-feeds{grid-column:1;grid-row:2}
+  .terminal-files-v2 .terminal-console{grid-column:2!important;grid-row:1/3;min-height:760px}
+  .terminal-files-v2 .terminal-command-log{max-height:none!important;min-height:520px}
+}
+@media(max-width:900px){
+  .terminal-files-v2 .terminal-grid--deep{display:block}
+  .terminal-files-v2 .terminal-map,.terminal-files-v2 .terminal-arg-feeds,.terminal-files-v2 .terminal-console{margin-bottom:10px;min-height:0}
+  .terminal-files-v2 .terminal-command-log{min-height:420px}
+}
+@media(max-width:640px){
+  .terminal-files-v2 .terminal-input-row{grid-template-columns:1fr auto;min-height:58px}
+  .terminal-files-v2 .terminal-input-row label{grid-column:1/-1;min-width:0;max-width:none;min-height:25px;padding:12px 10px 4px;border-right:0;border-bottom:1px solid #354b3e}
+  .terminal-files-v2 .terminal-input-row label::after{top:4px;left:auto;right:10px}
+  .terminal-files-v2 .terminal-input-row input{padding:12px 10px!important;font-size:13px!important}
+  .terminal-files-v2 .terminal-input-row button{padding:11px 12px!important}
+  .terminal-files-v2 .terminal-input-row button::before{display:none}
+  .grimoire-page--registry .monster-plate{min-height:430px}
+}
