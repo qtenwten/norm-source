@@ -8,9 +8,10 @@ let enabled = false
 let initialized = false
 let currentScene = 'dashboard'
 
+const FIXED_MASTER_GAIN = 5
 const state = {
-  // Slider gain remains 0–5; the buses below carry the final +20% loudness profile.
-  volume: 1,
+  // N.O.R.M. runs at the UI's 100% calibration. Muting is handled only by disable().
+  volume: FIXED_MASTER_GAIN,
 }
 
 const sceneProfiles = {
@@ -362,11 +363,13 @@ function terminalTransition() {
 
 export const audio = {
   enable() {
+    const wasEnabled = enabled
     enabled = true
+    state.volume = FIXED_MASTER_GAIN
     ensure()
-    rampMaster(state.volume, 0.14)
+    rampMaster(FIXED_MASTER_GAIN, 0.14)
     startAmbience()
-    bootSequence()
+    if (!wasEnabled) bootSequence()
     return true
   },
 
@@ -380,9 +383,22 @@ export const audio = {
     return enabled ? this.disable() : this.enable()
   },
 
-  setVolume(value) {
-    state.volume = Math.min(5, Math.max(0.0001, Number(value) || 1))
-    if (enabled) rampMaster(state.volume, 0.06)
+  resume() {
+    if (!enabled) return false
+    state.volume = FIXED_MASTER_GAIN
+    ensure()
+    rampMaster(FIXED_MASTER_GAIN, 0.04)
+    startAmbience()
+    return true
+  },
+
+  setVolume() {
+    state.volume = FIXED_MASTER_GAIN
+    if (enabled) {
+      ensure()
+      rampMaster(FIXED_MASTER_GAIN, 0.06)
+    }
+    return FIXED_MASTER_GAIN
   },
 
   get volume() {
