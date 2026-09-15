@@ -10,6 +10,22 @@ const AUTH_STEPS = [
   ['grant', 'ДОСТУП ПРЕДОСТАВЛЕН // LEVEL 0'],
 ]
 
+const FIXED_AUDIO_GAIN = 5
+const SOUND_STORAGE_KEY = 'norm-audio-enabled-v1'
+
+function soundAllowed() {
+  if (typeof window === 'undefined') return true
+  return window.localStorage.getItem(SOUND_STORAGE_KEY) !== '0'
+}
+
+function restoreGateAudio() {
+  if (!soundAllowed()) return false
+  audio.setVolume(FIXED_AUDIO_GAIN)
+  if (!audio.enabled) audio.enable()
+  else audio.resume()
+  return true
+}
+
 export default function AccessGate({ onEnter }) {
   const [phase, setPhase] = useState('idle')
   const [message, setMessage] = useState('ОЖИДАНИЕ ИДЕНТИФИКАЦИИ ОПЕРАТОРА')
@@ -34,7 +50,7 @@ export default function AccessGate({ onEnter }) {
   }
 
   const primeAudio = () => {
-    if (!audio.enabled) audio.enable()
+    restoreGateAudio()
   }
 
   const authenticate = (event) => {
@@ -47,8 +63,7 @@ export default function AccessGate({ onEnter }) {
     setPhase('auth')
     setAuthStep(0)
     setMessage(AUTH_STEPS[0][1])
-    if (!audio.enabled) audio.enable()
-    else audio.command()
+    if (restoreGateAudio()) audio.command()
 
     AUTH_STEPS.slice(1).forEach(([nextPhase, text], index) => {
       schedule(() => {
@@ -67,7 +82,10 @@ export default function AccessGate({ onEnter }) {
 
   const onFieldKeyDown = (event) => {
     if (event.key === 'Escape') event.currentTarget.blur()
-    else if (event.key.length === 1) audio.key()
+    else if (event.key.length === 1 && soundAllowed()) {
+      audio.setVolume(FIXED_AUDIO_GAIN)
+      audio.key()
+    }
   }
 
   return (
