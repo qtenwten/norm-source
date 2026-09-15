@@ -1,0 +1,405 @@
+/* N.O.R.M. responsive v26
+   Final responsive override for phones, tablets, laptops and large monitors.
+   Loaded after terminal-layout-polish.css so device geometry wins without rewriting
+   the historical visual layers. */
+
+:root{
+  --norm-content-max:1680px;
+  --norm-page-gutter:clamp(12px,1.6vw,28px);
+  --norm-touch:42px;
+  --norm-mobile-header:82px;
+  --norm-mobile-nav:54px;
+}
+
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  overflow-x:hidden;
+}
+
+body,#root,.norm-shell,.main-area,.page{min-width:0}
+body{max-width:100vw}
+img,video,canvas{max-width:100%}
+svg{max-width:100%}
+button,input,textarea,select,a{min-width:0}
+pre,code{overflow-wrap:anywhere;word-break:break-word}
+.page :is(h1,h2,h3,h4,p,li,dd,blockquote,strong,span){overflow-wrap:anywhere}
+
+.page{width:100%;max-width:var(--norm-content-max)}
+.terminal-page{max-width:1820px}
+.main-area{padding-left:var(--norm-page-gutter);padding-right:var(--norm-page-gutter)}
+.page-title{font-size:clamp(30px,3.1vw,46px);line-height:1.02}
+.page-lead{max-width:920px;line-height:1.55}
+.panel,.paper,.case-paper,.agent-file,.archive-grid>*{min-width:0}
+.tabs,.investigation-tabs{scrollbar-width:thin}
+
+/* Never let old fixed-width controls force horizontal page overflow. */
+:is(.dashboard-grid,.lower-grid,.dossier-grid,.agents-grid,.archive-grid,.terminal-grid,
+    .correlation-layout,.object-workbench,.journal-layout,.desk-layout,.forensics-layout,
+    .mail-layout,.equipment-layout,.equipment-grid,.investigation-entry-grid)>*{min-width:0}
+
+/* Large desktop / ultrawide: use the room without creating absurd line lengths. */
+@media(min-width:1800px){
+  .norm-shell{grid-template-columns:200px minmax(0,1fr)}
+  .topbar{grid-template-columns:minmax(410px,1.05fr) minmax(420px,1fr) 330px}
+  .main-area{padding-left:30px;padding-right:30px}
+  .dashboard-grid{grid-template-columns:minmax(0,2.15fr) minmax(320px,.85fr)}
+  .lower-grid{grid-template-columns:1.25fr 1fr 1fr}
+  .archive-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .agents-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .norm20-hero{padding:28px 32px}
+}
+
+/* Common laptops: 1280/1366/1440/1536 wide. Keep desktop chrome but reduce dead chrome. */
+@media(min-width:1025px) and (max-width:1599px){
+  .norm-shell{grid-template-columns:168px minmax(0,1fr);grid-template-rows:96px 1fr 32px}
+  .topbar{grid-template-columns:minmax(330px,1.05fr) minmax(260px,.85fr) minmax(250px,290px)}
+  .brand{padding:13px 18px}
+  .brand__logo{font-size:38px}
+  .brand__sub{font-size:10px}
+  .topbar__motto{padding:14px;font-size:10px;letter-spacing:.11em}
+  .session{padding:13px 16px;font-size:9px}
+  .sidebar{padding:13px 9px 11px;gap:12px}
+  .sidebar a{padding:11px 9px;font-size:11px}
+  .main-area{padding-top:13px}
+  .page-title{font-size:clamp(31px,3vw,42px)}
+  .case-paper h1,.paper h1{font-size:clamp(26px,2.4vw,34px)}
+}
+
+@media(min-width:1025px) and (max-width:1279px){
+  .topbar{grid-template-columns:minmax(320px,1fr) minmax(245px,280px)}
+  .topbar__motto{display:none!important}
+  .dashboard-grid,.lower-grid,.dossier-grid{grid-template-columns:1fr}
+  .dashboard-grid>.panel,.lower-grid>.panel{margin-bottom:10px}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .archive-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .agents-grid{grid-template-columns:1fr}
+  .book-wrap{max-width:none}
+  .grimoire-side{position:static!important;margin-top:12px}
+}
+
+/* Tablet and small-laptop layout: chrome becomes two sticky horizontal bars.
+   This avoids a 150-185px sidebar crushing 768/820/1024px viewports. */
+@media(max-width:1024px){
+  :root{--norm-mobile-header:82px;--norm-mobile-nav:54px}
+  .norm-shell{display:block!important;min-height:100dvh}
+  .topbar{
+    position:sticky!important;
+    top:0;
+    z-index:70!important;
+    width:100%;
+    height:var(--norm-mobile-header)!important;
+    min-height:var(--norm-mobile-header);
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    background:rgba(6,14,11,.97)!important;
+    backdrop-filter:blur(10px);
+  }
+  .topbar__motto{display:none!important}
+  .brand{min-width:0;padding:10px 14px!important;border-right:0!important}
+  .brand__logo{font-size:32px!important;line-height:.95}
+  .brand__sub{font-size:9px!important;white-space:normal;line-height:1.25}
+  .session{min-width:185px;padding:10px 13px!important;font-size:8px!important;gap:5px!important}
+
+  .sidebar{
+    position:sticky!important;
+    top:var(--norm-mobile-header)!important;
+    z-index:68!important;
+    width:100%;
+    height:var(--norm-mobile-nav)!important;
+    min-height:var(--norm-mobile-nav)!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:stretch!important;
+    gap:5px!important;
+    padding:6px max(7px,env(safe-area-inset-left))!important;
+    padding-right:max(7px,env(safe-area-inset-right))!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    white-space:nowrap!important;
+    border-right:0!important;
+    border-bottom:1px solid var(--line)!important;
+    background:rgba(5,12,9,.98)!important;
+    overscroll-behavior-x:contain;
+    scrollbar-width:thin;
+  }
+  .sidebar-emblem,.sidebar__tagline,.volume-console{display:none!important}
+  .sidebar nav,.secret-nav{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:stretch!important;
+    flex:0 0 auto!important;
+    gap:4px!important;
+  }
+  .secret-nav{border:0!important;margin:0!important;padding:0!important}
+  .secret-nav>small{display:none!important}
+  .sidebar a,.secret-nav a{
+    display:flex!important;
+    align-items:center!important;
+    min-height:40px!important;
+    padding:8px 10px!important;
+    font-size:10px!important;
+    line-height:1!important;
+    flex:0 0 auto!important;
+  }
+  .nav-glyph{width:18px!important}
+  .sidebar-mail-badge{position:static!important;margin-left:7px!important}
+  .sidebar-mail-flash{position:static!important;margin-left:5px!important}
+  .report-button,.sound-toggle,.logout-button,.arg-clearance-card{
+    display:flex!important;
+    flex:0 0 auto!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:40px!important;
+    height:40px!important;
+    width:auto!important;
+    margin:0!important;
+    padding:7px 10px!important;
+    font-size:9px!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+  }
+  .arg-clearance-card{gap:5px!important}
+  .arg-clearance-card small,.arg-clearance-card span,.arg-clearance-card em{display:none!important}
+  .arg-clearance-card strong{font-size:14px!important;margin:0!important}
+  .logout-button small{display:none!important}
+
+  .main-area{
+    width:100%!important;
+    padding:12px var(--norm-page-gutter) calc(26px + env(safe-area-inset-bottom))!important;
+  }
+  .main-area__meta{margin-bottom:7px}
+  .footerline{display:none!important}
+
+  .city-banner{min-height:126px;height:auto;padding:16px 18px;gap:16px}
+  .city-banner blockquote{max-width:42%;font-size:11px}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dashboard-grid,.lower-grid,.dossier-grid,.agents-grid{grid-template-columns:1fr!important}
+  .dashboard-grid>.panel,.lower-grid>.panel{margin-bottom:10px}
+  .case-paper{grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:15px}
+  .archive-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .field-team{grid-template-columns:minmax(180px,.9fr) minmax(0,1fr)}
+
+  .tabs,.investigation-tabs{
+    display:flex!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    white-space:nowrap!important;
+    scroll-snap-type:x proximity;
+    overscroll-behavior-x:contain;
+  }
+  .tabs>* ,.investigation-tabs>*{flex:0 0 auto!important;min-width:138px;scroll-snap-align:start}
+
+  .book-wrap{grid-template-columns:1fr!important;max-width:760px;margin-inline:auto;padding:0!important;transform:none!important}
+  .book-page{min-height:0!important;padding:clamp(20px,4vw,34px)!important}
+  .book-page--left{border-right:1px solid #847353!important}
+  .book-page .bottom{position:static!important;margin-top:24px}
+  .grimoire-side{position:static!important;left:auto!important;right:auto!important;top:auto!important;margin-top:12px}
+  .entity-sketch{height:clamp(300px,50vw,430px)}
+  .agent-file>.norm-photo{height:clamp(260px,48vw,390px)}
+
+  /* Investigation: keep topology legible by panning the graph instead of crushing nodes. */
+  .investigation-hero{gap:14px!important}
+  .investigation-hero__stats{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .story-thread-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .correlation-layout,.object-workbench,.journal-layout{grid-template-columns:1fr!important}
+  .correlation-canvas-wrap{width:100%;overflow-x:auto!important;overscroll-behavior-x:contain}
+  .correlation-canvas{min-width:780px!important}
+  .correlation-inspector,.object-inspector{position:static!important;width:100%!important;max-height:none!important}
+  .object-grid,.media-vault-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .journal-intro{position:static!important}
+
+  /* N.O.R.M. 2.0 tools */
+  .norm20-hero{padding:20px!important;gap:14px!important}
+  .desk-layout,.forensics-layout,.equipment-layout{grid-template-columns:1fr!important}
+  .desk-library{max-height:300px!important}
+  .desk-board{min-height:0!important;overflow-x:auto!important;overscroll-behavior-x:contain}
+  .desk-board__canvas{width:760px!important;max-width:none!important;height:540px!important}
+  .desk-notes{grid-column:auto!important}
+  .forensics-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .forensics-strip{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .equipment-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .equipment-inspector{order:-1}
+
+  .mail-layout{grid-template-columns:210px minmax(290px,.75fr) minmax(0,1fr)!important;overflow-x:auto!important}
+  .mail-folders{min-width:210px}
+  .mail-list-pane{min-width:290px}
+  .mail-reader-pane{min-width:360px}
+
+  /* Terminal: console first, fixed-height transcript; rails stack below it. */
+  .terminal-files-v2 .terminal-grid--deep{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto!important;
+    gap:10px!important;
+  }
+  .terminal-files-v2 .terminal-console{order:1!important;height:clamp(500px,62dvh,680px)!important;max-height:680px!important}
+  .terminal-files-v2 .terminal-map{order:2!important}
+  .terminal-files-v2 .terminal-arg-feeds{order:3!important}
+  .terminal-files-v2 .terminal-map-button{min-height:210px!important}
+  .terminal-files-v2 .terminal-uplinks{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .terminal-files-v2 .terminal-resource-actions,.terminal-files-v2 .terminal-lead-card>div{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))!important}
+}
+
+/* Phones / narrow portrait tablets. */
+@media(max-width:720px){
+  :root{--norm-mobile-header:68px;--norm-mobile-nav:50px;--norm-page-gutter:10px}
+  .topbar{height:var(--norm-mobile-header)!important;min-height:var(--norm-mobile-header)!important}
+  .brand{padding:8px 10px!important}
+  .brand__logo{font-size:27px!important;letter-spacing:.05em!important}
+  .brand__sub{font-size:7.5px!important;line-height:1.15}
+  .session{min-width:88px!important;padding:8px 9px!important;border-left:1px solid var(--line)!important;justify-content:center}
+  .session span:first-child,.session span:nth-child(3){display:none!important}
+  .session span:nth-child(2){font-size:8px!important;white-space:nowrap}
+
+  .sidebar{height:var(--norm-mobile-nav)!important;min-height:var(--norm-mobile-nav)!important;padding-top:5px!important;padding-bottom:5px!important}
+  .sidebar a,.secret-nav a{min-height:38px!important;padding:7px 9px!important;font-size:9px!important}
+  .nav-glyph{display:none!important}
+  .report-button,.sound-toggle,.logout-button,.arg-clearance-card{height:38px!important;min-height:38px!important;padding:6px 9px!important;font-size:8px!important}
+  .report-button{font-size:0!important}
+  .report-button::after{content:'⚠ АНОМАЛИЯ';font-size:8px}
+  .logout-button span{font-size:0!important}
+  .logout-button span::after{content:'ВЫХОД';font-size:8px}
+
+  .main-area{padding-top:9px!important}
+  .main-area__meta{display:none!important}
+  .page-title{font-size:clamp(28px,8vw,38px)!important;letter-spacing:.025em}
+  .page-lead{font-size:12px;line-height:1.5}
+  .panel__body{padding:10px}
+
+  .city-banner{min-height:150px;display:grid;grid-template-columns:1fr;padding:15px!important;align-content:end}
+  .city-banner blockquote{display:none}
+  .city-banner strong{font-size:16px}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  .stat-grid>*{min-height:72px;padding:9px!important;gap:7px!important}
+  .stat-grid b{font-size:22px!important}
+  .stat-grid span{font-size:9px!important}
+
+  .case-paper{grid-template-columns:1fr!important;padding:12px!important;gap:12px!important}
+  .case-paper .stamp{position:static!important;margin:5px 0!important;transform:rotate(-2deg)}
+  .case-paper h1,.paper h1{font-size:26px!important}
+  .case-paper dl,.dossier-main dl,.book-page dl{grid-template-columns:minmax(82px,auto) minmax(0,1fr)!important}
+  .dossier-main{padding:14px!important}
+  .dossier-main>.stamp{position:static!important;margin:8px 0!important}
+  .dossier-main .norm-photo{height:clamp(260px,72vw,390px)!important}
+
+  .case-row{grid-template-columns:64px minmax(0,1fr)!important;gap:8px!important;padding:10px!important}
+  .case-row>*{min-width:0}
+  .case-row span:nth-of-type(2),.case-row em,.case-row b:last-child{display:none!important}
+
+  .tabs>* ,.investigation-tabs>*{min-width:110px!important;padding:10px 11px!important;font-size:10px!important}
+  .archive-grid,.object-grid,.media-vault-grid,.equipment-grid{grid-template-columns:1fr!important}
+  .agents-grid{grid-template-columns:1fr!important}
+  .agent-file{padding:14px!important}
+  .agent-file>.norm-photo{float:none!important;width:100%!important;height:clamp(260px,92vw,390px)!important;margin:0 0 12px!important}
+  .field-team{grid-template-columns:1fr!important}
+  .live-feeds{grid-template-columns:1fr!important}
+
+  .book-page h1{font-size:clamp(30px,10vw,42px)!important}
+  .entity-sketch{height:300px!important}
+
+  .investigation-hero{display:grid!important;grid-template-columns:1fr!important;padding:15px!important}
+  .investigation-hero h1{font-size:clamp(27px,8.5vw,38px)!important}
+  .investigation-hero__stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .story-thread-strip{grid-template-columns:1fr!important;overflow:visible!important}
+  .investigation-search{grid-template-columns:1fr!important;gap:7px!important}
+  .correlation-canvas{min-width:720px!important;height:520px!important}
+  .correlation-node{transform:translate(-50%,-50%) scale(.9)!important;transform-origin:center}
+  .journal-entries{grid-template-columns:1fr!important}
+  .investigation-modal{padding:10px!important;align-items:center!important}
+  .investigation-modal>section{width:100%!important;max-height:calc(100dvh - 20px)!important;overflow:auto!important}
+
+  .norm20-hero{padding:15px!important}
+  .norm20-hero h1{font-size:30px!important}
+  .norm20-hero__status{min-width:0!important}
+  .norm20-dock{right:calc(8px + env(safe-area-inset-right))!important;bottom:calc(8px + env(safe-area-inset-bottom))!important}
+  .norm20-dock__panel{width:min(230px,calc(100vw - 20px))!important}
+  .norm20-system-toast{right:10px!important;bottom:calc(68px + env(safe-area-inset-bottom))!important;width:calc(100vw - 20px)!important}
+
+  .desk-library{max-height:240px!important}
+  .desk-board__toolbar{grid-template-columns:1fr!important}
+  .desk-board__canvas{width:700px!important;height:500px!important}
+  .desk-pin{width:102px!important;min-height:64px!important}
+  .desk-notes textarea{min-height:150px!important}
+
+  .forensics-controls{grid-template-columns:1fr!important}
+  .forensics-controls>small,.forensics-controls>.investigation-primary,.forensics-result,.forensics-meta{grid-column:1!important}
+  .forensics-strip{grid-template-columns:1fr!important}
+  .forensics-strip article,.forensics-strip img{height:200px!important}
+  .forensics-timeline{grid-template-columns:1fr!important;gap:8px!important;padding-bottom:12px!important}
+  .forensics-markers{display:none!important}
+  .forensics-compare>header{align-items:flex-start!important;flex-direction:column!important;gap:5px}
+
+  /* Mail becomes a natural vertical app on phones; list before reader. */
+  .mail-layout{display:grid!important;grid-template-columns:1fr!important;min-height:0!important;overflow:visible!important}
+  .mail-folders,.mail-list-pane,.mail-reader-pane{min-width:0!important;width:100%!important;border-right:0!important}
+  .mail-folders{display:flex!important;gap:5px!important;overflow-x:auto!important;padding:8px!important;border-bottom:1px solid rgba(166,239,173,.12)!important}
+  .mail-folders>small,.mail-folder-note{display:none!important}
+  .mail-folders>button{flex:0 0 auto!important;width:auto!important;min-height:38px!important;margin:0!important;padding:9px!important}
+  .mail-list{max-height:300px!important}
+  .mail-reader-pane{padding:14px!important;min-height:340px!important}
+  .mail-reader-pane h2{font-size:22px!important}
+  .mail-reader-pane footer{align-items:stretch!important;flex-direction:column!important}
+  .mail-reader-pane footer button{width:100%!important;min-height:40px}
+
+  .equipment-toolbar{grid-template-columns:1fr!important}
+  .equipment-inspector{padding:14px!important}
+  .custody-log li{grid-template-columns:62px minmax(0,1fr)!important}
+
+  .terminal-head{align-items:flex-start!important;flex-direction:column!important;gap:7px;padding:9px 10px!important}
+  .terminal-head h1{font-size:24px!important}
+  .terminal-files-v2 .terminal-console{height:clamp(480px,68dvh,610px)!important;max-height:610px!important}
+  .terminal-files-v2 .terminal-quickbar{display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;max-height:none!important;white-space:nowrap}
+  .terminal-files-v2 .terminal-quickbar button{flex:0 0 auto!important;min-height:36px!important}
+  .terminal-files-v2 .terminal-input-row{grid-template-columns:58px minmax(0,1fr) 76px!important}
+  .terminal-files-v2 .terminal-input-row input{font-size:16px!important}
+  .terminal-files-v2 .terminal-command-log{font-size:11px!important;line-height:1.55!important}
+  .terminal-files-v2 .terminal-uplinks{grid-template-columns:1fr!important}
+
+  .access-gate{padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))!important;overflow:auto!important}
+  .access-gate__box{width:min(100%,560px)!important;padding:20px 16px!important;margin:auto!important}
+  .norm-mark{font-size:clamp(36px,12vw,52px)!important;letter-spacing:.07em!important}
+  .access-login__identity-mark{gap:10px!important}
+  .access-login__field input{font-size:16px!important}
+}
+
+@media(max-width:420px){
+  :root{--norm-page-gutter:8px}
+  .brand__sub{display:none!important}
+  .brand__logo{font-size:26px!important}
+  .session{min-width:80px!important}
+  .sidebar a,.secret-nav a{padding-inline:8px!important}
+  .stat-grid{grid-template-columns:1fr 1fr!important}
+  .stat-grid>*{grid-template-columns:auto 1fr!important}
+  .stat-grid em{display:none!important}
+  .page-title{font-size:28px!important}
+  .case-paper dl,.dossier-main dl,.book-page dl{grid-template-columns:1fr!important;gap:0!important}
+  .case-paper dt,.dossier-main dt,.book-page dt{padding-top:8px!important;font-weight:900}
+  .terminal-files-v2 .terminal-input-row{grid-template-columns:44px minmax(0,1fr) 64px!important}
+  .terminal-files-v2 .terminal-input-row button{font-size:8px!important;padding-inline:4px!important}
+}
+
+/* Landscape phones / short-height tablets: keep chrome from consuming the viewport. */
+@media(max-height:560px) and (max-width:1024px) and (orientation:landscape){
+  :root{--norm-mobile-header:54px;--norm-mobile-nav:44px}
+  .brand__logo{font-size:24px!important}
+  .brand__sub{display:none!important}
+  .session span:first-child,.session span:nth-child(3){display:none!important}
+  .sidebar{padding-top:3px!important;padding-bottom:3px!important}
+  .sidebar a,.secret-nav a,.report-button,.sound-toggle,.logout-button,.arg-clearance-card{min-height:36px!important;height:36px!important}
+  .main-area{padding-top:8px!important}
+  .terminal-files-v2 .terminal-console{height:390px!important;max-height:390px!important}
+  .access-gate__box{padding:14px!important}
+}
+
+/* Touch devices: controls should be hittable without making mouse layouts cartoonishly large. */
+@media(pointer:coarse){
+  button,a,input,select,textarea{touch-action:manipulation}
+  .page button,.page a[role='button'],.investigation-tabs button,.mail-folders button{min-height:var(--norm-touch)}
+  input,textarea,select{font-size:max(16px,1em)}
+}
+
+/* User accessibility preferences must not break layout. */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
