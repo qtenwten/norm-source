@@ -8,7 +8,9 @@
     <title>Н.О.Р.М. — внутренний архив</title>
     <script>
       const publishedHost = location.hostname.endsWith('github.io') || location.hostname === 'qsen.ru' || location.hostname === 'www.qsen.ru'
-      if (publishedHost && !location.pathname.startsWith('/norm-source/site/')) {
+      if (publishedHost && location.protocol === 'http:') {
+        location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`)
+      } else if (publishedHost && !location.pathname.startsWith('/norm-source/site/')) {
         location.replace(`/norm-source/site/${location.hash || ''}`)
       }
     </script>
