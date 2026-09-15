@@ -20,9 +20,17 @@ expect(unifiedImport > terminalFitImport, 'sidebar-unified.css must load after t
 expect((shell.match(/<aside className="sidebar">/g) || []).length === 1, 'Shell must expose exactly one shared sidebar')
 expect(shell.includes("data-route={routeTone}"), 'Shell must expose route state without duplicating sidebar markup')
 
-expect(css.includes('.norm-shell[data-route] .sidebar'), 'unified CSS must target the shared shell sidebar')
+expect(css.includes('html body .norm-shell[data-route] > .sidebar'), 'final chrome selector must beat historical route-specific specificity')
 expect(css.includes('height:calc(100dvh - var(--norm-sidebar-header-h) - var(--norm-sidebar-footer-h))!important'), 'desktop sidebar height must be viewport-bound, not page-content-bound')
 expect(css.includes('position:sticky!important'), 'desktop sidebar must use stable sticky chrome geometry')
+expect(css.includes('overflow:hidden!important'), 'desktop sidebar must keep utility controls inside the viewport')
+expect(css.includes('max-height:min(28dvh,250px)!important'), 'growing secret navigation must be internally bounded')
+expect(css.includes('.sidebar__tagline{'), 'sidebar utility spacer is missing')
+expect(css.includes('margin-top:auto!important'), 'sidebar utility cluster must be pinned to the bottom')
+for (const token of ['.report-button{','.arg-clearance-card{','.sound-toggle{','.logout-button{']) {
+  expect(css.includes(token), `final sidebar contract missing utility control: ${token}`)
+}
+expect(css.includes('visibility:visible!important'), 'final sidebar contract must explicitly restore hidden historical controls')
 expect(css.includes('@media (min-width:1280px) and (max-height:900px)'), 'short desktop viewport must have one shared compact profile')
 expect(css.includes('@media (max-width:1024px)'), 'responsive sidebar must retain a shared mobile/tablet visual contract')
 expect(!/norm-shell--(?:grimoire|terminal|archive|case|agents|dashboard)[^{]*\.sidebar/.test(css), 'unified sidebar CSS must not contain route-specific sidebar selectors')
@@ -34,4 +42,4 @@ if (failures.length) {
   process.exit(1)
 }
 
-console.log('Sidebar consistency contract passed')
+console.log('Sidebar consistency contract passed // fixed utility cluster + route-independent geometry')
