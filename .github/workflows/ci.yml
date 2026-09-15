@@ -32,6 +32,9 @@ jobs:
       - name: Responsive layout contract
         run: npm run test:responsive
 
+      - name: Route recovery contract
+        run: npm run test:route-recovery
+
       - name: Terminal contract
         run: npm run test:terminal
 
