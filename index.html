@@ -6,6 +6,11 @@
     <meta name="robots" content="noindex,nofollow" />
     <meta name="theme-color" content="#07100d" />
     <title>Н.О.Р.М. — внутренний архив</title>
+    <script>
+      if (location.hostname.endsWith('github.io') && !location.pathname.includes('/norm-source/site/')) {
+        location.replace(`/norm-source/site/${location.hash || ''}`)
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
