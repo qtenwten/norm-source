@@ -35,21 +35,10 @@ const transitionCopy = {
   '/report': 'ОТКРЫТИЕ КАНАЛА ПРИЁМА',
 }
 
-const DEFAULT_VOLUME_PERCENT = 20
-const VOLUME_STORAGE_KEY = 'norm-volume-test-percent'
+const FIXED_VOLUME_PERCENT = 100
+const FIXED_AUDIO_GAIN = 5
+const LEGACY_VOLUME_STORAGE_KEY = 'norm-volume-test-percent'
 const SOUND_STORAGE_KEY = 'norm-audio-enabled-v1'
-
-function volumeGain(percent) {
-  const value = Math.min(100, Math.max(0, Number(percent) || 0))
-  if (value === 0) return 0.0001
-  return value / DEFAULT_VOLUME_PERCENT
-}
-
-function getStoredVolumePercent() {
-  if (typeof window === 'undefined') return DEFAULT_VOLUME_PERCENT
-  const stored = Number(window.localStorage.getItem(VOLUME_STORAGE_KEY))
-  return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : DEFAULT_VOLUME_PERCENT
-}
 
 function getStoredSoundEnabled() {
   if (typeof window === 'undefined') return true
@@ -94,7 +83,6 @@ export default function Shell({ children, onLogout }) {
   const [transitionText, setTransitionText] = useState('СИНХРОНИЗАЦИЯ АРХИВА')
   const [transitionKind, setTransitionKind] = useState('dashboard')
   const [muted, setMuted] = useState(() => !getStoredSoundEnabled())
-  const [volumePercent, setVolumePercent] = useState(getStoredVolumePercent)
   const [loggingOut, setLoggingOut] = useState(false)
   const [argProgress, setArgProgress] = useState(getArgState)
   const [mailRead, setMailRead] = useState(getMailRead)
@@ -111,11 +99,12 @@ export default function Shell({ children, onLogout }) {
   useEffect(() => subscribeArg(setArgProgress), [])
   useEffect(() => subscribeMailRead(setMailRead), [])
   useEffect(() => subscribeSystemEvents(setSystemEvents), [])
-  useEffect(() => { audio.scene(routeTone) }, [routeTone])
   useEffect(() => {
-    audio.setVolume(volumeGain(volumePercent))
-    window.localStorage.setItem(VOLUME_STORAGE_KEY, String(volumePercent))
-  }, [volumePercent])
+    if (!muted) {
+      audio.setVolume(FIXED_AUDIO_GAIN)
+      audio.scene(routeTone)
+    }
+  }, [routeTone, muted])
 
   useEffect(() => {
     const onNewMail = () => {
@@ -134,25 +123,48 @@ export default function Shell({ children, onLogout }) {
     if (location.pathname === '/mail') setMailPulse(false)
   }, [location.pathname])
 
-  // A refresh can restore the authenticated UI without rendering AccessGate. Audio state,
-  // however, lives in memory and used to reset to disabled. Restore the user's preference
-  // here; browsers that suspend WebAudio will resume it on the next pointer/key gesture.
+  // Legacy per-volume state is intentionally retired. N.O.R.M. now has one audible
+  // level: 100%. The only persistent audio preference is the explicit mute button.
   useEffect(() => {
+    window.localStorage.removeItem(LEGACY_VOLUME_STORAGE_KEY)
     if (muted) {
       if (audio.enabled) audio.disable()
       return
     }
-    audio.enable()
-    audio.setVolume(volumeGain(volumePercent))
+    audio.setVolume(FIXED_AUDIO_GAIN)
+    if (!audio.enabled) audio.enable()
+    else audio.resume()
     audio.scene(routeTone)
   }, [])
+
+  useEffect(() => {
+    const restoreAudio = () => {
+      if (muted) return
+      audio.setVolume(FIXED_AUDIO_GAIN)
+      if (!audio.enabled) audio.enable()
+      else audio.resume()
+      audio.scene(routeTone)
+    }
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') restoreAudio()
+    }
+    window.addEventListener('focus', restoreAudio)
+    window.addEventListener('pageshow', restoreAudio)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => {
+      window.removeEventListener('focus', restoreAudio)
+      window.removeEventListener('pageshow', restoreAudio)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+  }, [muted, routeTone])
 
   useEffect(() => {
     const selector = 'button, a, [role="button"], [role="tab"], [role="switch"], input[type="checkbox"], input[type="radio"]'
     const restoreAudioOnGesture = () => {
       if (muted) return
+      audio.setVolume(FIXED_AUDIO_GAIN)
       if (!audio.enabled) audio.enable()
-      audio.setVolume(volumeGain(volumePercent))
+      else audio.resume()
       audio.scene(routeTone)
     }
     const onPointerDown = (event) => {
@@ -187,7 +199,7 @@ export default function Shell({ children, onLogout }) {
       document.removeEventListener('keydown', onKeyDown, true)
       document.removeEventListener('pointerover', onPointerOver, true)
     }
-  }, [muted, volumePercent, routeTone])
+  }, [muted, routeTone])
 
   useEffect(() => () => { timersRef.current.forEach(window.clearTimeout) }, [])
 
@@ -216,23 +228,19 @@ export default function Shell({ children, onLogout }) {
   }, [])
 
   const toggleSound = () => {
-    const on = audio.toggle()
-    window.localStorage.setItem(SOUND_STORAGE_KEY, on ? '1' : '0')
-    setMuted(!on)
-    if (on) { audio.setVolume(volumeGain(volumePercent)); audio.scene(routeTone); audio.confirm() }
-  }
-  const changeVolume = (event) => {
-    const next = Math.min(100, Math.max(0, Number(event.target.value)))
-    setVolumePercent(next)
-    if (muted && next > 0) {
+    if (muted) {
+      audio.setVolume(FIXED_AUDIO_GAIN)
       audio.enable()
-      audio.setVolume(volumeGain(next))
       audio.scene(routeTone)
       window.localStorage.setItem(SOUND_STORAGE_KEY, '1')
       setMuted(false)
+      audio.confirm()
+      return
     }
+    audio.disable()
+    window.localStorage.setItem(SOUND_STORAGE_KEY, '0')
+    setMuted(true)
   }
-  const previewVolume = () => { if (!muted && volumePercent > 0) audio.confirm() }
   const logout = () => {
     if (loggingOut) return
     setLoggingOut(true)
@@ -276,7 +284,7 @@ export default function Shell({ children, onLogout }) {
           <small>ДОПУСК СЕССИИ</small><strong>A-{argProgress.clearance}</strong><span>ОБНАРУЖЕНО: {argProgress.discoveries.length} / ??</span>
           {argProgress.clearance >= 1 && <em>RESTRICTED NODE VISIBLE</em>}{argProgress.clearance >= 2 && <em>BLACK NODE VISIBLE</em>}{argProgress.clearance >= 3 && <em>ROOT VAULT VISIBLE</em>}{argProgress.clearance >= 4 && <em>GHOSTFS MOUNTED</em>}{legacyRouteRestored && <em>LEGACY CASE ROUTE RESTORED</em>}{argProgress.clearance >= 5 && <em>MIRROR NODE VISIBLE</em>}
         </button>
-        <div className="volume-console"><div className="volume-console__head"><span>ГРОМКОСТЬ</span><output htmlFor="norm-volume">{volumePercent}%</output></div><input id="norm-volume" className="volume-slider" type="range" min="0" max="100" step="1" value={volumePercent} onChange={changeVolume} onPointerUp={previewVolume} onKeyUp={previewVolume} aria-label={`Громкость интерфейса: ${volumePercent}%`} style={{'--volume':`${volumePercent}%`}}/><div className="volume-console__scale"><span>0</span><span className="volume-reference">20 // ТЕКУЩАЯ</span><span>100</span></div><small>ТЕСТОВАЯ ШКАЛА // 20% = ПРЕЖНЯЯ ГРОМКОСТЬ</small></div>
+        <div className="volume-console"><div className="volume-console__head"><span>ГРОМКОСТЬ</span><output htmlFor="norm-volume">{FIXED_VOLUME_PERCENT}%</output></div><input id="norm-volume" className="volume-slider" type="range" min="0" max="100" step="1" value={FIXED_VOLUME_PERCENT} onChange={()=>{}} tabIndex={-1} aria-readonly="true" aria-label="Громкость интерфейса: 100%. Фиксирована." style={{'--volume':'100%',pointerEvents:'none'}}/><div className="volume-console__scale"><span>0</span><span className="volume-reference">100 // LOCKED</span><span>100</span></div><small>СИСТЕМНЫЙ УРОВЕНЬ // 100% · ИЗМЕНЯЕТСЯ ТОЛЬКО MUTE</small></div>
         <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>{muted?'ЗВУК: ВЫКЛ':'ЗВУК: ВКЛ'}</button>
         <button className="logout-button" type="button" data-sound="warning" onClick={logout} disabled={loggingOut}><span>{loggingOut?'ЗАВЕРШЕНИЕ СЕССИИ…':'ВЫЙТИ ИЗ СИСТЕМЫ'}</span><small>СБРОСИТЬ ДОПУСК И ВЕРНУТЬСЯ К ВХОДУ</small></button>
       </aside>
