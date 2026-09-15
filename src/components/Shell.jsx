@@ -10,6 +10,7 @@ const links = [
   ['/grimoire', 'ГРИМУАР'],
   ['/agents', 'АГЕНТЫ'],
   ['/archive', 'АРХИВ'],
+  ['/investigation', 'РАССЛЕДОВАНИЕ'],
   ['/terminal', 'ТЕРМИНАЛ'],
 ]
 
@@ -19,6 +20,7 @@ const transitionCopy = {
   '/grimoire': 'РАСШИФРОВКА ГРИМУАРА',
   '/agents': 'ДОСТУП К ЛИЧНЫМ ДЕЛАМ',
   '/archive': 'ПОДКЛЮЧЕНИЕ К АРХИВУ',
+  '/investigation': 'СИНХРОНИЗАЦИЯ CORRELATION DESK',
   '/terminal': 'ЗАПУСК ПОЛЕВОГО ТЕРМИНАЛА',
   '/restricted': 'ОТКРЫТИЕ ЗАКРЫТОГО СЕКТОРА 17-B',
   '/black': 'ПОДКЛЮЧЕНИЕ К BLACK NODE',
@@ -47,6 +49,7 @@ function getStoredVolumePercent() {
 function getRouteTone(pathname) {
   if (pathname.startsWith('/grimoire')) return 'grimoire'
   if (pathname.startsWith('/terminal')) return 'terminal'
+  if (pathname.startsWith('/investigation')) return 'archive'
   if (pathname.startsWith('/cases')) return 'case'
   if (pathname.startsWith('/agents') || pathname.startsWith('/ghost-registry')) return 'agents'
   if (pathname.startsWith('/legacy-cases')) return 'case'
