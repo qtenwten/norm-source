@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { audio } from '../audio'
 import { discover, getArgState, subscribeArg } from '../arg'
@@ -9,7 +9,10 @@ function downloadText(agent) {
     'N.O.R.M. // GHOSTFS PERSONNEL RECOVERY',
     `FILE: ${agent.code}.dos`,
     `NAME: ${agent.name}`,
+    `BORN: ${agent.born}`,
     `ROLE: ${agent.role}`,
+    `UNIT: ${agent.unit}`,
+    `CLEARANCE: ${agent.clearance}`,
     `SERVICE: ${agent.years}`,
     `STATUS: ${agent.status}`,
     `OFFICIAL: ${agent.official}`,
@@ -46,16 +49,20 @@ export default function GhostRegistry(){
   useEffect(()=>subscribeArg(setProgress),[])
   useEffect(()=>{ if(progress.clearance>=4) discover('GHOST_REGISTRY_VISITED') },[progress.clearance])
 
+  const recoveredCount=useMemo(()=>recoveredAgents.filter(agent=>progress.discoveries.includes(`GHOST_AG${agent.id}`)).length,[progress.discoveries])
+  const allRecovered=recoveredCount===recoveredAgents.length
+
   if(progress.clearance<4) return <div className="page ghost-registry ghost-registry--locked"><section className="clearance-denied"><small>N.O.R.M. // GHOSTFS</small><strong>VOLUME NOT MOUNTED</strong><h1>ВОССТАНОВЛЕННЫЙ РЕЕСТР</h1><p>Эти записи физически отсутствуют в основном кадровом реестре. Найдите устройство, на котором сохранился старый персональный том.</p><div><span>DEVICE UNKNOWN</span><span>MOUNT REQUIRED</span><span>ACCESS A-4</span></div><button type="button" onClick={()=>navigate('/terminal')}>FIELD TERMINAL →</button></section></div>
 
-  const openAgent=(agent)=>{setSelected(agent);discover(`GHOST_VIEW_${agent.id}`);audio.archive()}
-  const saveDossier=(agent)=>{downloadText(agent);discover(`GHOST_DOWNLOAD_${agent.id}`);audio.drawer()}
+  const openAgent=(agent)=>{setSelected(agent);discover(`GHOST_VIEW_${agent.id}`);discover(`GHOST_AG${agent.id}`);audio.archive()}
+  const saveDossier=(agent)=>{downloadText(agent);discover(`GHOST_DOWNLOAD_${agent.id}`);discover(`GHOST_AG${agent.id}`);audio.drawer()}
   const savePortrait=(agent)=>{downloadPortrait(agent);discover(`GHOST_PHOTO_${agent.id}`);audio.photo()}
+  const openTerminal=(agent)=>{sessionStorage.setItem('norm-terminal-prefill',`cat /mnt/ghost/personnel/${agent.code.toLowerCase()}.dos`);navigate('/terminal')}
 
   return <div className="page ghost-registry">
-    <header className="ghost-head"><div><small>N.O.R.M. // GHOSTFS // RECOVERED PERSONNEL</small><h1>ВОССТАНОВЛЕННЫЙ РЕЕСТР</h1><p>Карточки, удалённые из штатной базы. Исторические сотрудники не относятся к современной полевой группе LM; их записи расширяют внутреннюю историю Н.О.Р.М.</p></div><div className="ghost-head__badge"><span>MOUNT</span><b>/mnt/ghost</b><small>ACCESS A-4 VERIFIED</small></div></header>
+    <header className="ghost-head"><div><small>N.O.R.M. // GHOSTFS // RECOVERED PERSONNEL</small><h1>ВОССТАНОВЛЕННЫЙ РЕЕСТР</h1><p>Карточки, удалённые из штатной базы. На низких уровнях эти люди видны только как «пропавшие», «утраченные» или «удалённые». GHOSTFS восстанавливает имена, фотографии, служебные биографии и обстоятельства исчезновения.</p></div><div className="ghost-head__badge"><span>MOUNT</span><b>/mnt/ghost</b><small>RECOVERED {recoveredCount} / {recoveredAgents.length}</small></div></header>
 
-    <div className="ghost-warning"><span>⚠</span><p>Даты, причины смерти и служебные статусы восстановлены из повреждённых внутренних журналов. Часть сведений противоречит официальным карточкам.</p></div>
+    <div className="ghost-warning"><span>⚠</span><p>Даты, причины смерти и служебные статусы восстановлены из повреждённых внутренних журналов. Это исторический слой мира Н.О.Р.М.; современная группа LM остаётся отдельным поколением полевых сотрудников.</p></div>
 
     <div className="ghost-grid">
       {recoveredAgents.map((agent)=><button type="button" className={`ghost-agent-card ${selected.id===agent.id?'is-active':''}`} onClick={()=>openAgent(agent)} key={agent.code}>
@@ -68,11 +75,13 @@ export default function GhostRegistry(){
       <div className="ghost-dossier__photo"><img src={selected.image} alt={selected.name} draggable="false"/></div>
       <div className="ghost-dossier__body">
         <div className="ghost-dossier__title"><div><small>{selected.code} // RECOVERED DOSSIER</small><h2>{selected.name}</h2><p>{selected.summary}</p></div><span>{selected.status}</span></div>
-        <dl><dt>СЛУЖБА</dt><dd>{selected.years}</dd><dt>РОЛЬ</dt><dd>{selected.role}</dd><dt>ПОСЛЕДНИЙ СЛЕД</dt><dd>{selected.last}</dd><dt>ДЕЛО</dt><dd>{selected.caseId}</dd><dt>ОФИЦИАЛЬНО</dt><dd>{selected.official}</dd></dl>
+        <dl><dt>ГОД РОЖДЕНИЯ</dt><dd>{selected.born}</dd><dt>СЛУЖБА</dt><dd>{selected.years}</dd><dt>РОЛЬ</dt><dd>{selected.role}</dd><dt>ПОДРАЗДЕЛЕНИЕ</dt><dd>{selected.unit}</dd><dt>ДОПУСК</dt><dd>{selected.clearance}</dd><dt>ПОСЛЕДНИЙ СЛЕД</dt><dd>{selected.last}</dd><dt>ДЕЛО</dt><dd>{selected.caseId}</dd><dt>ОФИЦИАЛЬНО</dt><dd>{selected.official}</dd></dl>
         <div className="ghost-story">{selected.story.map((item,index)=><article key={item}><span>{String(index+1).padStart(2,'0')}</span><p>{item}</p></article>)}</div>
-        <div className="ghost-dossier__actions"><button type="button" onClick={()=>saveDossier(selected)}>⇩ СКАЧАТЬ ЛИЧНОЕ ДЕЛО</button><button type="button" onClick={()=>savePortrait(selected)}>⇩ СКАЧАТЬ ФОТО</button><button type="button" onClick={()=>{sessionStorage.setItem('norm-terminal-prefill',`cat /mnt/ghost/personnel/${selected.code.toLowerCase()}.dos`);navigate('/terminal')}}>ОТКРЫТЬ В ТЕРМИНАЛЕ →</button></div>
-        <div className="ghost-fragment"><small>RECOVERY CHECK</small><p>Внутри экспортируемого DOS-файла сохранён фрагмент привилегированного ключа. Три личных дела образуют один токен.</p></div>
+        <div className="ghost-dossier__actions"><button type="button" onClick={()=>saveDossier(selected)}>⇩ СКАЧАТЬ ЛИЧНОЕ ДЕЛО</button><button type="button" onClick={()=>savePortrait(selected)}>⇩ СКАЧАТЬ ФОТО</button><button type="button" onClick={()=>openTerminal(selected)}>ОТКРЫТЬ В ТЕРМИНАЛЕ →</button><button type="button" onClick={()=>navigate('/legacy-cases')}>СВЯЗАННОЕ ДЕЛО {selected.caseId} →</button></div>
+        <div className="ghost-fragment"><small>RECOVERY CHECK</small><p>Фрагмент привилегированного ключа: <b>{selected.fragment}</b>. Три личных дела образуют один токен в порядке индекса персонала.</p></div>
       </div>
     </section>
+
+    <section className={`ghost-route-reward ${allRecovered?'is-unlocked':''}`}><div><small>ORPHANED ROUTE STATUS</small><h2>{allRecovered?'СВЯЗАННЫЕ ДЕЛА ВОССТАНОВЛЕНЫ':'ВОССТАНОВИТЕ ВСЕ ТРИ ЛИЧНЫХ ДЕЛА'}</h2><p>{allRecovered?'NORM-OS смог связать удалённые карточки с тремя закрытыми расследованиями. Открыт отдельный слой с журналами, метаданными и файлами для скачивания.':`Восстановлено ${recoveredCount} из ${recoveredAgents.length}. Каждая карточка содержит часть контекста и фрагмент ключа.`}</p></div><button type="button" disabled={!allRecovered} onClick={()=>navigate('/legacy-cases')}>{allRecovered?'ОТКРЫТЬ ВОССТАНОВЛЕННЫЕ ДЕЛА →':'МАРШРУТ ЕЩЁ НЕ СОБРАН'}</button></section>
   </div>
 }
