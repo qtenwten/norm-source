@@ -1,0 +1,481 @@
+/* N.O.R.M. v21 — readability floor, command-entry affordance, personnel database polish */
+
+/* ---------- global typography + containment ---------- */
+:root{
+  --norm-readable:12px;
+  --norm-readable-small:11px;
+}
+
+.page,
+.sidebar,
+.topbar,
+.footer{
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page *,
+.sidebar *,
+.topbar *,
+.footer *{
+  box-sizing:border-box;
+  min-width:0;
+}
+
+.page :where(p,li,dd,dt,small,span,code,label,button,a,strong,b,em),
+.sidebar :where(p,li,small,span,button,a,strong,b,em),
+.topbar :where(small,span,a,strong,b),
+.footer :where(small,span,a){
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+
+/* Nothing important should render as microscopic UI copy. */
+.page :where(small,label),
+.sidebar :where(small),
+.topbar :where(small),
+.footer :where(small){
+  font-size:var(--norm-readable-small)!important;
+  line-height:1.45!important;
+}
+
+.page :where(p,li,dd,dt),
+.sidebar :where(p,li){
+  line-height:1.58!important;
+}
+
+/* Controls need enough room for translated Russian strings. */
+.page button,
+.sidebar button,
+.page a,
+.sidebar a{
+  white-space:normal;
+  text-wrap:pretty;
+}
+
+/* ---------- terminal: the console must be the focal point ---------- */
+.terminal-files-v2 .terminal-grid--deep{
+  width:100%;
+  gap:12px!important;
+}
+
+@media(min-width:1380px){
+  .terminal-files-v2 .terminal-grid--deep{
+    grid-template-columns:minmax(285px,.72fr) minmax(600px,1.55fr) minmax(440px,1.06fr)!important;
+  }
+  .terminal-files-v2 .terminal-console,
+  .terminal-files-v2 .terminal-map,
+  .terminal-files-v2 .terminal-arg-feeds{
+    min-height:720px!important;
+  }
+}
+
+.terminal-files-v2 .terminal-command-log{
+  min-height:430px!important;
+  max-height:none!important;
+  padding:14px 14px 22px!important;
+}
+
+.terminal-files-v2 .terminal-line{
+  grid-template-columns:72px minmax(0,1fr)!important;
+  gap:10px!important;
+  padding:4px 0!important;
+}
+.terminal-files-v2 .terminal-line time{
+  font-size:11px!important;
+  line-height:1.5!important;
+  color:#73877c!important;
+}
+.terminal-files-v2 .terminal-line>span{
+  font-size:13.5px!important;
+  line-height:1.62!important;
+  color:#bcc9c2;
+  white-space:pre-wrap;
+}
+.terminal-files-v2 .terminal-line--command>span{
+  color:#e6eee9!important;
+  font-weight:700;
+}
+.terminal-files-v2 .terminal-line-actions button,
+.terminal-files-v2 .terminal-result-link{
+  font-size:11px!important;
+  min-height:30px;
+  padding:6px 9px!important;
+}
+
+.terminal-files-v2 .terminal-quickbar{
+  padding:10px 11px!important;
+  gap:7px!important;
+}
+.terminal-files-v2 .terminal-quickbar button{
+  font-size:11px!important;
+  min-height:32px!important;
+  padding:7px 10px!important;
+}
+
+.terminal-files-v2 .terminal-arg-tree>small,
+.terminal-files-v2 .terminal-uplinks::before,
+.terminal-files-v2 .terminal-resource-inspector>small,
+.terminal-files-v2 .terminal-lead-card>small{
+  font-size:11px!important;
+}
+.terminal-files-v2 .terminal-arg-tree button{
+  font-size:12px!important;
+  min-height:34px!important;
+  padding:7px 9px!important;
+}
+
+/* ---------- unmistakable command entry ---------- */
+.terminal-files-v2 .terminal-input-row{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  min-height:86px!important;
+  margin:42px 13px 12px!important;
+  border:2px solid #86ad96!important;
+  background:linear-gradient(180deg,#102117,#07120c)!important;
+  box-shadow:0 0 0 4px rgba(111,161,132,.09),0 0 30px rgba(80,146,105,.08),inset 0 0 36px rgba(76,135,100,.08)!important;
+  overflow:visible!important;
+  cursor:text!important;
+}
+.terminal-files-v2 .terminal-input-row::before{
+  content:'КОМАНДНАЯ СТРОКА — КЛИКНИТЕ СЮДА, ВВЕДИТЕ КОМАНДУ И НАЖМИТЕ ENTER'!important;
+  position:absolute!important;
+  left:-2px!important;
+  bottom:calc(100% + 7px)!important;
+  top:auto!important;
+  z-index:4;
+  display:block;
+  max-width:min(720px,100%);
+  padding:6px 10px!important;
+  border:1px solid #527061;
+  background:#0a1510;
+  color:#b4cbbf!important;
+  font:800 11px/1.3 "Courier New",monospace!important;
+  letter-spacing:.06em!important;
+  pointer-events:none;
+}
+.terminal-files-v2 .terminal-input-row::after{
+  content:'Пример:  help   ·   leads   ·   ls -la /   ·   inspect /dev/n0'!important;
+  position:absolute!important;
+  left:156px!important;
+  bottom:7px!important;
+  top:auto!important;
+  z-index:3;
+  color:#6f887a!important;
+  font:11px/1.2 "Courier New",monospace!important;
+  pointer-events:none;
+}
+.terminal-files-v2 .terminal-input-row:focus-within{
+  border-color:#b0d7bf!important;
+  box-shadow:0 0 0 4px rgba(125,187,149,.15),0 0 34px rgba(90,168,119,.15),inset 0 0 42px rgba(70,137,96,.10)!important;
+}
+.terminal-files-v2 .terminal-input-row label{
+  min-width:145px!important;
+  max-width:220px!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:28px 13px 24px!important;
+  border-right:1px solid #4b6a58!important;
+  background:#0b1a11!important;
+  color:#b5d6c2!important;
+  font:800 12px/1.25 "Courier New",monospace!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+.terminal-files-v2 .terminal-input-row input{
+  width:100%!important;
+  min-width:0!important;
+  min-height:82px!important;
+  padding:20px 16px 30px!important;
+  border:0!important;
+  outline:0!important;
+  background:#061009!important;
+  color:#f0f6f2!important;
+  caret-color:#91ffb5!important;
+  font:800 16px/1.4 "Courier New",monospace!important;
+  box-shadow:none!important;
+}
+.terminal-files-v2 .terminal-input-row input::placeholder{
+  color:#748a7e!important;
+  opacity:.95!important;
+}
+.terminal-files-v2 .terminal-input-row button{
+  min-width:110px!important;
+  border:0!important;
+  border-left:1px solid #5c7967!important;
+  background:linear-gradient(180deg,#1b3827,#10251a)!important;
+  color:#e3efe8!important;
+  padding:24px 15px!important;
+  font:900 12px/1.2 "Courier New",monospace!important;
+  letter-spacing:.09em!important;
+}
+.terminal-files-v2 .terminal-input-row button::before{
+  content:'ВЫПОЛНИТЬ'!important;
+  display:block!important;
+  margin-bottom:7px!important;
+  color:#8bb69d!important;
+  font-size:9px!important;
+}
+.terminal-files-v2 .terminal-input-row button::after{content:'  ↵';color:#98ddb3}
+.terminal-files-v2 .terminal-command-help{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px 18px!important;
+  padding:7px 13px 12px!important;
+}
+.terminal-files-v2 .terminal-command-help span{
+  font-size:11px!important;
+  line-height:1.4!important;
+}
+
+/* ---------- terminal personnel cards ---------- */
+.terminal-files-v2 .terminal-uplinks{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:9px!important;
+  padding:11px!important;
+}
+.terminal-files-v2 .terminal-uplinks>button{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:118px minmax(0,1fr)!important;
+  grid-template-rows:auto auto 1fr!important;
+  gap:5px 14px!important;
+  min-height:158px!important;
+  padding:12px!important;
+  border:1px solid #587164!important;
+  background:linear-gradient(135deg,rgba(18,33,25,.99),rgba(7,13,10,.99))!important;
+  color:#d4dfd9!important;
+  text-align:left!important;
+  overflow:hidden!important;
+  box-shadow:inset 0 0 34px rgba(84,126,101,.04),0 7px 22px rgba(0,0,0,.18)!important;
+}
+.terminal-files-v2 .terminal-uplinks>button::before{
+  content:'N.O.R.M. // FIELD PERSONNEL DATABASE';
+  position:absolute;
+  right:12px;
+  top:10px;
+  color:#71877c;
+  font:800 10px/1.2 "Courier New",monospace;
+  letter-spacing:.08em;
+}
+.terminal-files-v2 .terminal-uplinks .live-feed__frame{
+  grid-column:1!important;
+  grid-row:1/4!important;
+  width:118px!important;
+  height:132px!important;
+  border:1px solid #748b7e!important;
+  background:#d4d8d4!important;
+  overflow:hidden!important;
+}
+.terminal-files-v2 .terminal-uplinks .live-feed__frame img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 20%!important;
+  filter:grayscale(1) contrast(1.04) brightness(1.18)!important;
+}
+.terminal-files-v2 .terminal-uplinks>button>b{
+  grid-column:2!important;
+  margin-top:26px!important;
+  font-size:20px!important;
+  line-height:1.08!important;
+  color:#f0f4f1!important;
+}
+.terminal-files-v2 .terminal-uplinks>button>small{
+  grid-column:2!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  color:#a9bab1!important;
+}
+.terminal-files-v2 .terminal-uplinks>button::after{
+  grid-column:2!important;
+  display:block!important;
+  white-space:pre-line!important;
+  padding-top:8px!important;
+  border-top:1px solid #33493d!important;
+  color:#8db59e!important;
+  font:11px/1.55 "Courier New",monospace!important;
+}
+.terminal-files-v2 .terminal-uplinks>button:nth-of-type(1)::after{content:'STATUS      ACTIVE\A CLEARANCE   A-3\A UNIT        LM / SEN'!important}
+.terminal-files-v2 .terminal-uplinks>button:nth-of-type(2)::after{content:'STATUS      ACTIVE\A CLEARANCE   A-3\A UNIT        LM / GRIG'!important}
+
+.terminal-files-v2 .terminal-lead-card,
+.terminal-files-v2 .terminal-resource-inspector{
+  padding:14px!important;
+}
+.terminal-files-v2 .terminal-lead-card>b,
+.terminal-files-v2 .terminal-resource-inspector>b{
+  font-size:17px!important;
+  line-height:1.28!important;
+}
+.terminal-files-v2 .terminal-lead-card>span,
+.terminal-files-v2 .terminal-resource-inspector>p,
+.terminal-files-v2 .terminal-resource-inspector>em{
+  font-size:12px!important;
+  line-height:1.58!important;
+}
+.terminal-files-v2 .terminal-resource-inspector>code,
+.terminal-files-v2 .terminal-resource-kind,
+.terminal-files-v2 .terminal-resource-status span,
+.terminal-files-v2 .terminal-resource-actions button,
+.terminal-files-v2 .terminal-lead-card button{
+  font-size:10.5px!important;
+  line-height:1.35!important;
+}
+
+/* ---------- serious personnel registry ---------- */
+.agents-registry-page .registry-grid{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(360px,1fr))!important;
+  gap:12px!important;
+}
+.agents-registry-page .registry-card{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:116px minmax(0,1fr)!important;
+  grid-template-rows:1fr auto!important;
+  gap:0 15px!important;
+  min-height:150px!important;
+  padding:11px!important;
+  border:1px solid #4d6258!important;
+  background:linear-gradient(135deg,#101b16,#080d0b)!important;
+  text-align:left!important;
+  overflow:hidden!important;
+  box-shadow:inset 0 0 34px rgba(74,110,89,.035),0 7px 22px rgba(0,0,0,.16)!important;
+}
+.agents-registry-page .registry-card::after{
+  content:'N.O.R.M. // PERSONNEL RECORD';
+  position:absolute;
+  right:11px;
+  top:9px;
+  color:#677a70;
+  font:800 10px/1.2 "Courier New",monospace;
+  letter-spacing:.08em;
+}
+.agents-registry-page .registry-card--active{border-color:#607b6c!important}
+.agents-registry-page .registry-card.is-selected{
+  border-color:#8aa594!important;
+  box-shadow:inset 4px 0 #7fa08d,0 8px 24px rgba(0,0,0,.18)!important;
+}
+.agents-registry-page .registry-card>.registry-portrait{
+  grid-column:1!important;
+  grid-row:1/3!important;
+  width:116px!important;
+  height:126px!important;
+  border:1px solid #75887e!important;
+  background:#d0d4d0!important;
+}
+.agents-registry-page .registry-card>.registry-portrait img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 20%!important;
+  filter:grayscale(1) contrast(1.04) brightness(1.16)!important;
+}
+.agents-registry-page .registry-card__copy{
+  grid-column:2!important;
+  align-self:center!important;
+  padding-top:18px!important;
+}
+.agents-registry-page .registry-card__copy small{font-size:11px!important;color:#8ba096!important;letter-spacing:.08em!important}
+.agents-registry-page .registry-card__copy strong{display:block!important;margin:4px 0 7px!important;font-size:22px!important;line-height:1.08!important;color:#eff3f0!important}
+.agents-registry-page .registry-card__copy span{display:inline-block!important;padding:4px 7px!important;border:1px solid #4d6c59!important;color:#9bc5aa!important;font-size:11px!important;line-height:1.25!important}
+.agents-registry-page .registry-card__copy i{display:block!important;margin-top:8px!important;color:#9aaba2!important;font-size:11px!important;font-style:normal!important}
+.agents-registry-page .registry-card>em{grid-column:2!important;align-self:end!important;justify-self:start!important;margin-top:8px!important;color:#aebdb5!important;font-size:10.5px!important;font-style:normal!important}
+
+.agents-registry-page .agent-expanded{
+  display:grid!important;
+  grid-template-columns:68px minmax(290px,360px) minmax(0,1fr)!important;
+  min-height:455px!important;
+  border:1px solid #52665c!important;
+  background:linear-gradient(120deg,#0d1511,#070c09)!important;
+  overflow:hidden!important;
+}
+.agents-registry-page .agent-expanded__photo{
+  padding:15px!important;
+  border-right:1px solid #384b41!important;
+  background:rgba(255,255,255,.012)!important;
+}
+.agents-registry-page .agent-expanded__photo .registry-portrait.is-large{
+  width:100%!important;
+  height:420px!important;
+  border:1px solid #71857a!important;
+  background:#d2d6d2!important;
+}
+.agents-registry-page .agent-expanded__photo .registry-portrait.is-large img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 20%!important;
+  filter:grayscale(1) contrast(1.04) brightness(1.14)!important;
+}
+.agents-registry-page .agent-expanded__body{padding:22px 24px!important}
+.agents-registry-page .agent-expanded__title h2{font-size:34px!important;line-height:1.04!important}
+.agents-registry-page .agent-expanded__body dl{display:grid!important;grid-template-columns:130px minmax(0,1fr)!important}
+.agents-registry-page .agent-expanded :where(dt,dd,li,p){font-size:12px!important;line-height:1.58!important}
+.agents-registry-page .agent-expanded__actions{display:flex!important;flex-wrap:wrap!important;gap:7px!important}
+.agents-registry-page .agent-expanded__actions button{font-size:11px!important;min-height:35px!important;padding:8px 11px!important}
+
+/* ---------- grimoire generated-photo presentation ---------- */
+.grimoire-page--registry .monster-plate{
+  min-height:540px!important;
+  background:#16130f!important;
+}
+.grimoire-page--registry .monster-plate>img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  image-rendering:auto!important;
+  filter:sepia(.08) saturate(.9) contrast(1.04) brightness(.98)!important;
+}
+.grimoire-page--registry .monster-hotspot{width:42px!important;height:42px!important;margin:-21px 0 0 -21px!important}
+.grimoire-page--registry .monster-hotspot span{font-size:13px!important}
+.grimoire-page--registry .monster-hotspot-card{padding:17px 50px 17px 18px!important}
+.grimoire-page--registry .monster-hotspot-card small{font-size:11px!important}
+.grimoire-page--registry .monster-hotspot-card b{font-size:20px!important}
+.grimoire-page--registry .monster-hotspot-card p{font-size:14px!important;line-height:1.58!important}
+.grimoire-page--registry .material-viewer__scan.monster-material-scan img{object-fit:contain!important;filter:sepia(.05) saturate(.95) contrast(1.03)!important}
+
+/* ---------- overflow safeguards ---------- */
+.registry-filters,
+.case-tabs,
+.grimoire-record-strip,
+.terminal-quickbar,
+.terminal-command-help,
+.agent-expanded__actions,
+.dashboard-case-actions{
+  flex-wrap:wrap!important;
+}
+.registry-filters button,
+.case-tabs button,
+.grimoire-record-strip button,
+.classified-file button,
+.clearance-zone button{
+  white-space:normal!important;
+}
+
+@media(max-width:1180px){
+  .terminal-files-v2 .terminal-grid--deep{grid-template-columns:minmax(250px,.72fr) minmax(0,1.45fr)!important}
+  .terminal-files-v2 .terminal-arg-feeds{grid-column:1/-1!important;display:grid!important;grid-template-columns:1fr 1fr!important}
+  .terminal-files-v2 .terminal-uplinks{grid-column:1!important}
+  .terminal-files-v2 .terminal-lead-card,.terminal-files-v2 .terminal-resource-inspector{grid-column:2!important}
+  .agents-registry-page .registry-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:820px){
+  .terminal-files-v2 .terminal-grid--deep{display:block!important}
+  .terminal-files-v2 .terminal-map,.terminal-files-v2 .terminal-console,.terminal-files-v2 .terminal-arg-feeds{margin-bottom:11px!important;min-height:0!important}
+  .terminal-files-v2 .terminal-arg-feeds{display:flex!important}
+  .terminal-files-v2 .terminal-input-row{grid-template-columns:1fr auto!important;margin-top:50px!important}
+  .terminal-files-v2 .terminal-input-row label{grid-column:1/-1!important;max-width:none!important;min-height:34px!important;padding:9px 11px!important;border-right:0!important;border-bottom:1px solid #4b6a58!important}
+  .terminal-files-v2 .terminal-input-row::after{left:11px!important;bottom:5px!important;font-size:9px!important}
+  .terminal-files-v2 .terminal-input-row input{min-height:58px!important;padding:12px 11px 22px!important;font-size:14px!important}
+  .terminal-files-v2 .terminal-input-row button{min-width:92px!important;padding:12px!important}
+  .terminal-files-v2 .terminal-input-row button::before{display:none!important}
+  .agents-registry-page .agent-expanded{display:block!important}
+  .agents-registry-page .agent-expanded__photo{border-right:0!important;border-bottom:1px solid #384b41!important}
+  .agents-registry-page .agent-expanded__photo .registry-portrait.is-large{height:min(72vh,560px)!important}
+}
