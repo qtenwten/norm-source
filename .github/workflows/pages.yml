@@ -43,6 +43,9 @@ jobs:
       - name: Responsive layout contract
         run: npm run test:responsive
 
+      - name: Route recovery contract
+        run: npm run test:route-recovery
+
       - name: Terminal contract
         run: npm run test:terminal
 
@@ -59,10 +62,36 @@ jobs:
         run: npm run build:pages
 
       - name: Stage static site
+        shell: bash
         run: |
+          set -euo pipefail
+          rm -rf site-next
+          mkdir -p site-next/assets
+
+          # Previous route chunks are kept for one deployment generation. An already
+          # open browser tab can therefore finish a lazy navigation even if a new
+          # Pages build lands between the initial shell load and the click.
+          OLD_MANIFEST="$(mktemp)"
+          if [ -f site/.current-assets.txt ]; then
+            cp site/.current-assets.txt "$OLD_MANIFEST"
+          elif [ -d site/assets ]; then
+            find site/assets -maxdepth 1 -type f -printf '%f\n' | sort > "$OLD_MANIFEST"
+          else
+            : > "$OLD_MANIFEST"
+          fi
+
+          while IFS= read -r asset; do
+            [ -n "$asset" ] || continue
+            if [ -f "site/assets/$asset" ]; then
+              cp "site/assets/$asset" "site-next/assets/$asset"
+            fi
+          done < "$OLD_MANIFEST"
+
+          cp -R dist/. site-next/
+          find dist/assets -maxdepth 1 -type f -printf '%f\n' | sort > site-next/.current-assets.txt
+
           rm -rf site
-          mkdir -p site
-          cp -R dist/. site/
+          mv site-next site
 
       - name: Commit generated site
         run: |
