@@ -26,5 +26,8 @@ jobs:
       - name: Terminal contract
         run: npm run test:terminal
 
+      - name: Investigation contract
+        run: npm run test:investigation
+
       - name: Build
         run: npm run build
