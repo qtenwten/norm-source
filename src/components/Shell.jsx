@@ -24,6 +24,7 @@ const transitionCopy = {
   '/black': 'ПОДКЛЮЧЕНИЕ К BLACK NODE',
   '/vault': 'ROOT HANDSHAKE // ЛОКАЛЬНОЕ ХРАНИЛИЩЕ',
   '/ghost-registry': 'МОНТИРОВАНИЕ GHOSTFS // PERSONNEL RECOVERY',
+  '/legacy-cases': 'ВОССТАНОВЛЕНИЕ ORPHANED CASE ROUTE',
   '/mirror-node': 'PRIVILEGED HANDSHAKE // MIRROR NODE',
   '/report': 'ОТКРЫТИЕ КАНАЛА ПРИЁМА',
 }
@@ -48,6 +49,7 @@ function getRouteTone(pathname) {
   if (pathname.startsWith('/terminal')) return 'terminal'
   if (pathname.startsWith('/cases')) return 'case'
   if (pathname.startsWith('/agents') || pathname.startsWith('/ghost-registry')) return 'agents'
+  if (pathname.startsWith('/legacy-cases')) return 'case'
   if (pathname.startsWith('/archive') || pathname.startsWith('/restricted') || pathname.startsWith('/black') || pathname.startsWith('/vault') || pathname.startsWith('/mirror-node')) return 'archive'
   if (pathname.startsWith('/report')) return 'report'
   return 'dashboard'
@@ -172,15 +174,17 @@ export default function Shell({ children, onLogout }) {
     timersRef.current.push(window.setTimeout(() => onLogout?.(), 520))
   }
 
+  const legacyRecovered = ['GHOST_AG04','GHOST_AG09','GHOST_AG13'].every(id => argProgress.discoveries.includes(id))
   const secretLinks = [
     argProgress.clearance >= 1 && ['/restricted','RESTRICTED 17-B','A-1'],
     argProgress.clearance >= 2 && ['/black','BLACK ARCHIVE','A-2'],
     argProgress.clearance >= 3 && ['/vault','ROOT VAULT','A-3'],
     argProgress.clearance >= 4 && ['/ghost-registry','GHOST REGISTRY','A-4'],
+    legacyRecovered && ['/legacy-cases','LEGACY CASES','A-4'],
     argProgress.clearance >= 5 && ['/mirror-node','MIRROR NODE','A-5'],
   ].filter(Boolean)
 
-  const highestRoute = argProgress.clearance >= 5 ? '/mirror-node' : argProgress.clearance >= 4 ? '/ghost-registry' : argProgress.clearance >= 3 ? '/vault' : argProgress.clearance >= 2 ? '/black' : argProgress.clearance >= 1 ? '/restricted' : '/terminal'
+  const highestRoute = argProgress.clearance >= 5 ? '/mirror-node' : legacyRecovered ? '/legacy-cases' : argProgress.clearance >= 4 ? '/ghost-registry' : argProgress.clearance >= 3 ? '/vault' : argProgress.clearance >= 2 ? '/black' : argProgress.clearance >= 1 ? '/restricted' : '/terminal'
 
   return (
     <div className={`norm-shell norm-shell--${routeTone}`} data-route={routeTone} data-clearance={argProgress.clearance}>
@@ -202,7 +206,7 @@ export default function Shell({ children, onLogout }) {
         <div className="sidebar__tagline">НАБЛЮДАЕМ.<br />ФИКСИРУЕМ.<br />РАЗБИРАЕМСЯ.</div>
         <button type="button" className={`arg-clearance-card ${argProgress.clearance >= 2 ? 'is-anomalous' : ''}`} onClick={() => go(highestRoute)}>
           <small>ДОПУСК СЕССИИ</small><strong>A-{argProgress.clearance}</strong><span>ОБНАРУЖЕНО: {argProgress.discoveries.length} / ??</span>
-          {argProgress.clearance >= 1 && <em>RESTRICTED NODE VISIBLE</em>}{argProgress.clearance >= 2 && <em>BLACK NODE VISIBLE</em>}{argProgress.clearance >= 3 && <em>ROOT VAULT VISIBLE</em>}{argProgress.clearance >= 4 && <em>GHOSTFS MOUNTED</em>}{argProgress.clearance >= 5 && <em>MIRROR NODE VISIBLE</em>}
+          {argProgress.clearance >= 1 && <em>RESTRICTED NODE VISIBLE</em>}{argProgress.clearance >= 2 && <em>BLACK NODE VISIBLE</em>}{argProgress.clearance >= 3 && <em>ROOT VAULT VISIBLE</em>}{argProgress.clearance >= 4 && <em>GHOSTFS MOUNTED</em>}{legacyRecovered && <em>LEGACY CASE ROUTE RESTORED</em>}{argProgress.clearance >= 5 && <em>MIRROR NODE VISIBLE</em>}
         </button>
         <div className="volume-console"><div className="volume-console__head"><span>ГРОМКОСТЬ</span><output htmlFor="norm-volume">{volumePercent}%</output></div><input id="norm-volume" className="volume-slider" type="range" min="0" max="100" step="1" value={volumePercent} onChange={changeVolume} onPointerUp={previewVolume} onKeyUp={previewVolume} aria-label={`Громкость интерфейса: ${volumePercent}%`} style={{'--volume':`${volumePercent}%`}}/><div className="volume-console__scale"><span>0</span><span className="volume-reference">20 // ТЕКУЩАЯ</span><span>100</span></div><small>ТЕСТОВАЯ ШКАЛА // 20% = ПРЕЖНЯЯ ГРОМКОСТЬ</small></div>
         <button className="sound-toggle" type="button" onClick={toggleSound} aria-pressed={!muted}>{muted?'ЗВУК: ВЫКЛ':'ЗВУК: ВКЛ'}</button>
