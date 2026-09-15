@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import Panel from '../components/Panel'
 import Photo from '../components/Photo'
 import { audio } from '../audio'
+import { riverGeneratedImage, sorceryGeneratedImage } from '../generated/grimoire/generatedImages'
 
 const monsters = [
   {
     key:'river', code:'R-002', caseCode:'LM-002', name:'РЕЧНАЯ ГАДИНА', alias:'ПРИБРЕЖНАЯ СУЩНОСТЬ',
     subtitle:'появляется у воды и связана с исчезновениями людей', type:'Водная сущность', category:'Криптид / прибрежная', danger:'III', origin:'Не установлено',
-    image:'/assets/grimoire-river-gadina-generated.svg', fallbackImage:'/assets/grimoire-river-gadina.webp', warning:'НЕ ПРИБЛИЖАТЬСЯ К ВОДЕ В ОДИНОЧКУ В ЗОНЕ ПРОЯВЛЕНИЯ.',
+    image:riverGeneratedImage, fallbackImage:'/assets/grimoire-river-gadina.webp', warning:'НЕ ПРИБЛИЖАТЬСЯ К ВОДЕ В ОДИНОЧКУ В ЗОНЕ ПРОЯВЛЕНИЯ.',
     source:'«РЕЧНАЯ ГАДИНА похищает людей»', videoId:'jdN2KjOlaC8',
     facts:['в деле расследуются таинственные исчезновения людей','зона расследования связана с водой и береговой линией','сущность получила рабочее название «Речная гадина»','основная версия проверяется непосредственно на месте'],
     hotspots:[
@@ -20,13 +21,13 @@ const monsters = [
     materials:[
       {id:'R-002_F1',type:'ПОЛЕВОЙ НАБРОСОК',meta:'SHORELINE / RECON',body:'Реконструкция сущности по материалам расследования.'},
       {id:'R-002_W1',type:'КАРТА ЗОНЫ',meta:'WATERLINE / FIELD',body:'Прибрежная зона, связанная с серией исчезновений.'},
-      {id:'R-002_SRC',type:'ИСТОЧНИК',meta:'YOUTUBE / VERIFIED',body:'Выпуск «Речная ГАДИНА похищает людей».'},
+      {id:'R-002_SRC',type:'ИСТОЧНИК',meta:'YOUTUBE / VERIFIED',body:'Выпуск «РЕЧНАЯ ГАДИНА похищает людей».'},
     ],
   },
   {
     key:'sorcery', code:'K-003', caseCode:'LM-003', name:'ДРЕВНЮЧЕЕ КОЛДУНСТВО', alias:'ПРОКЛЯТИЕ ГАДАЛКИ',
     subtitle:'ритуальное воздействие, которое продолжает работать после контакта', type:'Ритуальная аномалия', category:'Проклятие / оккультное', danger:'II', origin:'Связано с гадалкой',
-    image:'/assets/grimoire-ancient-sorcery-generated.svg', fallbackImage:'/assets/grimoire-ancient-sorcery.webp', warning:'НЕ ПОВТОРЯТЬ ОБРЯДЫ И НЕ АКТИВИРОВАТЬ НАЙДЕННЫЕ ПРЕДМЕТЫ.',
+    image:sorceryGeneratedImage, fallbackImage:'/assets/grimoire-ancient-sorcery.webp', warning:'НЕ ПОВТОРЯТЬ ОБРЯДЫ И НЕ АКТИВИРОВАТЬ НАЙДЕННЫЕ ПРЕДМЕТЫ.',
     source:'«ДРЕВНЮЧЕЕ КОЛДУНСТВО вышло на связь»', videoId:'TUk1JwcbxEg',
     facts:['клиент связывает происходящее с проклятием гадалки','воздействие описано как длительное и навязчивое','расследование строится вокруг ритуального происхождения аномалии','источник воздействия проверяется группой в ходе выезда'],
     hotspots:[
@@ -208,7 +209,7 @@ export default function Grimoire() {
                 {monster.casePath && <button type="button" onClick={() => jump(monster.casePath, 'stamp')}>ОТКРЫТЬ ДЕЛО →</button>}
               </div>
             </div>
-            <p className="red-pencil">Служебная визуализация Н.О.Р.М. — уникальная реконструкция сущности по материалам дела; интерактивные маркеры 01–04 нанесены поверх изображения.</p>
+            <p className="red-pencil">Служебная визуализация Н.О.Р.М. — уникальная реконструкция сущности по материалам дела; это не кадр из выпуска. Интерактивные маркеры 01–04 нанесены поверх изображения.</p>
             <button type="button" className="grimoire-reveal" onClick={reveal} aria-pressed={revealed}>{revealed ? 'СКРЫТЬ СЛУЖЕБНЫЙ СЛОЙ' : 'ПРОЯВИТЬ СЛУЖЕБНЫЙ СЛОЙ'}</button>
             <div className="grimoire-hidden-layer" aria-hidden={!revealed}>
               <small>СЛОЙ РАСПОЗНАВАНИЯ // NORM-LINGUA</small><strong>{monster.caseCode}</strong>
