@@ -38,6 +38,7 @@ import './terminal-layout-polish.css'
 import './responsive-v26.css'
 import './terminal-fullhd-fit.css'
 import './route-recovery.css'
+import './sidebar-unified.css'
 
 installGlobalRouteRecovery()
 
