@@ -3,7 +3,7 @@ name: Deploy N.O.R.M. to GitHub Pages
 on:
   push:
     branches:
-      - codex/cinematic-audio-v2
+      - main
   workflow_dispatch:
 
 permissions:
