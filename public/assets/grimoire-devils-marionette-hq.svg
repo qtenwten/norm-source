@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" role="img" aria-label="Марионетка дьявола — архивная реконструкция">
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4d7b2"/><stop offset="1" stop-color="#9f8d68"/></linearGradient><radialGradient id="v"><stop stop-color="#f0e6c8"/><stop offset="1" stop-color="#4e4030" stop-opacity="0"/></radialGradient><filter id="grain"><feTurbulence baseFrequency=".024" numOctaves="3" seed="19"/><feComponentTransfer><feFuncA type="table" tableValues="0 .11"/></feComponentTransfer></filter><filter id="rough"><feTurbulence baseFrequency=".009" numOctaves="2" seed="8" result="r"/><feDisplacementMap in="SourceGraphic" in2="r" scale="5"/></filter></defs>
+<rect width="1200" height="1400" fill="url(#b)"/><rect width="1200" height="1400" filter="url(#grain)"/><ellipse cx="610" cy="720" rx="470" ry="530" fill="url(#v)" opacity=".6"/>
+<g stroke="#4b3d2d" stroke-width="7" opacity=".45"><path d="M360 0L465 346"/><path d="M575 0L590 333"/><path d="M787 0L716 350"/><path d="M943 0L786 390"/></g>
+<g filter="url(#rough)" stroke="#2b261f" stroke-linejoin="round">
+ <ellipse cx="616" cy="448" rx="187" ry="220" fill="#b6a27b" stroke-width="18"/>
+ <path d="M468 357C508 283 560 254 619 249C684 245 741 278 771 346C718 324 679 326 636 344C582 367 531 366 468 357Z" fill="#4a4030" stroke-width="14"/>
+ <path d="M508 423Q553 386 592 424" fill="none" stroke-width="12"/><path d="M644 425Q690 386 731 423" fill="none" stroke-width="12"/>
+ <ellipse cx="556" cy="438" rx="18" ry="25" fill="#ece0be" stroke-width="8"/><ellipse cx="690" cy="438" rx="18" ry="25" fill="#ece0be" stroke-width="8"/><circle cx="557" cy="441" r="7" fill="#251e18" stroke="none"/><circle cx="689" cy="441" r="7" fill="#251e18" stroke="none"/>
+ <path d="M579 523Q618 558 659 522" fill="none" stroke-width="9"/><path d="M585 542Q618 568 650 542" fill="none" stroke-width="4"/>
+ <path d="M541 636C490 690 467 787 468 1010L758 1010C759 796 741 699 689 638C648 655 585 656 541 636Z" fill="#6e5b42" stroke-width="18"/>
+ <path d="M478 740L352 927" fill="none" stroke-width="28"/><path d="M747 742L872 920" fill="none" stroke-width="28"/><path d="M535 1004L476 1210" fill="none" stroke-width="30"/><path d="M688 1004L749 1210" fill="none" stroke-width="30"/>
+ <circle cx="355" cy="931" r="29" fill="#ad956d" stroke-width="11"/><circle cx="870" cy="922" r="29" fill="#ad956d" stroke-width="11"/>
+</g>
+<g stroke="#773a31" fill="none" opacity=".6"><path d="M432 326Q616 276 795 334" stroke-width="4"/><path d="M469 604Q614 657 760 603" stroke-width="3"/><circle cx="617" cy="450" r="260" stroke-width="3" stroke-dasharray="12 18"/></g>
+<g fill="#4f4332" font-family="Georgia,serif"><text x="72" y="92" font-size="27" opacity=".82">C-004 / OBJECT STUDY</text><text x="76" y="1321" font-size="20" opacity=".76">N.O.R.M. // POSSESSED OBJECT // VISUAL RECONSTRUCTION</text></g>
+<text x="789" y="190" font-size="22" fill="#863b31" font-family="monospace" transform="rotate(-6 789 190)">не оставлять одну</text>
+</svg>
