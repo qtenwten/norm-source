@@ -33,6 +33,7 @@ const transitionCopy = {
 
 const DEFAULT_VOLUME_PERCENT = 20
 const VOLUME_STORAGE_KEY = 'norm-volume-test-percent'
+const SOUND_STORAGE_KEY = 'norm-audio-enabled-v1'
 
 function volumeGain(percent) {
   const value = Math.min(100, Math.max(0, Number(percent) || 0))
@@ -44,6 +45,11 @@ function getStoredVolumePercent() {
   if (typeof window === 'undefined') return DEFAULT_VOLUME_PERCENT
   const stored = Number(window.localStorage.getItem(VOLUME_STORAGE_KEY))
   return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : DEFAULT_VOLUME_PERCENT
+}
+
+function getStoredSoundEnabled() {
+  if (typeof window === 'undefined') return true
+  return window.localStorage.getItem(SOUND_STORAGE_KEY) !== '0'
 }
 
 function getRouteTone(pathname) {
@@ -83,7 +89,7 @@ export default function Shell({ children, onLogout }) {
   const [transition, setTransition] = useState(false)
   const [transitionText, setTransitionText] = useState('СИНХРОНИЗАЦИЯ АРХИВА')
   const [transitionKind, setTransitionKind] = useState('dashboard')
-  const [muted, setMuted] = useState(!audio.enabled)
+  const [muted, setMuted] = useState(() => !getStoredSoundEnabled())
   const [volumePercent, setVolumePercent] = useState(getStoredVolumePercent)
   const [loggingOut, setLoggingOut] = useState(false)
   const [argProgress, setArgProgress] = useState(getArgState)
@@ -100,9 +106,29 @@ export default function Shell({ children, onLogout }) {
     window.localStorage.setItem(VOLUME_STORAGE_KEY, String(volumePercent))
   }, [volumePercent])
 
+  // A refresh can restore the authenticated UI without rendering AccessGate. Audio state,
+  // however, lives in memory and used to reset to disabled. Restore the user's preference
+  // here; browsers that suspend WebAudio will resume it on the next pointer/key gesture.
+  useEffect(() => {
+    if (muted) {
+      if (audio.enabled) audio.disable()
+      return
+    }
+    audio.enable()
+    audio.setVolume(volumeGain(volumePercent))
+    audio.scene(routeTone)
+  }, [])
+
   useEffect(() => {
     const selector = 'button, a, [role="button"], [role="tab"], [role="switch"], input[type="checkbox"], input[type="radio"]'
+    const restoreAudioOnGesture = () => {
+      if (muted) return
+      if (!audio.enabled) audio.enable()
+      audio.setVolume(volumeGain(volumePercent))
+      audio.scene(routeTone)
+    }
     const onPointerDown = (event) => {
+      restoreAudioOnGesture()
       if (!(event.target instanceof Element)) return
       const control = event.target.closest(selector)
       if (!control || control.hasAttribute('disabled') || control.getAttribute('aria-disabled') === 'true') return
@@ -113,6 +139,7 @@ export default function Shell({ children, onLogout }) {
       control.classList.add('norm-pressed')
       timersRef.current.push(window.setTimeout(() => control.classList.remove('norm-pressed'), 180))
     }
+    const onKeyDown = () => restoreAudioOnGesture()
     const onPointerOver = (event) => {
       if (!(event.target instanceof Element)) return
       const control = event.target.closest(selector)
@@ -125,12 +152,14 @@ export default function Shell({ children, onLogout }) {
       audio.hover()
     }
     document.addEventListener('pointerdown', onPointerDown, true)
+    document.addEventListener('keydown', onKeyDown, true)
     document.addEventListener('pointerover', onPointerOver, true)
     return () => {
       document.removeEventListener('pointerdown', onPointerDown, true)
+      document.removeEventListener('keydown', onKeyDown, true)
       document.removeEventListener('pointerover', onPointerOver, true)
     }
-  }, [])
+  }, [muted, volumePercent, routeTone])
 
   useEffect(() => () => { timersRef.current.forEach(window.clearTimeout) }, [])
 
@@ -159,13 +188,20 @@ export default function Shell({ children, onLogout }) {
 
   const toggleSound = () => {
     const on = audio.toggle()
+    window.localStorage.setItem(SOUND_STORAGE_KEY, on ? '1' : '0')
     setMuted(!on)
     if (on) { audio.setVolume(volumeGain(volumePercent)); audio.scene(routeTone); audio.confirm() }
   }
   const changeVolume = (event) => {
     const next = Math.min(100, Math.max(0, Number(event.target.value)))
     setVolumePercent(next)
-    if (muted && next > 0) { audio.enable(); audio.setVolume(volumeGain(next)); audio.scene(routeTone); setMuted(false) }
+    if (muted && next > 0) {
+      audio.enable()
+      audio.setVolume(volumeGain(next))
+      audio.scene(routeTone)
+      window.localStorage.setItem(SOUND_STORAGE_KEY, '1')
+      setMuted(false)
+    }
   }
   const previewVolume = () => { if (!muted && volumePercent > 0) audio.confirm() }
   const logout = () => {
