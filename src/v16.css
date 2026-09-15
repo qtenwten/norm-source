@@ -1,0 +1,203 @@
+/* N.O.R.M. v16 — terminal field uplinks: readable portraits, clear purpose, compact personnel telemetry */
+
+/* The two current agents are not dossiers inside the terminal. They are active field uplinks.
+   Make that distinction explicit and keep the investigation lead visually separate below them. */
+.terminal-deep .terminal-arg-feeds{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  min-width:0;
+  align-self:stretch;
+}
+
+.terminal-deep .terminal-arg-feeds::before{
+  content:"FIELD UPLINKS // АКТИВНЫЕ КАНАЛЫ ГРУППЫ LM\A Быстрый статус связи. Это не личные дела — нажмите на сотрудника, чтобы открыть полное досье.";
+  white-space:pre-line;
+  display:block;
+  border:1px solid #34463d;
+  border-left:2px solid #61786b;
+  background:#09110d;
+  padding:10px 11px;
+  font-size:9px;
+  line-height:1.55;
+  letter-spacing:.055em;
+  color:#81958a;
+}
+
+/* Replace the old wide video-strip crop with compact portrait-oriented telemetry cards. */
+.terminal-deep .terminal-arg-feeds>button{
+  position:relative;
+  display:grid!important;
+  grid-template-columns:96px minmax(0,1fr)!important;
+  grid-template-rows:auto auto 1fr!important;
+  column-gap:11px!important;
+  row-gap:3px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:132px!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  padding:8px!important;
+  margin:0!important;
+  text-align:left!important;
+  align-items:start!important;
+  border:1px solid #3e5047!important;
+  background:linear-gradient(180deg,rgba(14,23,18,.98),rgba(7,12,9,.99))!important;
+  overflow:hidden;
+}
+.terminal-deep .terminal-arg-feeds>button:hover{
+  border-color:#71877b!important;
+  background:linear-gradient(180deg,rgba(20,32,25,.98),rgba(9,15,11,.99))!important;
+}
+
+.terminal-deep .terminal-arg-feeds .live-feed__frame{
+  grid-column:1!important;
+  grid-row:1 / 4!important;
+  position:relative!important;
+  width:96px!important;
+  height:116px!important;
+  min-height:116px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border:1px solid #52645a!important;
+  background:#111612!important;
+}
+.terminal-deep .terminal-arg-feeds .live-feed__frame .norm-photo{
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  display:block!important;
+  overflow:hidden!important;
+}
+.terminal-deep .terminal-arg-feeds .live-feed__frame .norm-photo img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:cover!important;
+  transform:none!important;
+  filter:grayscale(1) contrast(1.01) brightness(1.42)!important;
+}
+/* The source frames place the two investigators on opposite sides. */
+.terminal-deep .terminal-arg-feeds>button:nth-of-type(1) .live-feed__frame .norm-photo img{
+  object-position:28% center!important;
+}
+.terminal-deep .terminal-arg-feeds>button:nth-of-type(2) .live-feed__frame .norm-photo img{
+  object-position:72% center!important;
+}
+.terminal-deep .terminal-arg-feeds .live-feed__frame i{
+  position:absolute!important;
+  top:5px!important;
+  right:5px!important;
+  z-index:3;
+  margin:0!important;
+  padding:2px 4px!important;
+  border:1px solid rgba(205,110,90,.72);
+  background:rgba(14,8,7,.78);
+  color:#d77b69!important;
+  font-size:8px!important;
+  line-height:1!important;
+  font-style:normal!important;
+}
+
+.terminal-deep .terminal-arg-feeds>button>b{
+  grid-column:2!important;
+  grid-row:1!important;
+  align-self:end;
+  min-width:0;
+  margin:2px 0 0!important;
+  color:#eef2ef!important;
+  font-size:15px!important;
+  line-height:1.25!important;
+  letter-spacing:.04em!important;
+  white-space:nowrap;
+}
+.terminal-deep .terminal-arg-feeds>button:nth-of-type(1)>b::after{content:" // AG-SEN";color:#7f9488;font-size:9px;font-weight:400}
+.terminal-deep .terminal-arg-feeds>button:nth-of-type(2)>b::after{content:" // AG-GRIG";color:#7f9488;font-size:9px;font-weight:400}
+
+.terminal-deep .terminal-arg-feeds>button>small{
+  grid-column:2!important;
+  grid-row:2!important;
+  margin:0!important;
+  color:#8fa398!important;
+  font-size:9px!important;
+  line-height:1.35!important;
+  letter-spacing:.06em!important;
+}
+
+/* Extra telemetry lives in the terminal only; full biographies remain in AGENTS. */
+.terminal-deep .terminal-arg-feeds>button::after{
+  grid-column:2!important;
+  grid-row:3!important;
+  align-self:start;
+  display:block;
+  margin-top:5px;
+  padding-top:7px;
+  border-top:1px solid #28372f;
+  white-space:pre-line;
+  font-size:9px;
+  line-height:1.55;
+  letter-spacing:.035em;
+  color:#9eaca4;
+}
+.terminal-deep .terminal-arg-feeds>button:nth-of-type(1)::after{
+  content:"КАНАЛ: SEN-03  //  LINK: STABLE\A FIELD MEDIA: ONLINE\A ПОСЛЕДНЯЯ СИНХР.: LM-006  //  ДОПУСК A-3";
+}
+.terminal-deep .terminal-arg-feeds>button:nth-of-type(2)::after{
+  content:"КАНАЛ: GRG-07  //  LINK: STABLE\A FIELD UNIT LM: ONLINE\A ПОСЛЕДНЯЯ СИНХР.: LM-006  //  ДОПУСК A-3";
+}
+
+/* Current lead is an investigation widget, not a third personnel card. */
+.terminal-deep .terminal-arg-feeds .terminal-lead-card{
+  margin-top:4px!important;
+  min-height:176px!important;
+  border-top:2px solid #765047!important;
+  background:linear-gradient(180deg,rgba(27,17,14,.88),rgba(8,12,10,.99))!important;
+}
+.terminal-deep .terminal-arg-feeds .terminal-lead-card::before{
+  content:"INVESTIGATION QUEUE";
+  display:block;
+  margin:-3px 0 2px;
+  color:#8f6b62;
+  font-size:8px;
+  letter-spacing:.15em;
+}
+
+/* On laptop widths keep the cards readable instead of squeezing them into video strips. */
+@media(max-width:1320px){
+  .terminal-deep .terminal-arg-feeds>button{
+    grid-template-columns:88px minmax(0,1fr)!important;
+    min-height:126px!important;
+  }
+  .terminal-deep .terminal-arg-feeds .live-feed__frame{
+    width:88px!important;
+    height:110px!important;
+    min-height:110px!important;
+  }
+  .terminal-deep .terminal-arg-feeds>button::after{font-size:8.5px}
+}
+
+@media(max-width:1200px){
+  .terminal-deep .terminal-arg-feeds{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  .terminal-deep .terminal-arg-feeds::before,
+  .terminal-deep .terminal-arg-feeds .terminal-lead-card{grid-column:1 / -1}
+}
+
+@media(max-width:720px){
+  .terminal-deep .terminal-arg-feeds{grid-template-columns:1fr!important}
+  .terminal-deep .terminal-arg-feeds::before,
+  .terminal-deep .terminal-arg-feeds .terminal-lead-card{grid-column:auto}
+  .terminal-deep .terminal-arg-feeds>button{
+    grid-template-columns:82px minmax(0,1fr)!important;
+  }
+  .terminal-deep .terminal-arg-feeds .live-feed__frame{
+    width:82px!important;
+    height:104px!important;
+    min-height:104px!important;
+  }
+}
