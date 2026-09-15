@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "build:pages": "vite build --base=/norm-source/ && node scripts/fix-pages-assets.mjs",
+    "build:pages": "vite build --base=/norm-source/site/ && node scripts/fix-pages-assets.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test:terminal": "node scripts/test-terminal-contract.mjs",
     "test:investigation": "node scripts/test-investigation-contract.mjs"
