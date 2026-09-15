@@ -34,6 +34,7 @@ import './mail-notifications.css'
 import './terminal-workstation.css'
 import './terminal-layout-polish.css'
 import './responsive-v26.css'
+import './terminal-fullhd-fit.css'
 
 const isPublishedBuild = window.location.hostname.endsWith('github.io') || window.location.pathname.startsWith('/norm-source/site')
 const Router = isPublishedBuild ? HashRouter : BrowserRouter
