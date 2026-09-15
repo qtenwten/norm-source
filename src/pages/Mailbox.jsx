@@ -1,30 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
 import { audio } from '../audio'
 import { getArgState, subscribeArg } from '../arg'
-import { internalMessages } from '../worldData'
-import { getDynamicMessages, getSystemEventState, subscribeSystemEvents } from '../systemEvents'
-
-const READ_KEY = 'norm-mail-read-v2'
-
-function loadRead() {
-  try { const raw = JSON.parse(localStorage.getItem(READ_KEY) || '[]'); return Array.isArray(raw) ? raw : [] } catch { return [] }
-}
-
-function saveRead(ids) { localStorage.setItem(READ_KEY, JSON.stringify(ids)) }
+import { getAvailableMail, getMailRead, markMailRead, subscribeMailRead } from '../mailState'
+import { getDynamicMessages, getSystemEventState, markSystemEventRead, subscribeSystemEvents, SYSTEM_EVENTS } from '../systemEvents'
 
 export default function Mailbox() {
   const [arg, setArg] = useState(getArgState)
   const [systemState, setSystemState] = useState(getSystemEventState)
-  const [read, setRead] = useState(loadRead)
+  const [read, setRead] = useState(getMailRead)
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
 
   useEffect(() => subscribeArg(setArg), [])
   useEffect(() => subscribeSystemEvents(setSystemState), [])
+  useEffect(() => subscribeMailRead(setRead), [])
 
   const liveMessages = useMemo(() => getDynamicMessages(systemState), [systemState])
-  const available = useMemo(() => [...liveMessages, ...internalMessages].filter((item) => (item.clearance || 0) <= arg.clearance), [liveMessages,arg.clearance])
+  const available = useMemo(() => getAvailableMail(arg, systemState), [arg, systemState])
   const categories = useMemo(() => ({
     all: available,
     unread: available.filter((item) => !read.includes(item.id)),
@@ -40,10 +33,9 @@ export default function Mailbox() {
 
   const open = (item) => {
     setSelected(item)
-    if (!read.includes(item.id)) {
-      const next = [...read,item.id]
-      setRead(next); saveRead(next)
-    }
+    if (!read.includes(item.id)) setRead(markMailRead(item.id))
+    const sourceEvent = SYSTEM_EVENTS.find((event) => event.mail?.id === item.id)
+    if (sourceEvent) markSystemEventRead(sourceEvent.id)
     audio.drawer()
   }
 
@@ -57,7 +49,7 @@ export default function Mailbox() {
 
   return <div className="page norm20-page mail-page">
     <header className="norm20-hero">
-      <div><small>N.O.R.M. // INTERNAL MAIL</small><h1>СЛУЖЕБНАЯ ПОЧТА</h1><p>Письма приходят не только из архива. Некоторые создаются системой после действий текущего оператора.</p></div>
+      <div><small>N.O.R.M. // INTERNAL MAIL</small><h1>СЛУЖЕБНАЯ ПОЧТА</h1><p>Отдельный внутренний канал Н.О.Р.М. Письма могут появляться прямо во время текущей сессии после действий оператора.</p></div>
       <div className="norm20-hero__status"><b>{categories.unread.length}</b><span>НЕПРОЧИТАНО</span><span>{liveMessages.length} LIVE</span></div>
     </header>
 
@@ -70,7 +62,7 @@ export default function Mailbox() {
 
       <section className="mail-list-pane">
         <div className="mail-search"><input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="поиск по отправителю, делу, фразе…"/><span>{list.length}</span></div>
-        <div className="mail-list">{list.map((item) => <button type="button" key={item.id} onClick={()=>open(item)} className={`${selected?.id===item.id?'active':''} ${read.includes(item.id)?'read':'unread'} ${item.id.startsWith('LIVE-')?'live':''}`}><i/ ><div><small>{item.from} → {item.to}</small><b>{item.subject}</b><span>{item.body?.[0]}</span></div><time>{item.date}</time></button>)}</div>
+        <div className="mail-list">{list.map((item) => <button type="button" key={item.id} onClick={()=>open(item)} className={`${selected?.id===item.id?'active':''} ${read.includes(item.id)?'read':'unread'} ${item.id.startsWith('LIVE-')?'live':''}`}><i/><div><small>{item.from} → {item.to}</small><b>{item.subject}</b><span>{item.body?.[0]}</span></div><time>{item.date}</time></button>)}</div>
       </section>
 
       <article className="mail-reader-pane">
@@ -78,7 +70,7 @@ export default function Mailbox() {
           <header><small>{selected.id}</small><h2>{selected.subject}</h2><dl><dt>ОТ</dt><dd>{selected.from}</dd><dt>КОМУ</dt><dd>{selected.to}</dd><dt>ДАТА</dt><dd>{selected.date}</dd></dl></header>
           <div className="mail-reader-body">{selected.body.map((line,index)=><p key={index}>{line}</p>)}</div>
           <footer><div>{selected.tags?.map((tag)=><span key={tag}>{tag}</span>)}</div><button type="button" onClick={()=>download(selected)}>ЭКСПОРТ .TXT ↓</button></footer>
-        </> : <div className="mail-empty"><b>ВЫБЕРИТЕ ПИСЬМО</b><p>Некоторые сообщения появляются только после событий в терминале. Попробуйте исследовать NORM-0, GHOSTFS и MIRROR.</p></div>}
+        </> : <div className="mail-empty"><b>ВЫБЕРИТЕ ПИСЬМО</b><p>Новые письма теперь отображаются отдельным индикатором в левом меню. Некоторые сообщения появляются только после событий в терминале.</p></div>}
       </article>
     </div>
   </div>

@@ -58,7 +58,7 @@ export default function Dashboard() {
           </div>
         </Panel>
         <Panel title="АКТИВНОСТЬ СИСТЕМЫ" className="system-log">
-          <button className="alert dashboard-alert-button" type="button" onClick={() => go('/investigation#messages','terminal')}>⚠ CORRELATION DESK // ЕСТЬ НЕПРОЧИТАННЫЕ ВНУТРЕННИЕ СООБЩЕНИЯ</button>
+          <button className="alert dashboard-alert-button" type="button" onClick={() => go('/mail','archive')}>⚠ INTERNAL MAIL // ЕСТЬ НЕПРОЧИТАННЫЕ СООБЩЕНИЯ</button>
           <ul>
             <li><button type="button" onClick={() => go('/investigation#objects','archive')}><time>03:28</time> STORAGE: карточка объекта <code>DC-03</code> обновлена после LM-005</button></li>
             <li><button type="button" onClick={() => go('/cases/lm-005#media','archive')}><time>02:59</time> В архив добавлена запись камеры <code>LM005_CAM_025951</code></button></li>
@@ -72,7 +72,7 @@ export default function Dashboard() {
       </div>
       <div className="investigation-entry-grid">
         <button type="button" onClick={() => go('/investigation#map','terminal')}><small>CORRELATION DESK</small><b>КАРТА СВЯЗЕЙ</b><p>Дела, сущности, сотрудники и системные следы на одной рабочей схеме.</p><span>ОТКРЫТЬ →</span></button>
-        <button type="button" onClick={() => go('/investigation#messages','archive')}><small>INTERNAL MAILBOX</small><b>СООБЩЕНИЯ</b><p>Полевые письма, бытовые детали и записи, не попавшие в официальные отчёты.</p><span>ЧИТАТЬ →</span></button>
+        <button type="button" onClick={() => go('/mail','archive')}><small>NORM INTERNAL MAIL</small><b>СЛУЖЕБНАЯ ПОЧТА</b><p>Полевые письма, бытовые детали, системные предупреждения и новые сообщения текущей сессии.</p><span>ЧИТАТЬ →</span></button>
         <button type="button" onClick={() => go('/investigation#objects','archive')}><small>OBJECT REGISTRY</small><b>УЛИКИ И ПРЕДМЕТЫ</b><p>Анализатор, ловцы снов, камеры, ключи и другие объекты с собственной историей.</p><span>ИЗУЧИТЬ →</span></button>
         <button type="button" onClick={() => go('/investigation#journal','terminal')}><small>INVESTIGATION JOURNAL</small><b>РАБОЧИЕ ВЫВОДЫ</b><p>Что уже можно считать установленным, а что остаётся только гипотезой.</p><span>СВЕРИТЬ →</span></button>
       </div>

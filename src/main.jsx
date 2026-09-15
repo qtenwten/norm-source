@@ -30,6 +30,7 @@ import './v22.css'
 import './v23.css'
 import './v24.css'
 import './v25.css'
+import './mail-notifications.css'
 
 const isPublishedBuild = window.location.hostname.endsWith('github.io') || window.location.pathname.startsWith('/norm-source/site')
 const Router = isPublishedBuild ? HashRouter : BrowserRouter
