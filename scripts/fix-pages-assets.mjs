@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 
 const ROOT = path.resolve('dist')
-const BASE = '/norm-source'
+const BASE = '/norm-source/site'
 const TEXT_EXTENSIONS = new Set(['.html','.css','.js','.mjs','.json','.svg','.xml','.txt'])
 
 async function walk(dir){
@@ -12,11 +12,11 @@ async function walk(dir){
     if(entry.isDirectory()) await walk(full)
     else if(TEXT_EXTENSIONS.has(path.extname(entry.name).toLowerCase())){
       const before = await fs.readFile(full,'utf8')
-      const after = before.replace(/(?<!\/norm-source)\/assets\//g,`${BASE}/assets/`)
+      const after = before.replace(/(?<!\/norm-source\/site)\/assets\//g,`${BASE}/assets/`)
       if(after !== before) await fs.writeFile(full,after,'utf8')
     }
   }
 }
 
 await walk(ROOT)
-console.log('PAGES ASSET REWRITE: OK // /assets/ -> /norm-source/assets/')
+console.log('PAGES ASSET REWRITE: OK // /assets/ -> /norm-source/site/assets/')
