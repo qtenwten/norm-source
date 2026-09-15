@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "generated": true,
+  "sprite": "fx/norm-sfx-v1.wav",
+  "sampleRate": 22050,
+  "cues": {
+    "click": {
+      "start": 0,
+      "duration": 0.130023
+    },
+    "relay": {
+      "start": 0.190023,
+      "duration": 0.18
+    },
+    "switch": {
+      "start": 0.430023,
+      "duration": 0.24
+    },
+    "key": {
+      "start": 0.730023,
+      "duration": 0.090023
+    },
+    "confirm": {
+      "start": 0.880045,
+      "duration": 0.42
+    },
+    "deny": {
+      "start": 1.360045,
+      "duration": 0.38
+    },
+    "warning": {
+      "start": 1.800045,
+      "duration": 0.5
+    },
+    "paper": {
+      "start": 2.360045,
+      "duration": 0.34
+    },
+    "drawer": {
+      "start": 2.760045,
+      "duration": 0.62
+    },
+    "shutter": {
+      "start": 3.440045,
+      "duration": 0.32
+    },
+    "stamp": {
+      "start": 3.820045,
+      "duration": 0.36
+    },
+    "radio": {
+      "start": 4.240045,
+      "duration": 0.52
+    },
+    "scan": {
+      "start": 4.820045,
+      "duration": 0.82
+    },
+    "handoff": {
+      "start": 5.700045,
+      "duration": 0.62
+    },
+    "terminalOpen": {
+      "start": 6.380045,
+      "duration": 0.9
+    },
+    "grimoireOpen": {
+      "start": 7.340045,
+      "duration": 1.149977
+    },
+    "glitch": {
+      "start": 8.550023,
+      "duration": 1
+    },
+    "systemReply": {
+      "start": 9.610023,
+      "duration": 1.149977
+    }
+  },
+  "ambience": {
+    "server": "ambience/server-room-loop.wav",
+    "archive": "ambience/archive-room-loop.wav",
+    "grimoire": "ambience/grimoire-room-loop.wav",
+    "terminal": "ambience/terminal-radio-loop.wav"
+  }
+}
