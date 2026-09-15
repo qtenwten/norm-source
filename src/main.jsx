@@ -29,7 +29,8 @@ import './v22.css'
 import './v23.css'
 import './v24.css'
 
-const Router = window.location.hostname.endsWith('github.io') ? HashRouter : BrowserRouter
+const isPublishedBuild = window.location.hostname.endsWith('github.io') || window.location.pathname.startsWith('/norm-source/site')
+const Router = isPublishedBuild ? HashRouter : BrowserRouter
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
