@@ -1,11 +1,16 @@
 import { virtualFiles } from './argKernel'
+import { audio } from './audio'
+import { resetReplaySession } from './sessionReset'
 
 const COMMANDS = [
-  'help','status','whoami','leads','hint','hint next','clear','history','pwd','ls','ls -la','cd','cat','open','inspect','info','tree','evidence','pack','download','scp','head','tail','file','stat','wc','search','grep','grep -R','find','strings','xxd','ps','ps aux','netstat','uname -a','id','env','df','dmesg','whois','mount','sudo unlock','reindex --orphaned','calc','auth','decode','say','neutralize','sound on','sound off','kill 0',
+  'help','status','whoami','leads','hint','hint next','clear','history','pwd','ls','ls -la','cd','cat','open','inspect','info','tree','evidence','pack','download','scp','head','tail','file','stat','wc','search','grep','grep -R','find','strings','xxd','ps','ps aux','netstat','uname -a','id','env','df','dmesg','whois','mount','sudo unlock','reindex --orphaned','calc','auth','decode','say','neutralize','sound on','sound off','kill 0','access reset','reset access','session reset','clearance reset','confirm reset','cancel reset',
 ]
 
 const PATHS = [...new Set(virtualFiles.map((file) => file.path))].sort()
+const RESET_COMMANDS = new Set(['ACCESS RESET','RESET ACCESS','SESSION RESET','CLEARANCE RESET'])
+const RESET_CONFIRM_COMMANDS = new Set(['CONFIRM','CONFIRM RESET','CONFIRM ACCESS RESET'])
 let lastTabAt = 0
+let resetArmedUntil = 0
 
 function setReactInput(input, value) {
   const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set
@@ -24,6 +29,11 @@ function helper(input, text) {
 
 function currentCwd(input) {
   return input.closest('form')?.querySelector('label')?.textContent?.replace(/>\s*$/,'').trim() || '/'
+}
+
+function currentClearance() {
+  const value = Number(document.querySelector('.norm-shell')?.dataset.clearance || 0)
+  return Number.isFinite(value) ? value : 0
 }
 
 function complete(input) {
@@ -70,9 +80,67 @@ function appendSynthetic(input, text, tone='normal') {
   log.scrollTop = log.scrollHeight
 }
 
+function clearInput(input) {
+  setReactInput(input, '')
+}
+
+function armAccessReset(event, input) {
+  event.preventDefault()
+  clearInput(input)
+  const clearance = currentClearance()
+  appendSynthetic(input, '> ACCESS RESET', 'command')
+  if (clearance < 5) {
+    appendSynthetic(input, `RESET CHANNEL LOCKED // CURRENT ACCESS A-${clearance}`, 'warn')
+    appendSynthetic(input, 'FULL REPLAY RESET BECOMES AVAILABLE AT ACCESS A-5', 'normal')
+    audio.deny()
+    return true
+  }
+
+  resetArmedUntil = Date.now() + 20000
+  appendSynthetic(input, 'ACCESS RESET // REPLAY PURGE ARMED', 'danger')
+  appendSynthetic(input, 'THIS WILL CLEAR A-5, DISCOVERIES, ARG MAIL AND LIVE SYSTEM EVENTS.', 'warn')
+  appendSynthetic(input, 'AUDIO PREFERENCE WILL BE PRESERVED.', 'normal')
+  appendSynthetic(input, 'TYPE: CONFIRM RESET   //   CANCEL RESET TO ABORT   //   WINDOW 20 SEC', 'match')
+  helper(input, 'DANGER // TYPE CONFIRM RESET')
+  audio.warning()
+  return true
+}
+
+function confirmAccessReset(event, input) {
+  if (Date.now() > resetArmedUntil) return false
+  event.preventDefault()
+  clearInput(input)
+  resetArmedUntil = 0
+  appendSynthetic(input, '> CONFIRM RESET', 'command')
+  appendSynthetic(input, 'PURGING CLEARANCE TABLE…', 'warn')
+  audio.systemReply()
+  window.setTimeout(() => appendSynthetic(input, 'ACCESS LEVEL → A-0', 'ok'), 220)
+  window.setTimeout(() => appendSynthetic(input, 'DISCOVERY INDEX → 0', 'ok'), 380)
+  window.setTimeout(() => appendSynthetic(input, 'RETURNING TO AUTHORIZATION GATE…', 'match'), 560)
+  window.setTimeout(() => resetReplaySession('terminal-access-reset'), 900)
+  return true
+}
+
+function cancelAccessReset(event, input) {
+  if (!resetArmedUntil) return false
+  event.preventDefault()
+  clearInput(input)
+  resetArmedUntil = 0
+  appendSynthetic(input, '> CANCEL RESET', 'command')
+  appendSynthetic(input, 'ACCESS RESET ABORTED // SESSION UNCHANGED', 'ok')
+  audio.confirm()
+  return true
+}
+
 function interceptCommand(event, input) {
   if (event.key !== 'Enter' || event.shiftKey || event.metaKey || event.ctrlKey || event.altKey) return false
   const raw = input.value.trim()
+  const upper = raw.toUpperCase().replace(/\s+/g,' ')
+
+  if (RESET_COMMANDS.has(upper)) return armAccessReset(event, input)
+  if (upper === 'CANCEL RESET') return cancelAccessReset(event, input)
+  if (RESET_CONFIRM_COMMANDS.has(upper) && Date.now() <= resetArmedUntil) return confirmAccessReset(event, input)
+  if (resetArmedUntil && Date.now() > resetArmedUntil) resetArmedUntil = 0
 
   const pipe = raw.match(/^cat\s+(.+?)\s*\|\s*grep\s+(.+)$/i)
   if (pipe) {
@@ -90,9 +158,9 @@ function interceptCommand(event, input) {
     const pattern = glob[1].startsWith('/') ? glob[1] : `${cwd.replace(/\/$/,'')}/${glob[1]}`
     const rx = globToRegex(pattern.replace(/\/+/g,'/'))
     const matches = PATHS.filter((path) => rx.test(path)).slice(0,12)
-    if (!matches.length) { appendSynthetic(input, `glob: ${glob[1]}: NO MATCH`, 'warn'); setReactInput(input,''); return true }
+    if (!matches.length) { appendSynthetic(input, `glob: ${glob[1]}: NO MATCH`, 'warn'); clearInput(input); return true }
     appendSynthetic(input, `GLOB ${glob[1]} // ${matches.length} MATCHES`, 'ok')
-    setReactInput(input,'')
+    clearInput(input)
     matches.forEach((path,index) => window.setTimeout(() => submit(input, `cat ${path}`), index*90))
     return true
   }
@@ -103,7 +171,7 @@ function interceptCommand(event, input) {
 
   if (/^kill\s+0$/i.test(raw)) {
     event.preventDefault()
-    setReactInput(input,'')
+    clearInput(input)
     appendSynthetic(input, '> kill 0', 'command')
     appendSynthetic(input, 'kill: operation permitted', 'ok')
     appendSynthetic(input, 'process 0 terminated', 'match')
@@ -123,7 +191,7 @@ function onKeyDown(event) {
     event.preventDefault(); submit(input,'clear'); helper(input,'CTRL+L // BUFFER CLEARED'); return
   }
   if (event.ctrlKey && event.key.toLowerCase() === 'c') {
-    event.preventDefault(); setReactInput(input,''); appendSynthetic(input,'^C // INPUT INTERRUPTED','warn'); return
+    event.preventDefault(); clearInput(input); appendSynthetic(input,'^C // INPUT INTERRUPTED','warn'); return
   }
   interceptCommand(event,input)
 }
@@ -136,7 +204,7 @@ function decorateTerminal() {
   if (help && !help.querySelector('[data-norm25-help]')) {
     const span = document.createElement('span')
     span.dataset.norm25Help = '1'
-    span.textContent = 'TAB COMPLETE · CTRL+L CLEAR · CTRL+C INTERRUPT · PIPE / GLOB'
+    span.textContent = 'TAB COMPLETE · CTRL+L CLEAR · CTRL+C INTERRUPT · PIPE / GLOB · A-5: ACCESS RESET'
     help.append(span)
   }
 }

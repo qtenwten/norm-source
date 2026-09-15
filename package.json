@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "prepare:audio": "node scripts/generate-audio-library.mjs",
+    "prepare:audio": "node scripts/generate-audio-library.mjs && node scripts/clean-audio-library.mjs",
     "predev": "npm run prepare:audio",
     "dev": "vite --host 0.0.0.0",
     "prebuild": "npm run prepare:audio",
@@ -17,6 +17,7 @@
     "test:audio-library": "npm run prepare:audio && node scripts/test-audio-library-contract.mjs",
     "test:responsive": "node scripts/test-responsive-contract.mjs",
     "test:sidebar": "node scripts/test-sidebar-contract.mjs",
+    "test:session-reset": "node scripts/test-session-reset-contract.mjs",
     "test:route-recovery": "node scripts/test-route-recovery-contract.mjs",
     "test:terminal": "node scripts/test-terminal-contract.mjs",
     "test:terminal-workstation": "node scripts/test-terminal-workstation-contract.mjs",

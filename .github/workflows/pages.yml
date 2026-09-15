@@ -49,6 +49,9 @@ jobs:
       - name: Sidebar consistency contract
         run: npm run test:sidebar
 
+      - name: Replay reset contract
+        run: npm run test:session-reset
+
       - name: Route recovery contract
         run: npm run test:route-recovery
 

@@ -14,17 +14,19 @@ let ambienceBuffers = new Map()
 let ambienceSource
 let loadPromise
 let layerEnabled = false
+let productionReady = false
+let proceduralFallbackEnabled = false
 let currentScene = 'dashboard'
 const cueLastStartedAt = new Map()
 
 const sceneAmbience = {
-  dashboard: ['server', 0.11],
-  case: ['server', 0.09],
-  agents: ['server', 0.085],
-  report: ['server', 0.09],
-  archive: ['archive', 0.12],
-  grimoire: ['grimoire', 0.13],
-  terminal: ['terminal', 0.115],
+  dashboard: ['server', 0.068],
+  case: ['server', 0.055],
+  agents: ['server', 0.052],
+  report: ['server', 0.052],
+  archive: ['archive', 0.072],
+  grimoire: ['grimoire', 0.078],
+  terminal: ['terminal', 0.074],
 }
 
 function ensureContext() {
@@ -36,17 +38,33 @@ function ensureContext() {
     master = ctx.createGain()
     fxBus = ctx.createGain()
     ambienceBus = ctx.createGain()
+
+    const fxFilter = ctx.createBiquadFilter()
+    fxFilter.type = 'lowpass'
+    fxFilter.frequency.value = 6400
+    fxFilter.Q.value = 0.38
+
+    const ambienceFilter = ctx.createBiquadFilter()
+    ambienceFilter.type = 'lowpass'
+    ambienceFilter.frequency.value = 1750
+    ambienceFilter.Q.value = 0.32
+
     const compressor = ctx.createDynamicsCompressor()
-    compressor.threshold.value = -12
-    compressor.knee.value = 16
-    compressor.ratio.value = 3
-    compressor.attack.value = 0.004
-    compressor.release.value = 0.2
-    fxBus.gain.value = 0.72
-    ambienceBus.gain.value = 0.28
-    master.gain.value = layerEnabled ? 0.95 : 0.0001
-    fxBus.connect(master)
-    ambienceBus.connect(master)
+    compressor.threshold.value = -14
+    compressor.knee.value = 18
+    compressor.ratio.value = 2.5
+    compressor.attack.value = 0.006
+    compressor.release.value = 0.22
+
+    // Keep interaction sounds present while ambience stays underneath the interface.
+    // The previous build doubled a procedural noise layer with the rendered library,
+    // which produced the dirty broadband hiss reported during real use.
+    fxBus.gain.value = 0.82
+    ambienceBus.gain.value = 0.19
+    master.gain.value = layerEnabled ? 0.92 : 0.0001
+
+    fxBus.connect(fxFilter).connect(master)
+    ambienceBus.connect(ambienceFilter).connect(master)
     master.connect(compressor)
     compressor.connect(ctx.destination)
   }
@@ -83,28 +101,36 @@ async function loadLibrary() {
     spriteBuffer = sprite
     cueManifest = manifest.cues || {}
     ambienceBuffers = new Map(ambience)
+    productionReady = Boolean(spriteBuffer)
+    if (productionReady && proceduralFallbackEnabled) {
+      originalMethods.disable?.()
+      proceduralFallbackEnabled = false
+    }
     if (layerEnabled) syncAmbience(true)
-    return true
+    return productionReady
   })().catch((error) => {
     console.warn('N.O.R.M. production SFX unavailable; procedural layer remains active.', error)
+    productionReady = false
+    enableProceduralFallback()
     return false
   })
   return loadPromise
 }
 
 function playCue(name, { gain = 0.28, pan = 0, rate = 1, delay = 0, cooldown = 0.055 } = {}) {
-  if (!layerEnabled || !spriteBuffer) return false
+  if (!layerEnabled || !productionReady || !spriteBuffer) return false
   const wallNow = typeof performance !== 'undefined' ? performance.now() : Date.now()
   const lastStarted = cueLastStartedAt.get(name) || -Infinity
   if (wallNow - lastStarted < cooldown * 1000) return false
   const cue = cueManifest[name]
   const c = ensureContext()
   if (!cue || !c || !fxBus) return false
+
   const source = c.createBufferSource()
   const envelope = c.createGain()
   const panner = typeof c.createStereoPanner === 'function' ? c.createStereoPanner() : null
   source.buffer = spriteBuffer
-  source.playbackRate.value = Math.max(0.9, Math.min(1.1, rate))
+  source.playbackRate.value = Math.max(0.91, Math.min(1.09, rate))
   envelope.gain.value = gain
   source.connect(envelope)
   if (panner) {
@@ -119,24 +145,26 @@ function playCue(name, { gain = 0.28, pan = 0, rate = 1, delay = 0, cooldown = 0
 }
 
 function syncAmbience(immediate = false) {
-  if (!layerEnabled || !ctx || !ambienceBus) return
+  if (!layerEnabled || !productionReady || !ctx || !ambienceBus) return
   const [key, targetGain] = sceneAmbience[currentScene] || sceneAmbience.dashboard
   const buffer = ambienceBuffers.get(key)
   if (!buffer) return
   if (ambienceSource?.key === key) {
-    ramp(ambienceSource.gain.gain, targetGain, immediate ? 0.03 : 0.7)
+    ramp(ambienceSource.gain.gain, targetGain, immediate ? 0.03 : 0.8)
     return
   }
+
   const now = ctx.currentTime
   if (ambienceSource) {
     const previous = ambienceSource
     previous.gain.gain.cancelScheduledValues(now)
     previous.gain.gain.setValueAtTime(Math.max(previous.gain.gain.value, 0.0001), now)
-    previous.gain.gain.exponentialRampToValueAtTime(0.0001, now + (immediate ? 0.04 : 0.8))
+    previous.gain.gain.exponentialRampToValueAtTime(0.0001, now + (immediate ? 0.04 : 0.9))
     window.setTimeout(() => {
-      try { previous.source.stop() } catch { /* source already stopped */ }
-    }, immediate ? 80 : 900)
+      try { previous.source.stop() } catch { /* already stopped */ }
+    }, immediate ? 90 : 980)
   }
+
   const source = ctx.createBufferSource()
   const gain = ctx.createGain()
   source.buffer = buffer
@@ -145,101 +173,128 @@ function syncAmbience(immediate = false) {
   source.connect(gain).connect(ambienceBus)
   source.start(now)
   ambienceSource = { key, source, gain }
-  ramp(gain.gain, targetGain, immediate ? 0.04 : 0.95)
-}
-
-function enableLayer() {
-  layerEnabled = true
-  ensureContext()
-  ramp(master?.gain, 0.95, 0.12)
-  void loadLibrary()
-  syncAmbience(true)
-}
-
-function disableLayer() {
-  layerEnabled = false
-  ramp(master?.gain, 0.0001, 0.08)
+  ramp(gain.gain, targetGain, immediate ? 0.04 : 1.0)
 }
 
 function randomRate(amount = 0.035) {
   return 1 + (Math.random() - 0.5) * amount * 2
 }
 
+const originalMethods = {}
+
+function enableProceduralFallback() {
+  if (!layerEnabled || productionReady || proceduralFallbackEnabled) return
+  proceduralFallbackEnabled = true
+  originalMethods.enable?.()
+  originalMethods.scene?.(currentScene)
+}
+
+function enableLayer() {
+  layerEnabled = true
+  ensureContext()
+  ramp(master?.gain, 0.92, 0.12)
+  void loadLibrary()
+  if (productionReady) syncAmbience(true)
+}
+
+function disableLayer() {
+  layerEnabled = false
+  ramp(master?.gain, 0.0001, 0.08)
+  if (proceduralFallbackEnabled) {
+    originalMethods.disable?.()
+    proceduralFallbackEnabled = false
+  }
+}
+
+function cueOrFallback(method, cue, options) {
+  if (playCue(cue, options)) return true
+  if (proceduralFallbackEnabled) originalMethods[method]?.()
+  return false
+}
+
 function install() {
   if (audio[INSTALL_FLAG]) return
   Object.defineProperty(audio, INSTALL_FLAG, { value: true, enumerable: false })
 
-  const original = {}
   for (const name of [
-    'enable', 'disable', 'resume', 'scene', 'transition', 'click', 'key', 'tab', 'toggleSwitch',
-    'photo', 'drawer', 'radio', 'confirm', 'deny', 'warning', 'modal', 'command', 'error', 'scan',
+    'enable', 'disable', 'resume', 'scene', 'transition', 'click', 'hover', 'key', 'tab', 'toggleSwitch',
+    'photo', 'drawer', 'radio', 'confirm', 'deny', 'warning', 'modal', 'entity', 'command', 'error', 'scan',
     'archive', 'nav', 'stamp', 'paper', 'glitch', 'terminalOpen', 'grimoireOpen', 'dashboardOpen',
     'systemReply', 'boot', 'grant',
-  ]) original[name] = audio[name].bind(audio)
+  ]) originalMethods[name] = audio[name]?.bind(audio)
+
+  // Expose the state of the production layer to Shell. The procedural engine remains
+  // a true failure fallback instead of playing simultaneously underneath every cue.
+  Object.defineProperty(audio, 'enabled', { configurable: true, enumerable: true, get: () => layerEnabled })
 
   audio.enable = function productionEnable() {
-    const result = original.enable()
     enableLayer()
-    return result
+    return true
   }
   audio.disable = function productionDisable() {
     disableLayer()
-    return original.disable()
+    return false
   }
   audio.resume = function productionResume() {
-    const result = original.resume()
-    if (audio.enabled) enableLayer()
-    return result
+    if (!layerEnabled) return false
+    ensureContext()
+    ramp(master?.gain, 0.92, 0.05)
+    void loadLibrary()
+    if (productionReady) syncAmbience()
+    return true
   }
   audio.scene = function productionScene(name) {
-    const result = original.scene(name)
     currentScene = sceneAmbience[name] ? name : 'dashboard'
-    syncAmbience()
-    return result
+    if (productionReady) syncAmbience()
+    else if (proceduralFallbackEnabled) originalMethods.scene?.(name)
   }
   audio.transition = function productionTransition(name) {
-    const result = original.transition(name)
-    if (name === 'grimoire') playCue('grimoireOpen', { gain: 0.34, rate: randomRate(0.012) })
-    else if (name === 'terminal') playCue('terminalOpen', { gain: 0.35, rate: randomRate(0.012) })
-    else if (name === 'archive') playCue('drawer', { gain: 0.28, rate: randomRate() })
-    else if (name === 'case') playCue('shutter', { gain: 0.25, rate: randomRate(0.02) })
-    else playCue('handoff', { gain: 0.24, rate: randomRate(0.02) })
-    return result
+    if (!layerEnabled) return
+    if (!productionReady) {
+      if (proceduralFallbackEnabled) originalMethods.transition?.(name)
+      return
+    }
+    if (name === 'grimoire') playCue('grimoireOpen', { gain: 0.29, rate: randomRate(0.012) })
+    else if (name === 'terminal') playCue('terminalOpen', { gain: 0.3, rate: randomRate(0.012) })
+    else if (name === 'archive') playCue('drawer', { gain: 0.23, rate: randomRate() })
+    else if (name === 'case') playCue('shutter', { gain: 0.21, rate: randomRate(0.02) })
+    else playCue('handoff', { gain: 0.2, rate: randomRate(0.02) })
   }
 
   const layered = {
-    click: () => playCue('click', { gain: 0.18, rate: randomRate(0.045), pan: (Math.random() - 0.5) * 0.08 }),
-    key: () => playCue('key', { gain: 0.105, rate: randomRate(0.06), pan: (Math.random() - 0.5) * 0.16 }),
-    tab: () => playCue('click', { gain: 0.15, rate: 1.04 }),
-    toggleSwitch: () => playCue('switch', { gain: 0.27, rate: randomRate(0.025) }),
-    photo: () => playCue('shutter', { gain: 0.31, rate: randomRate(0.018) }),
-    drawer: () => playCue('drawer', { gain: 0.31, rate: randomRate(0.025) }),
-    radio: () => playCue('radio', { gain: 0.25, rate: randomRate(0.025), pan: (Math.random() - 0.5) * 0.18 }),
-    confirm: () => playCue('confirm', { gain: 0.27, rate: randomRate(0.012) }),
-    deny: () => playCue('deny', { gain: 0.29, rate: randomRate(0.018) }),
-    warning: () => playCue('warning', { gain: 0.3 }),
-    modal: () => playCue('handoff', { gain: 0.18, rate: 0.94 }),
-    command: () => playCue('relay', { gain: 0.21, rate: randomRate(0.025) }),
-    error: () => playCue('deny', { gain: 0.31, rate: 0.96 }),
-    scan: () => playCue('scan', { gain: 0.32, pan: -0.03 }),
-    archive: () => playCue('drawer', { gain: 0.28, rate: randomRate(0.02) }),
-    nav: () => playCue('relay', { gain: 0.17, rate: randomRate(0.035) }),
-    stamp: () => playCue('stamp', { gain: 0.36, rate: randomRate(0.018) }),
-    paper: () => playCue('paper', { gain: 0.25, rate: randomRate(0.035), pan: (Math.random() - 0.5) * 0.12 }),
-    glitch: () => playCue('glitch', { gain: 0.29, rate: randomRate(0.02), pan: (Math.random() - 0.5) * 0.16 }),
-    terminalOpen: () => playCue('terminalOpen', { gain: 0.35, rate: randomRate(0.012) }),
-    grimoireOpen: () => playCue('grimoireOpen', { gain: 0.34, rate: randomRate(0.012) }),
-    dashboardOpen: () => playCue('handoff', { gain: 0.23, rate: 0.96 }),
-    systemReply: () => playCue('systemReply', { gain: 0.36 }),
-    boot: () => playCue('handoff', { gain: 0.25, rate: 0.92 }),
-    grant: () => playCue('confirm', { gain: 0.3 }),
+    click: () => cueOrFallback('click', 'click', { gain: 0.14, rate: randomRate(0.035), pan: (Math.random() - 0.5) * 0.06 }),
+    hover: () => cueOrFallback('hover', 'click', { gain: 0.032, rate: 1.055 + Math.random() * 0.015, pan: (Math.random() - 0.5) * 0.05, cooldown: 0.11 }),
+    key: () => cueOrFallback('key', 'key', { gain: 0.07, rate: randomRate(0.045), pan: (Math.random() - 0.5) * 0.1, cooldown: 0.045 }),
+    tab: () => cueOrFallback('tab', 'click', { gain: 0.11, rate: 1.025 }),
+    toggleSwitch: () => cueOrFallback('toggleSwitch', 'switch', { gain: 0.23, rate: randomRate(0.02) }),
+    photo: () => cueOrFallback('photo', 'shutter', { gain: 0.26, rate: randomRate(0.015) }),
+    drawer: () => cueOrFallback('drawer', 'drawer', { gain: 0.25, rate: randomRate(0.02) }),
+    radio: () => cueOrFallback('radio', 'radio', { gain: 0.18, rate: randomRate(0.018), pan: (Math.random() - 0.5) * 0.12 }),
+    confirm: () => cueOrFallback('confirm', 'confirm', { gain: 0.23, rate: randomRate(0.01) }),
+    deny: () => cueOrFallback('deny', 'deny', { gain: 0.24, rate: randomRate(0.015) }),
+    warning: () => cueOrFallback('warning', 'warning', { gain: 0.25 }),
+    modal: () => cueOrFallback('modal', 'handoff', { gain: 0.15, rate: 0.95 }),
+    entity: () => cueOrFallback('entity', 'systemReply', { gain: 0.22, rate: 0.93 }),
+    command: () => cueOrFallback('command', 'relay', { gain: 0.18, rate: randomRate(0.02) }),
+    error: () => cueOrFallback('error', 'deny', { gain: 0.25, rate: 0.97 }),
+    scan: () => cueOrFallback('scan', 'scan', { gain: 0.25, pan: -0.02 }),
+    archive: () => cueOrFallback('archive', 'drawer', { gain: 0.23, rate: randomRate(0.018) }),
+    nav: () => cueOrFallback('nav', 'relay', { gain: 0.14, rate: randomRate(0.025) }),
+    stamp: () => cueOrFallback('stamp', 'stamp', { gain: 0.29, rate: randomRate(0.015) }),
+    paper: () => cueOrFallback('paper', 'paper', { gain: 0.2, rate: randomRate(0.025), pan: (Math.random() - 0.5) * 0.08 }),
+    glitch: () => cueOrFallback('glitch', 'glitch', { gain: 0.22, rate: randomRate(0.015), pan: (Math.random() - 0.5) * 0.1 }),
+    terminalOpen: () => cueOrFallback('terminalOpen', 'terminalOpen', { gain: 0.29, rate: randomRate(0.01) }),
+    grimoireOpen: () => cueOrFallback('grimoireOpen', 'grimoireOpen', { gain: 0.28, rate: randomRate(0.01) }),
+    dashboardOpen: () => cueOrFallback('dashboardOpen', 'handoff', { gain: 0.19, rate: 0.97 }),
+    systemReply: () => cueOrFallback('systemReply', 'systemReply', { gain: 0.29 }),
+    boot: () => cueOrFallback('boot', 'handoff', { gain: 0.2, rate: 0.94 }),
+    grant: () => cueOrFallback('grant', 'confirm', { gain: 0.25 }),
   }
 
   for (const [name, layer] of Object.entries(layered)) {
-    audio[name] = function productionLayeredMethod(...args) {
-      const result = original[name](...args)
-      layer(...args)
-      return result
+    audio[name] = function productionLayeredMethod() {
+      if (!layerEnabled) return
+      layer()
     }
   }
 }

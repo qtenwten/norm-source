@@ -1,6 +1,8 @@
 # N.O.R.M. production audio library
 
-N.O.R.M. uses a **hybrid sample + Web Audio** sound system. The file-backed library provides the physical texture (switches, relays, paper, drawers, camera mechanics, radio interference and room tone); the procedural layer adds subtle variation, low-frequency body, stereo ticks and a safe fallback if an asset fails to load.
+N.O.R.M. uses a **hybrid sample + Web Audio** architecture, but the two layers no longer play on top of each other. The file-backed production library is the primary audible layer; the older procedural Web Audio engine is retained strictly as a failure fallback when the rendered assets cannot be loaded or decoded.
+
+This distinction matters: simultaneous procedural noise plus rendered transients created a broadband hiss/fizz during hover-heavy use. Production playback now avoids that double layer entirely.
 
 The user-facing master level remains locked to the approved **100% calibration**. Sound can only be enabled or muted from the interface; there is no second volume slider.
 
@@ -17,7 +19,9 @@ public/audio/
     terminal-radio-loop.wav
 ```
 
-The WAV files are rendered deterministically by `scripts/generate-audio-library.mjs` before `dev`/`build`; generated binaries stay out of Git and are copied into the Vite output from `public/`. The SFX file is an audio sprite containing 18 cues. Keeping the short effects in one PCM asset avoids a burst of small HTTP requests and preserves sample-accurate cue boundaries.
+The WAV files are rendered deterministically by `scripts/generate-audio-library.mjs` before `dev`/`build`. A second deterministic mastering stage, `scripts/clean-audio-library.mjs`, then removes unnecessary high-frequency broadband energy and lowers ambience density before the files reach the browser. Generated binaries stay out of Git and are copied into the Vite output from `public/`.
+
+The SFX file is an audio sprite containing 18 cues. Keeping the short effects in one PCM asset avoids a burst of small HTTP requests and preserves sample-accurate cue boundaries.
 
 ### SFX sprite map
 
@@ -46,23 +50,25 @@ Cue offsets are generated into `public/audio/audio-manifest.json`; `src/producti
 
 ## Scene ambience
 
-- **dashboard / cases / agents / reports** → restrained server/electrical room bed;
-- **archive** → darker storage-room tone with distant physical movement;
-- **grimoire** → nearly silent low-frequency room with paper-like air;
-- **terminal** → dry radio/electrical bed with sparse high-frequency texture.
+- **dashboard / cases / agents / reports** → restrained low server-room body;
+- **archive** → darker storage-room tone with very little upper-band noise;
+- **grimoire** → near-silent low room tone;
+- **terminal** → dry electrical/radio body without continuous white-noise hiss.
 
-Ambience crossfades when the scene changes. The original procedural bed remains available underneath, so transitions never become silent while the generated library is still decoding or unavailable.
+Ambience crossfades when the scene changes. It is intentionally quieter than interaction SFX. A low-pass stage exists both in the offline mastering pass and in the runtime production chain so the atmosphere reads as room tone rather than cheap static.
 
 ## Playback policy
 
 1. Audio starts only after a user gesture and respects the explicit mute preference.
-2. The library is fetched with browser cache enabled after audio activation; startup is not blocked on asset download.
-3. Missing or undecodable files do **not** break the site: procedural effects remain active.
-4. Short cues receive small pitch/pan variation where appropriate, so repeated clicks and mechanisms do not sound identical.
-5. A dynamics compressor remains on the production-file master chain to keep stacked cinematic layers controlled at the fixed 100% calibration.
+2. The production library is fetched with browser cache enabled after audio activation; startup is not blocked on asset download.
+3. When the library is available, only the production layer plays. The procedural engine is not mixed underneath it.
+4. Missing or undecodable files do **not** break the site: the procedural engine becomes the fallback.
+5. Hover uses a very quiet, rate-varied production click with a cooldown instead of the old high-frequency procedural tick.
+6. Short cues receive small pitch/pan variation where appropriate, so repeated clicks and mechanisms do not sound identical.
+7. Dynamics compression and gentle runtime low-pass filtering keep the fixed 100% calibration controlled without harsh fizz.
 
 ## Asset provenance
 
-The five rendered audio files are original project renders created for N.O.R.M.; they do not contain third-party recordings or samples. Their source-of-truth is the deterministic renderer, so a clean checkout can recreate the exact production library without committing heavy binaries.
+The five rendered audio files are original project renders created for N.O.R.M.; they do not contain third-party recordings or samples. Their source-of-truth is the deterministic renderer plus deterministic mastering pass, so a clean checkout can recreate the production library without committing heavy binaries.
 
-For future recorded-Foley replacements, prefer CC0 material. Kenney's Interface Sounds, UI Audio and Sci-fi Sounds are currently published under Creative Commons CC0 and remain suitable reference/replacement sources if a recorded library is introduced later.
+For future recorded-Foley replacements, prefer CC0 material. Kenney's Interface Sounds, UI Audio and Sci-fi Sounds remain suitable reference/replacement sources if a recorded library is introduced later.
