@@ -3,3 +3,8 @@ dist
 .DS_Store
 .env
 .env.*
+
+# Deterministically rendered before dev/build. Source lives in scripts/generate-audio-library.mjs.
+public/audio/fx/
+public/audio/ambience/
+public/audio/audio-manifest.json
