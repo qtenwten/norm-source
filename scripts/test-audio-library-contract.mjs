@@ -2,6 +2,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs'
 
 const audio = readFileSync('src/audio.js', 'utf8')
 const production = readFileSync('src/productionAudio.js', 'utf8')
+const hissPatch = readFileSync('src/audioHissPatch.js', 'utf8')
 const main = readFileSync('src/main.jsx', 'utf8')
 const docs = readFileSync('docs/audio-library.md', 'utf8')
 const generator = readFileSync('scripts/generate-audio-library.mjs', 'utf8')
@@ -44,6 +45,14 @@ for (const token of [
 expect(production.includes("hover: () => cueOrFallback('hover', 'click'"), 'hover must use the quiet production layer instead of raw procedural hiss')
 expect(!production.includes('const result = original[name](...args)'), 'production cues must not stack the old procedural effect underneath every sound')
 expect(main.includes("import './productionAudio.js'"), 'production audio layer is not installed at app bootstrap')
+expect(main.includes("import './audioHissPatch.js'"), 'hiss-free audio patch is not installed after the production layer')
+expect(hissPatch.includes("name === 'archive' || name === 'terminal'"), 'archive and terminal routes must bypass their noise-heavy ambience beds')
+expect(hissPatch.includes("productionScene?.('agents')"), 'hiss-heavy scenes must use the quieter server-room scene')
+expect(hissPatch.includes('audio.glitch = function hissFreeGlitch()'), 'autonomous glitch hiss override is missing')
+expect(hissPatch.includes('return audio.nav?.()'), 'hiss-heavy glitch/terminal cues must fall back to a dry mechanical navigation cue')
+expect(hissPatch.includes('audio.radio = function hissFreeRadio()'), 'mail radio hiss override is missing')
+expect(hissPatch.includes('return audio.confirm?.()'), 'mail notification must use a dry confirmation cue')
+expect(hissPatch.includes('audio.terminalOpen = function hissFreeTerminalOpen()'), 'direct terminal-open hiss override is missing')
 expect(audio.includes('const FIXED_MASTER_GAIN = 5'), 'legacy calibrated Web Audio layer must remain the procedural fallback')
 
 for (const token of [
@@ -70,4 +79,4 @@ expect(docs.includes('hybrid sample + Web Audio'), 'audio documentation does not
 expect(docs.includes('only the production layer plays'), 'audio documentation must prohibit simultaneous procedural hiss layering')
 expect(docs.includes('do not contain third-party recordings or samples'), 'audio provenance is not documented')
 
-if (!process.exitCode) console.log('AUDIO LIBRARY CONTRACT: OK // clean 18-cue production layer + 4 mastered ambiences + fallback-only procedural engine')
+if (!process.exitCode) console.log('AUDIO LIBRARY CONTRACT: OK // clean production layer + hiss-free archive/mail/terminal routing + fallback-only procedural engine')
