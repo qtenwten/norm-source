@@ -29,6 +29,9 @@ jobs:
       - name: Audio policy contract
         run: npm run test:audio-policy
 
+      - name: Responsive layout contract
+        run: npm run test:responsive
+
       - name: Terminal contract
         run: npm run test:terminal
 
