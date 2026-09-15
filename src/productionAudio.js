@@ -1,7 +1,9 @@
 import { audio } from './audio.js'
 
 const AUDIO_BASE = `${import.meta.env.BASE_URL || '/'}audio/`
-const MANIFEST_URL = `${AUDIO_BASE}audio-manifest.json`
+const AUDIO_RELEASE = 'clean-20260915-r2'
+const withRelease = (url) => `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(AUDIO_RELEASE)}`
+const MANIFEST_URL = withRelease(`${AUDIO_BASE}audio-manifest.json`)
 const INSTALL_FLAG = '__normProductionAudioInstalled'
 
 let ctx
@@ -95,8 +97,8 @@ async function loadLibrary() {
     if (!response.ok) throw new Error(`${response.status} ${MANIFEST_URL}`)
     const manifest = await response.json()
     const [sprite, ...ambience] = await Promise.all([
-      decode(`${AUDIO_BASE}${manifest.sprite}`),
-      ...Object.entries(manifest.ambience).map(async ([key, path]) => [key, await decode(`${AUDIO_BASE}${path}`)]),
+      decode(withRelease(`${AUDIO_BASE}${manifest.sprite}`)),
+      ...Object.entries(manifest.ambience).map(async ([key, path]) => [key, await decode(withRelease(`${AUDIO_BASE}${path}`))]),
     ])
     spriteBuffer = sprite
     cueManifest = manifest.cues || {}
