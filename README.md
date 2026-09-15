@@ -6,6 +6,7 @@
 
 - театральная авторизация оператора с сохранением текущей сессии;
 - башенная/радио-эмблема Н.О.Р.М. и единый classified-system UI;
+- единый системный sidebar: один chrome, одна геометрия и один utility-блок на всех маршрутах;
 - сводка и реестр дел с глубокими переходами между материалами;
 - отдельные досье агентов, включая AG-SEN и AG-GRIG;
 - расследовательская доска улик с пользовательскими связями;
@@ -31,13 +32,15 @@
 
 ## Звук
 
-Аудиосистема теперь гибридная: **файловая production-библиотека + Web Audio**.
+Аудиосистема использует **файловую production-библиотеку + Web Audio fallback**.
 
 - 18 коротких SFX собраны в один sample-accurate audio sprite;
 - WAV-библиотека детерминированно рендерится перед `dev`/`build`, поэтому Git не хранит тяжёлые бинарники;
+- после рендера выполняется отдельный clean-mastering pass: убирается лишний высокочастотный hiss/fizz, ambience становится мягче и тише;
 - отдельные ambience-loop есть для серверной части, архива, Гримуара и терминала;
+- production-слой теперь основной: старый процедурный Web Audio не играет одновременно под каждым кликом и используется только если production-ассеты не загрузились;
+- hover переведён на очень тихий production-click с cooldown вместо старого высокочастотного procedural tick;
 - реле, переключатели, бумага, архивный ящик, затвор камеры, штамп, радио, сканирование, переходы и аномальные события имеют собственные файловые слои;
-- процедурный слой добавляет вариативность и остаётся fallback'ом, если файл не загрузился;
 - пользовательская громкость зафиксирована на утверждённом уровне 100%; управление — только `ЗВУК ВКЛ/ВЫКЛ`.
 
 Подробная карта библиотеки: [`docs/audio-library.md`](docs/audio-library.md).
@@ -70,6 +73,15 @@ SOUND OFF
 NORM
 ```
 
+После прохождения ARG до максимального допуска `A-5` появляется безопасный replay-reset:
+
+```text
+ACCESS RESET
+CONFIRM RESET
+```
+
+Также работают алиасы `RESET ACCESS`, `SESSION RESET`, `CLEARANCE RESET`; отмена — `CANCEL RESET`. Команда очищает допуск, ARG-discoveries, live system events и состояние прочитанной ARG-почты, после чего возвращает пользователя к экрану авторизации. Настройка `ЗВУК ВКЛ/ВЫКЛ` при этом сохраняется.
+
 Терминал также понимает дополнительные Unix-like формы, Tab autocomplete и несколько скрытых команд/реакций. Не все ARG-механики документированы здесь намеренно.
 
 ## Локальный запуск
@@ -97,7 +109,7 @@ npm run build:pages
 
 ## Проверки
 
-Перед публикацией CI проверяет HTTPS entry, audio policy, production audio library, responsive layout, route recovery, Field Terminal, workstation geometry, Investigation и N.O.R.M. 2.0 contracts, после чего собирает production bundle.
+Перед публикацией CI проверяет HTTPS entry, audio policy, production audio library, responsive layout, sidebar consistency, replay reset, route recovery, Field Terminal, workstation geometry, Investigation и N.O.R.M. 2.0 contracts, после чего собирает production bundle.
 
 Ключевые команды:
 
@@ -105,6 +117,8 @@ npm run build:pages
 npm run test:audio-policy
 npm run test:audio-library
 npm run test:responsive
+npm run test:sidebar
+npm run test:session-reset
 npm run test:route-recovery
 npm run test:terminal
 npm run test:terminal-workstation
