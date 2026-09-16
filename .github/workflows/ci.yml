@@ -53,6 +53,9 @@ jobs:
       - name: Investigation contract
         run: npm run test:investigation
 
+      - name: Navigation semantics contract
+        run: npm run test:navigation
+
       - name: N.O.R.M. 2.0 contract
         run: npm run test:norm20
 
