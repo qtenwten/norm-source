@@ -14,9 +14,9 @@ expect(main.includes("import './navigation-semantics.css'"), 'navigation semanti
 expect(pkg.scripts?.['test:navigation'] === 'node scripts/test-navigation-semantics-contract.mjs', 'test:navigation script missing')
 
 for (const token of [
-  "'/grimoire#${code}'",
-  "'/legacy-cases#${code}'",
-  "'/ghost-registry#${code.slice(3)}'",
+  '`/grimoire#${code}`',
+  '`/legacy-cases#${code}`',
+  '`/ghost-registry#${code.slice(3)}`',
   "'/equipment#DC-03'",
   "runTerminalCommand('ls -la /etc')",
   "text.includes('УЛИКИ И ПРЕДМЕТЫ')",
