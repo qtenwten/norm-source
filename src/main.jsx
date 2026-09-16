@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
 import './funMessagesPatch.js'
 import './terminalEnhancements.js'
+import './navigationSemantics.js'
 import './productionAudio.js'
 import './audioHissPatch.js'
 import { installGlobalRouteRecovery } from './routeRecovery.js'
@@ -40,6 +41,7 @@ import './responsive-v26.css'
 import './terminal-fullhd-fit.css'
 import './route-recovery.css'
 import './sidebar-unified.css'
+import './navigation-semantics.css'
 
 installGlobalRouteRecovery()
 
